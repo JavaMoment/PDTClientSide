@@ -1,109 +1,109 @@
 package com.java.GUI.panels;
 
-import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Paint;
-import java.awt.RenderingHints;
+import java.awt.Cursor;
+import java.awt.Font;
 
-import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.Spring;
-import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginPanel extends JPanel {
-	
-	public LoginPanel() {
-        setBackground(Color.WHITE);
-        setLayout(new BorderLayout());
 
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(Color.WHITE);
+	private JTextField txtFieldMail;
+	private JPasswordField passwordField;
+	private JLabel lblPassword;
+	private JLabel lblMail;
+	private JButton btnLogin;
+	private JButton btnRegister;
+	private JLabel lblLoginTitle;
+	private JPanel contentPane;
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+	/**
+	 * Create the panel.
+	 */
+	public LoginPanel(JPanel contentPane) {
+		this.contentPane = contentPane;
+		setBackground(new Color(255, 255, 255));
+		lblMail = new JLabel("Correo:");
+		lblMail.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		txtFieldMail = new JTextField();
+		txtFieldMail.setColumns(10);
+		
+		lblPassword = new JLabel("Contraseña:");
+		
+		passwordField = new JPasswordField();
+		
+		btnLogin = new JButton("Ingresar");
+		btnLogin.setBackground(new Color(125, 229, 251));
+		btnLogin.setForeground(new Color(40, 40, 40));
+		
+		btnRegister = new JButton("Registrarse");
+		btnRegister.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+                cardLayout.show(contentPane, "signup");
+			}
+		});
+		btnRegister.setFont(new Font("sansserif", 1, 12));
+        btnRegister.setForeground(new Color(30, 122, 236));
+        btnRegister.setContentAreaFilled(false);
+        btnRegister.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnRegister.setBorder(null);
+		
+		lblLoginTitle = new JLabel("Inicia sesión");
+		lblLoginTitle.setFont(new Font("sansserif", 1, 48)); // NOI18N
+        lblLoginTitle.setForeground(new Color(69, 68, 68));
+        lblLoginTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		GroupLayout login_layout = new GroupLayout(this);
+		login_layout.setHorizontalGroup(
+			login_layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(login_layout.createSequentialGroup()
+					.addContainerGap(168, Short.MAX_VALUE)
+					.addGroup(login_layout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(btnLogin, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblPassword)
+						.addComponent(lblMail)
+						.addComponent(passwordField)
+						.addComponent(txtFieldMail)
+						.addComponent(lblLoginTitle, GroupLayout.PREFERRED_SIZE, 257, Short.MAX_VALUE)
+						.addComponent(btnRegister, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(148, Short.MAX_VALUE))
+		);
+		login_layout.setVerticalGroup(
+			login_layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(login_layout.createSequentialGroup()
+					.addContainerGap(88, Short.MAX_VALUE)
+					.addComponent(lblLoginTitle)
+					.addGap(18)
+					.addComponent(lblMail, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+					.addGap(0)
+					.addComponent(txtFieldMail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblPassword, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+					.addGap(0)
+					.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(30)
+					.addComponent(btnLogin)
+					.addGap(137)
+					.addComponent(btnRegister)
+					.addGap(30))
+		);
+		setLayout(login_layout);
 
-        // Add login form components
-        JLabel usernameLabel = new JLabel("Username:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        centerPanel.add(usernameLabel, gbc);
+	}
 
-        JTextField usernameField = new JTextField(20);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        centerPanel.add(usernameField, gbc);
-
-        JLabel passwordLabel = new JLabel("Password:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        centerPanel.add(passwordLabel, gbc);
-
-        JTextField passwordField = new JTextField(20);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        centerPanel.add(passwordField, gbc);
-
-        // Add login button
-        JButton loginButton = new JButton("Login");
-        loginButton.setForeground(Color.BLACK);
-        loginButton.setPreferredSize(new Dimension(100, 30));
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        centerPanel.add(loginButton, gbc);
-
-        // Add register button
-        JButton registerButton = new JButton("Register");
-        registerButton.setForeground(new Color(135, 206, 235)); // Sky blue
-        registerButton.setOpaque(false);
-        registerButton.setContentAreaFilled(false);
-        registerButton.setBorderPainted(false);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        centerPanel.add(registerButton, gbc);
-
-        add(centerPanel, BorderLayout.CENTER);
-    }
-	
-    @Override
-    protected void paintComponent(Graphics g) {
-        /*super.paintComponent(g);
-        
-        // Cast Graphics object to Graphics2D for advanced rendering
-        Graphics2D g2d = (Graphics2D) g;
-        
-        // Define the gradient colors
-        Color startColor = new Color(135, 206, 235); // Sky blue
-        Color endColor = new Color(0, 0, 128); // Navy blue
-        
-        // Create the gradient paint object
-        GradientPaint gradient = new GradientPaint(0, 0, startColor, 0, getHeight(), endColor);
-        
-        // Apply the gradient paint to the panel background
-        g2d.setPaint(gradient);
-        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);*/
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Paint gp = new GradientPaint(getWidth() / 2, 0, Color.WHITE, getWidth() / 2, getHeight(), Color.WHITE);
-        g2.setPaint(gp);
-        g2.fillRect(0, 0, getWidth(), getHeight());
-        g2.setColor(getForeground());
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-        g2.dispose();
-        super.paintComponent(g);
-    }
 }
