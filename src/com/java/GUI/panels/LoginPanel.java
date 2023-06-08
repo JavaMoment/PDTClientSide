@@ -2,6 +2,7 @@ package com.java.GUI.panels;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 
@@ -86,7 +87,7 @@ public class LoginPanel extends JPanel {
 		login_layout.setVerticalGroup(
 			login_layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(login_layout.createSequentialGroup()
-					.addContainerGap(88, Short.MAX_VALUE)
+					.addContainerGap(18, Short.MAX_VALUE)
 					.addComponent(lblLoginTitle)
 					.addGap(18)
 					.addComponent(lblMail, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
@@ -100,7 +101,7 @@ public class LoginPanel extends JPanel {
 					.addComponent(btnLogin)
 					.addGap(137)
 					.addComponent(btnRegister)
-					.addGap(30))
+					.addGap(200))
 		);
 		setLayout(login_layout);
 
