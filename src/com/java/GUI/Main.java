@@ -1,35 +1,34 @@
 package com.java.GUI;
 
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.LoginPanel;
+import com.java.GUI.panels.SignUpPanel;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JTextPane;
-import java.awt.Panel;
 import java.awt.Toolkit;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Label;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JButton;
 
 public class Main extends JFrame {
 
 	private JPanel contentPane;
+	private JPanel loginPanel;
+	private JPanel signupPanel;
 
 	/**
 	 * Launch the application.
@@ -55,19 +54,37 @@ public class Main extends JFrame {
 		//setBounds(100, 100, 800, 600);
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setLocationRelativeTo(null);
-		contentPane = new LoginPanel();
+		contentPane = new ContentLoginPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(new java.awt.Color(255, 255, 255));
+		contentPane.setBackground(new Color(255, 255, 255));
 
 		setContentPane(contentPane);
-		//add(new LoginPanel());
+
+		CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout);
+        loginPanel = new LoginPanel(cardPanel);
+        signupPanel = new SignUpPanel(cardPanel);
+        contentPane.add(cardPanel);
+        cardPanel.add(loginPanel, "login");
+        cardPanel.add(signupPanel, "signup");
+
+        GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.CENTER)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGap(640)
+					.addComponent(cardPanel, GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+					.addGap(630))
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.CENTER)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap(271, Short.MAX_VALUE)
+					.addComponent(cardPanel, GroupLayout.DEFAULT_SIZE, 499, GroupLayout.DEFAULT_SIZE)
+					.addGap(261))
+		);
 		
-		//GroupLayout contentPanelLayout = new GroupLayout(contentPane);
-		//contentPane.setLayout(null);
-		/*contentPanelLayout.setHorizontalGroup(
-				contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(contentPanelLayout.createSequentialGroup())
-				.addComponent(contentPane)
-				);*/
+		contentPane.setLayout(gl_contentPane);
+		
 	}
 }
