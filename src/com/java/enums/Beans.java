@@ -4,5 +4,10 @@ public enum Beans {
 	Usuario,
 	Analista,
 	Tutor,
-	Estudiante
+	Estudiante, 
+	Itr,
+	Evento,
+	Reclamo,
+	Constancia,
+	StatusCertificados
 }
