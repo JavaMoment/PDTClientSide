@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.java.GUI.panels.ContentLoginPanel;
+import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
 
@@ -50,6 +51,7 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setBounds(100, 100, 800, 600);
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -84,7 +86,9 @@ public class Main extends JFrame {
 					.addGap(261))
 		);
 		
+  
 		contentPane.setLayout(gl_contentPane);
+
 		
 	}
 }
