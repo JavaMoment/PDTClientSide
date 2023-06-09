@@ -15,7 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
+import com.java.GUI.Main;
 import com.services.UsuarioBeanRemote;
 
 import javax.swing.GroupLayout.Alignment;
@@ -69,7 +71,7 @@ public class LoginPanel extends JPanel {
 				
 				if (!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
 					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
-					JOptionPane.showMessageDialog(null,
+					JOptionPane.showMessageDialog(LoginPanel.this,
 							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
 					passwordField.setText("");
 					return;
@@ -80,7 +82,7 @@ public class LoginPanel extends JPanel {
 					correoInternet.validate();
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(null, "Por favor ingrese una dirección de correo electrónico válida.");
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
 					passwordField.setText("");
 					return;
 				}
@@ -92,11 +94,15 @@ public class LoginPanel extends JPanel {
 					return;
 				}
 				else if(!passwBDD.equals(passw)) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "mal ahiiii makina", JOptionPane.YES_OPTION);
+					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "mal ahiiii makina", JOptionPane.ERROR_MESSAGE);
 					passwordField.setText("");
 					return;
 				} else {
-					JOptionPane.showMessageDialog(LoginPanel.this, "Salió todo bien loco bien ahí", "Bien ahiiii makina", JOptionPane.YES_OPTION);
+					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!", "Holaaa :D", JOptionPane.YES_OPTION);
+					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
+			        //main.setContentPane(new ContentHomePanel());
+			        main.initHome();
+					main.revalidate();
 				}
 				txtFieldMail.setText("");
 				passwordField.setText("");
