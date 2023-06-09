@@ -13,6 +13,7 @@ import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
 
+
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -29,6 +30,7 @@ public class Main extends JFrame {
 	private JPanel contentPane;
 	private JPanel loginPanel;
 	private JPanel signupPanel;
+	private JPanel eventPanel;
 
 	/**
 	 * Launch the application.
@@ -64,9 +66,12 @@ public class Main extends JFrame {
         JPanel cardPanel = new JPanel(cardLayout);
         loginPanel = new LoginPanel(cardPanel);
         signupPanel = new SignUpPanel(cardPanel);
+
         contentPane.add(cardPanel);
         cardPanel.add(loginPanel, "login");
         cardPanel.add(signupPanel, "signup");
+        cardPanel.add(eventPanel, "event");
+
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -87,4 +92,5 @@ public class Main extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 		
 	}
+
 }
