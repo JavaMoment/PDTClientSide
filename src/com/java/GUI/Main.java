@@ -12,6 +12,12 @@ import javax.swing.border.EmptyBorder;
 import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.DepartamentoBeanRemote;
+import com.services.ItrBeanRemote;
+import com.services.LocalidadBeanRemote;
+import com.services.UsuarioBeanRemote;
 
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
@@ -29,6 +35,10 @@ public class Main extends JFrame {
 	private JPanel contentPane;
 	private JPanel loginPanel;
 	private JPanel signupPanel;
+	private static UsuarioBeanRemote usuarioBean;
+	private static DepartamentoBeanRemote depaBean;
+	private static LocalidadBeanRemote localidadBean;
+	private static ItrBeanRemote itrBean;
 
 	/**
 	 * Launch the application.
@@ -37,6 +47,10 @@ public class Main extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
+					depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);
+					localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
+					itrBean = BeansFactory.getBean(Beans.Itrs, ItrBeanRemote.class);
 					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -62,8 +76,8 @@ public class Main extends JFrame {
 
 		CardLayout cardLayout = new CardLayout();
         JPanel cardPanel = new JPanel(cardLayout);
-        loginPanel = new LoginPanel(cardPanel);
-        signupPanel = new SignUpPanel(cardPanel);
+        loginPanel = new LoginPanel(cardPanel, usuarioBean);
+        signupPanel = new SignUpPanel(cardPanel, usuarioBean, depaBean, localidadBean, itrBean);
         contentPane.add(cardPanel);
         cardPanel.add(loginPanel, "login");
         cardPanel.add(signupPanel, "signup");
