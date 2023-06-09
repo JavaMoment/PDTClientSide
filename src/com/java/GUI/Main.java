@@ -1,15 +1,20 @@
 package com.java.GUI;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
+import com.java.GUI.panels.HomePanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
 import com.java.controller.BeansFactory;
@@ -20,15 +25,9 @@ import com.services.LocalidadBeanRemote;
 import com.services.UsuarioBeanRemote;
 
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
 
 public class Main extends JFrame {
 
@@ -65,9 +64,14 @@ public class Main extends JFrame {
 	 */
 	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setBounds(100, 100, 800, 600);
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/com/java/resources/images/uteclogo.png")));
 		setLocationRelativeTo(null);
+		
+		initLogin();
+	}
+	
+	public void initLogin() {
 		contentPane = new ContentLoginPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setBackground(new Color(255, 255, 255));
@@ -99,6 +103,37 @@ public class Main extends JFrame {
 		);
 		
 		contentPane.setLayout(gl_contentPane);
+	}
+	
+	public void initHome() {
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(new Color(255, 255, 255));
+		setContentPane(contentPane);
 		
+		ContentHomePanel homePanelContent = new ContentHomePanel();
+		HomePanel homePanel = new HomePanel();
+		
+		CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout);
+        contentPane.add(cardPanel);
+        contentPane.add(homePanelContent);
+        
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(homePanelContent, BorderLayout.NORTH);
+        JPanel wrapperPanel = new JPanel(new GridBagLayout());
+        wrapperPanel.setBackground(Color.WHITE);
+        contentPane.add(wrapperPanel, BorderLayout.CENTER);
+
+        // Add the cardPanel to the wrapperPanel with appropriate constraints
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(0, 0, 0, 0); // Add any desired padding
+        constraints.anchor = GridBagConstraints.CENTER;
+        wrapperPanel.add(cardPanel, constraints);
+        
+        cardPanel.add(homePanel, "home");
+
 	}
 }
