@@ -10,6 +10,7 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
 import javax.swing.*;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
 import java.awt.Insets;
 
 
@@ -43,7 +44,7 @@ public class EventsPanel extends JPanel{
 			lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
 			
 			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-	        tabbedPane.setPreferredSize( new Dimension(100,100));
+			tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
 			tabbedPane.addTab("Alta evento", createEvent);
 			tabbedPane.addTab("Listar eventos", listEvent);
 			tabbedPane.addTab("Modificar evento", modifyEvent);
@@ -64,7 +65,7 @@ public class EventsPanel extends JPanel{
 						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGap(10)
-								.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
+								.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 570, Short.MAX_VALUE))
 							.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
@@ -80,7 +81,7 @@ public class EventsPanel extends JPanel{
 								.addGap(11)
 								.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 413, Short.MAX_VALUE)
 						.addContainerGap())
 			);
 
