@@ -4,5 +4,8 @@ public enum Beans {
 	Usuario,
 	Analista,
 	Tutor,
-	Estudiante
+	Estudiante,
+	Departamentos,
+	Localidades,
+	Itrs
 }
