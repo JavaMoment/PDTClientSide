@@ -55,7 +55,7 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				CardLayout cardLayout = (CardLayout) contentPane.getLayout();
-                cardLayout.show(contentPane, "signup");
+                cardLayout.show(contentPane, "eventos");
 			}
 		});
 		btnRegister.setFont(new Font("sansserif", 1, 12));
@@ -105,6 +105,6 @@ public class LoginPanel extends JPanel {
 		);
 		setLayout(login_layout);
 
-	}
+	}	
 
 }
