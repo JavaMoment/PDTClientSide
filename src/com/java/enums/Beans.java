@@ -7,5 +7,5 @@ public enum Beans {
 	Estudiante,
 	Departamentos,
 	Localidades,
-	Itrs
+	Itr
 }

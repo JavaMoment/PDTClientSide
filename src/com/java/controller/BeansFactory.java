@@ -33,7 +33,7 @@ public class BeansFactory {
             	case Localidades:
             		String localidadRoute = baseRoute + "LocalidadBean!com.services.LocalidadBeanRemote";
             		return expectedType.cast(jndi.lookup(localidadRoute));
-            	case Itrs:
+            	case Itr:
             		String itrRoute = baseRoute + "ItrBean!com.services.ItrBeanRemote";
             		return expectedType.cast(jndi.lookup(itrRoute));
             	default:
