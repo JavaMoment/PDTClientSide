@@ -8,6 +8,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,7 +26,7 @@ public class RemoveEventPanel extends JPanel{
 
 	public RemoveEventPanel(){
 		
-		JLabel lblTitle = new JLabel("LISTA DE EVENTOS");
+		JLabel lblTitle = new JLabel("BORRAR EVENTO");
 		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -74,11 +75,14 @@ public class RemoveEventPanel extends JPanel{
 	                        }
 
 	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
-	                        JFrame sheetEvent = new JFrame();
-	                        sheetEvent.getContentPane().add(new JLabel("EN ESTE ESPACIO SE MOSTRARA LA FICHA DEL EVENTO"));
-	                        sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	                        sheetEvent.pack();
-	                        sheetEvent.setVisible(true);
+	                        int option = JOptionPane.showConfirmDialog(null, "¿Estás seguro de eliminar el evento?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+	                        if (option == JOptionPane.YES_OPTION) {
+	                        	//aplicar logica para dar la baja del evento
+	                            System.out.println("Confirmado");
+	                        } else {
+	                            System.out.println("Cancelado");
+	                        } 
 	                    }
 	                }
 	            }
