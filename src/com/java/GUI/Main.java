@@ -24,6 +24,7 @@ import com.services.ItrBeanRemote;
 import com.services.LocalidadBeanRemote;
 import com.services.UsuarioBeanRemote;
 
+
 import java.awt.Toolkit;
 
 import javax.swing.GroupLayout;
@@ -63,6 +64,7 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/com/java/resources/images/uteclogo.png")));
@@ -85,6 +87,8 @@ public class Main extends JFrame {
         contentPane.add(cardPanel);
         cardPanel.add(loginPanel, "login");
         cardPanel.add(signupPanel, "signup");
+        cardPanel.add(eventPanel, "event");
+
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -102,6 +106,7 @@ public class Main extends JFrame {
 					.addGap(261))
 		);
 		
+  
 		contentPane.setLayout(gl_contentPane);
 	}
 	
@@ -136,4 +141,5 @@ public class Main extends JFrame {
         cardPanel.add(homePanel, "home");
 
 	}
+
 }
