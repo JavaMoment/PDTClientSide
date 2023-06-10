@@ -7,5 +7,9 @@ public enum Beans {
 	Estudiante,
 	Departamentos,
 	Localidades,
-	Itrs
+	Itr,
+	Evento,
+	Reclamo,
+	Constancia,
+	StatusCertificados
 }
