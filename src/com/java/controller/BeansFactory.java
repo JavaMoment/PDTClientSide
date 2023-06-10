@@ -36,6 +36,18 @@ public class BeansFactory {
             	case Itr:
             		String itrRoute = baseRoute + "ItrBean!com.services.ItrBeanRemote";
             		return expectedType.cast(jndi.lookup(itrRoute));
+            	case Evento:
+            		String eventoRoute = baseRoute + "EventoBean!com.services.EventoBeanRemote";
+            		return expectedType.cast(jndi.lookup(eventoRoute));
+            	case Reclamo:
+            		String reclamoRoute = baseRoute + "ReclamoBean!com.services.ReclamoBeanRemote";
+            		return expectedType.cast(jndi.lookup(reclamoRoute));
+            	case Constancia:
+            		String constanciaRoute = baseRoute + "ConstanciaBean!com.services.ConstanciaBeanRemote";
+            		return expectedType.cast(jndi.lookup(constanciaRoute));
+            	case StatusCertificados:
+            		String statusRoute = baseRoute + "StatusCertificadosBean!com.services.StatusCertificadosBeanRemote";
+            		return expectedType.cast(jndi.lookup(statusRoute));
             	default:
             		return null;
             }
