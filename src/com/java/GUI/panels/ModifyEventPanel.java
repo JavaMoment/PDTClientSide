@@ -1,60 +1,123 @@
 package com.java.GUI.panels;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.*;
+
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.Color;
+
 public class ModifyEventPanel extends JPanel {
-    private JTextField eventTextField;
-    private JButton modifyButton;
-    private JButton cancelButton;
+	
+	private JTable tableEvents;
+	private SheetModifyPanel sheetModifyPanel;
 
-    public ModifyEventPanel() {
-        JLabel eventLabel = new JLabel("Event:");
-        eventTextField = new JTextField(20);
+	public ModifyEventPanel(){
+		
+		JLabel lblTitle = new JLabel("MODIFICACION DE EVENTOS");
+		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		
 
-        modifyButton = new JButton("Modify");
-        cancelButton = new JButton("Cancel");
-
-        modifyButton.addActionListener(new ActionListener() {
+	    String[] columnNames = new String[] {"Titulo", "Fecha de inicio", "Fecha de fin", "Modalidad", "ITR", "Estado"};
+        String[][] rowData = new String[][]{
+        	{"IT BUILDER", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"},
+        	{"CHARLA VME 1", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"},
+        	{"CHARLA VME 5", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"}
+        };
+        
+        DefaultTableModel model = new DefaultTableModel(rowData, columnNames) {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String modifiedEvent = eventTextField.getText();
-                // Perform the necessary actions to update the event
-                updateEvent(modifiedEvent);
+            public boolean isCellEditable(int row, int column) {
+                // Hacer que todas las celdas sean no editables
+                return false;
             }
-        });
+        };
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the modification?", "Cancel Modification", JOptionPane.YES_NO_OPTION);
-                if (option == JOptionPane.YES_OPTION) {
-                    // Return to the list of registered events without making any changes
-                    returnToListOfEvents();
-                }
-            }
-        });
+		
+		JScrollPane scrollPane = new JScrollPane();
+		
+		JButton btnModifyEvents = new JButton("Modificacion");
+		btnModifyEvents.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnModifyEvents.setFont(new Font("Arial", Font.PLAIN, 13));
 
-        add(eventLabel);
-        add(eventTextField);
-        add(modifyButton);
-        add(cancelButton);
-    }
+		tableEvents = new JTable(model);
+		scrollPane.setViewportView(tableEvents);
+		
 
-    private void updateEvent(String modifiedEvent) {
-        // Logic to update the event with the modified data
-        // ...
-        // Display a confirmation message
-        JOptionPane.showMessageDialog(null, "Event modified successfully!");
-    }
+		
 
-    private void returnToListOfEvents() {
-        // Logic to return to the list of registered events without making any changes
-        // ...
-    }
+		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+	            @Override
+	            public void valueChanged(ListSelectionEvent event) {
+	                if (!event.getValueIsAdjusting()) {
+	                    // Obtener la fila seleccionada
+	                    int selectedRow = tableEvents.getSelectedRow();
+	                    
+	                    // Verificar si hay una fila seleccionada
+	                    if (selectedRow != -1) {
+	                        // Obtener los datos de la fila seleccionada
+	                        Object[] rowData = new Object[columnNames.length];
+	                        for (int i = 0; i < columnNames.length; i++) {
+	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
+	                        }
+
+	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
+	                        JFrame sheetModify = new JFrame();
+	                        sheetModifyPanel = new SheetModifyPanel();
+	                        sheetModify.getContentPane().add(sheetModifyPanel);
+	                        sheetModify.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	                        sheetModify.pack();
+	                        sheetModify.setVisible(true);
+	                    }
+	                }
+	            }
+	        });
+		
+		GroupLayout groupLayout = new GroupLayout(this);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+							.addGroup(groupLayout.createSequentialGroup()
+								.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
+								.addContainerGap())
+							.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
+								.addGap(29)))
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addComponent(btnModifyEvents)
+							.addGap(20))))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+					.addGap(16)
+					.addComponent(btnModifyEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+					.addGap(18)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
+		
+			
+				
+		setLayout(groupLayout);
+	
+		
+		
+	}
+
 }
