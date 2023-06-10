@@ -49,7 +49,7 @@ public class Main extends JFrame {
 					usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
 					depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);
 					localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
-					itrBean = BeansFactory.getBean(Beans.Itrs, ItrBeanRemote.class);
+					itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
 					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
