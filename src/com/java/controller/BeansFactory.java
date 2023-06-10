@@ -27,6 +27,12 @@ public class BeansFactory {
             	case Analista:
             		String analisRoute = baseRoute + "AnalistaBean!com.services.AnalistaBeanRemote";
             		return expectedType.cast(jndi.lookup(analisRoute));
+            	case Departamentos:
+            		String depaRoute = baseRoute + "DepartamentoBean!com.services.DepartamentoBeanRemote";
+            		return expectedType.cast(jndi.lookup(depaRoute));
+            	case Localidades:
+            		String localidadRoute = baseRoute + "LocalidadBean!com.services.LocalidadBeanRemote";
+            		return expectedType.cast(jndi.lookup(localidadRoute));
             	case Itr:
             		String itrRoute = baseRoute + "ItrBean!com.services.ItrBeanRemote";
             		return expectedType.cast(jndi.lookup(itrRoute));
