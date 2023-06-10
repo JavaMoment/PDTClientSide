@@ -23,9 +23,9 @@ public class RemoveEventPanel extends JPanel {
 
 	private JTable tableEvents;
 
-	public RemoveEventPanel() {
-
-		JLabel lblTitle = new JLabel("ELIMINAR EVENTO");
+	public RemoveEventPanel(){
+		
+		JLabel lblTitle = new JLabel("BORRAR EVENTO");
 		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -57,54 +57,37 @@ public class RemoveEventPanel extends JPanel {
 		scrollPane.setViewportView(tableEvents);
 
 		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent event) {
-				if (!event.getValueIsAdjusting()) {
-					// Obtener la fila seleccionada
-					int selectedRow = tableEvents.getSelectedRow();
+	            @Override
+	            public void valueChanged(ListSelectionEvent event) {
+	                if (!event.getValueIsAdjusting()) {
+	                    // Obtener la fila seleccionada
+	                    int selectedRow = tableEvents.getSelectedRow();
+	                    
+	                    // Verificar si hay una fila seleccionada
+	                    if (selectedRow != -1) {
+	                        // Obtener los datos de la fila seleccionada
+	                        Object[] rowData = new Object[columnNames.length];
+	                        for (int i = 0; i < columnNames.length; i++) {
+	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
+	                        }
 
-					// Verificar si hay una fila seleccionada
-					if (selectedRow != -1) {
-						// Obtener los datos de la fila seleccionada
-						Object[] rowData = new Object[columnNames.length];
-						for (int i = 0; i < columnNames.length; i++) {
-							rowData[i] = tableEvents.getValueAt(selectedRow, i);
-						}
+	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
+	                        int option = JOptionPane.showConfirmDialog(null, "¿Estás seguro de eliminar el evento?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
-						// Abrir el nuevo JFrame con los datos de la fila seleccionada
-						JFrame sheetEvent = new JFrame();
-						sheetEvent.getContentPane().add(new JLabel("EN ESTE ESPACIO SE MOSTRARA LA FICHA DEL EVENTO"));
-						sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						sheetEvent.pack();
-						sheetEvent.setVisible(true);
-					}
-				}
-			}
-		});
+	                        if (option == JOptionPane.YES_OPTION) {
+	                        	//aplicar logica para dar la baja del evento
+	                            System.out.println("Confirmado");
+	                        } else {
+	                            System.out.println("Cancelado");
+	                        } 
+	                    }
+	                }
+	            }
+	        });
 
-		JButton btnRemoveEvent = new JButton("Eliminar");
-		btnRemoveEvent.setFont(new Font("Arial", Font.PLAIN, 13));
-
-		btnRemoveEvent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int selectedRow = tableEvents.getSelectedRow();
-				if (selectedRow != -1) {
-					int confirm = JOptionPane.showConfirmDialog(null,
-							"¿Está seguro de que desea eliminar el evento seleccionado?", "Confirmar eliminación",
-							JOptionPane.YES_NO_OPTION);
-					if (confirm == JOptionPane.YES_OPTION) {
-						DefaultTableModel model = (DefaultTableModel) tableEvents.getModel();
-						model.removeRow(selectedRow);
-						JOptionPane.showMessageDialog(null, "El evento ha sido eliminado del sistema.",
-								"Evento eliminado", JOptionPane.INFORMATION_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione un evento para eliminar.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-
+		
+	
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
 				groupLayout.createSequentialGroup().addContainerGap()
