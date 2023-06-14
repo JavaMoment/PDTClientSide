@@ -64,7 +64,7 @@ public class LoginPanel extends JPanel {
 				String passw = new String(passwArr);
 				
 				if(email.isEmpty() || passw.isEmpty()) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
@@ -72,7 +72,7 @@ public class LoginPanel extends JPanel {
 				if (!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
 					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
 					JOptionPane.showMessageDialog(LoginPanel.this,
-							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
+							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.", "¡Cuidadiiitoo!", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
@@ -82,25 +82,24 @@ public class LoginPanel extends JPanel {
 					correoInternet.validate();
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.", "Cuidadiiitooo", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
 
 				String passwBDD = usuarioBean.selectPasswBy(email);
 				if(passwBDD == null) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "Salió todo mal loco no podes", "Mal ahiiii makina", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(LoginPanel.this, "El correo electronico ingresado no es correcto", "¡Oh no! Oh no no no", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
 				else if(!passwBDD.equals(passw)) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "mal ahiiii makina", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
 					passwordField.setText("");
 					return;
 				} else {
-					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!", "Holaaa :D", JOptionPane.YES_OPTION);
+					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!");
 					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
-			        //main.setContentPane(new ContentHomePanel());
 			        main.initHome();
 					main.revalidate();
 				}
