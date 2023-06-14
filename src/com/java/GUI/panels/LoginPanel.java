@@ -2,18 +2,24 @@ package com.java.GUI.panels;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import com.java.GUI.Main;
+import com.services.UsuarioBeanRemote;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.MouseAdapter;
@@ -33,7 +39,7 @@ public class LoginPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public LoginPanel(JPanel contentPane) {
+	public LoginPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean) {
 		this.contentPane = contentPane;
 		setBackground(new Color(255, 255, 255));
 		lblMail = new JLabel("Correo:");
@@ -49,6 +55,59 @@ public class LoginPanel extends JPanel {
 		btnLogin = new JButton("Ingresar");
 		btnLogin.setBackground(new Color(125, 229, 251));
 		btnLogin.setForeground(new Color(40, 40, 40));
+		btnLogin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// Implementar logica para ingreso a sistema
+				String email = txtFieldMail.getText();
+				char[] passwArr = passwordField.getPassword();
+				String passw = new String(passwArr);
+				
+				if(email.isEmpty() || passw.isEmpty()) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
+					passwordField.setText("");
+					return;
+				}
+				
+				if (!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
+					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
+					JOptionPane.showMessageDialog(LoginPanel.this,
+							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.", "¡Cuidadiiitoo!", JOptionPane.WARNING_MESSAGE);
+					passwordField.setText("");
+					return;
+				}
+				
+				try {
+					InternetAddress correoInternet = new InternetAddress(email);
+					correoInternet.validate();
+				} catch (AddressException ex) {
+					// Muestra un mensaje de error si el correo electrónico no es válido
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.", "Cuidadiiitooo", JOptionPane.WARNING_MESSAGE);
+					passwordField.setText("");
+					return;
+				}
+
+				String passwBDD = usuarioBean.selectPasswBy(email);
+				if(passwBDD == null) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "El correo electronico ingresado no es correcto", "¡Oh no! Oh no no no", JOptionPane.WARNING_MESSAGE);
+					passwordField.setText("");
+					return;
+				}
+				else if(!passwBDD.equals(passw)) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
+					passwordField.setText("");
+					return;
+				} else {
+					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!");
+					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
+			        main.initHome();
+					main.revalidate();
+				}
+				txtFieldMail.setText("");
+				passwordField.setText("");
+				
+			}
+		});
 		
 		btnRegister = new JButton("Registrarse");
 		btnRegister.addMouseListener(new MouseAdapter() {
