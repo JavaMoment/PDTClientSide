@@ -64,7 +64,7 @@ public class SignUpPanel extends JPanel {
 	private JLabel lblCity;
 	private JComboBox<String> comboBoxCity;
 	private JLabel lblItr;
-	private JComboBox comboBoxItr;
+	private JComboBox<String> comboBoxItr;
 	private JLabel lblPhone;
 	private JTextField txtFieldPhone;
 	private JLabel lblCi;
@@ -150,11 +150,9 @@ public class SignUpPanel extends JPanel {
 				String passw = new String(passwArr);
 				String passw2 = new String(passwArr2);
 				
-				for(JTextField txtField : txtFields) {
-					if(txtField.getText().isEmpty()) {
-						JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
+				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 				
 				try {
@@ -162,34 +160,56 @@ public class SignUpPanel extends JPanel {
 					correoInternet.validate();
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(null, "Por favor ingrese una dirección de correo electrónico válida.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
+					return;
+				}
+				
+				if(!email.split("@")[1].endsWith(".utec.edu.uy")) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico institucional con terminación: \".utec.edu.uy\".");
+					return;
+				}
+				
+				if(usuarioBean.isUserRegistered(txtFieldUsername.getText())) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "El nombre de usuario ingresado ya se encuentra registrado.");
 					return;
 				}
 				
 				if(!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$") || !passw2.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
 					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
-					JOptionPane.showMessageDialog(null,
+					JOptionPane.showMessageDialog(SignUpPanel.this,
 							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
 					return;
 				}
 				
 				if(!passw.equals(passw2)) {
-					JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas no coinciden.");
+					return;
+				}
+				
+				if((txtFieldName1.getText().length() > 50) || (txtFieldName2.getText().length() > 50)) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "El largo del nombre es mayor al máximo permitido (50 caracteres)");
+					return;
+				}
+				
+				if(!dcBirthdate.getDate().before(Date.from(Instant.now()))) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor, ingrese una fecha de nacimiento anterior a la fecha actual.");
 					return;
 				}
 				
 				if(!isAnUruguayanCI(txtFieldCi.getText())) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "La cedula ingresada no es válida.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "La cedula ingresada no es válida y/o no contiene 8 digitos de largo.");
+					return;
 				}
 				
-				if(!txtFieldPhone.getText().matches("^\\d{8}$") && !txtFieldPhone.getText().isEmpty()) {
+				if(!txtFieldPhone.getText().matches("^\\d{9}$") && !txtFieldPhone.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El número de telefono ingresado no contiene sólo números y/o tiene menos o mas de 8 digitos");
+					return;
 				}
 				
 				Usuario newUser = new Usuario(txtFieldUsername.getText(), txtFieldLastName1.getText(), txtFieldLastname2.getText(), 
-						passw, txtFieldCi.getText(), Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()), 
+						passw, txtFieldCi.getText().replaceAll("\\D", ""), Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()), 
 						comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O',
-						comboBoxDepas.getSelectedIndex(), comboBoxItr.getSelectedIndex(), comboBoxCity.getSelectedIndex(), 
+						comboBoxDepas.getSelectedIndex() + 1, comboBoxItr.getSelectedIndex() + 1, comboBoxCity.getSelectedIndex() + 1, 
 		        		txtFieldEmail.getText(), txtFieldName1.getText());
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
@@ -207,9 +227,7 @@ public class SignUpPanel extends JPanel {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
 				}
 
-				for(JTextField txtField : txtFields) {
-					txtField.setText("");
-				}
+				txtFields.stream().forEach(txt -> txt.setText(""));
 				dcBirthdate.setDate(Date.from(Instant.now()));
 				comboBoxCity.setSelectedIndex(0);
 				comboBoxDepas.setSelectedIndex(0);
@@ -348,28 +366,23 @@ public class SignUpPanel extends JPanel {
 	 * @return {@code true} if the CI is valid, {@code false} otherwise.
 	 */
 	private boolean isAnUruguayanCI(String ci) {
-	    // Paso 1: Remover caracteres no numericos
+		// Paso 1: Remover caracteres no numericos
 	    String digitsOnly = ci.replaceAll("\\D", "");
 
 	    // Paso 2: Chequear largo de la cedula
-	    if (digitsOnly.length() != 7 && digitsOnly.length() != 8) {
+	    if (digitsOnly.length() != 8) {
 	        return false;
 	    }
 
-	    // Paso 3: Agregar 0 en caso de que la cedula sea de 6 digitos
-	    if (digitsOnly.length() == 7) {
-	        digitsOnly = "0" + digitsOnly;
-	    }
-
-	    // Paso 4: Separar digito verificador de los demas digitos
+	    // Paso 3: Separar digito verificador de los demas digitos
 	    String digits = digitsOnly.substring(0, digitsOnly.length()-1);
 	    String checkerDigit = digitsOnly.substring(digitsOnly.length()-1, digitsOnly.length());
 
-	    // Paso 5: Convertir los digitos a vectores y crear operador verificador
+	    // Paso 4: Convertir los digitos a vectores y crear operador verificador
 	    String[] digitsArr = digits.split("");
 	    int[] verifier = {2, 9, 8, 7, 6, 3, 4};
 
-	    // Paso 6: El modulo 10 de la multiplicacion vectorial entre digitos y vector verificador debe ser igual al digito verificador
+	    // Paso 5: El modulo 10 de la multiplicacion vectorial entre digitos y vector verificador debe ser igual al digito verificador
 	    int mod = 0;
 	    for(int i = 0; i<digitsArr.length; i++) {
 	    	mod += (Integer.parseInt(digitsArr[i]) * verifier[i]) % 10;
@@ -378,8 +391,8 @@ public class SignUpPanel extends JPanel {
 	    mod = (mod - 10) * -1;
 	    mod %= 10;
 	    
-	    // Paso 7: ¿Es el modulo de la operacion igual al digito verificador?
+	    // Paso 6: ¿Es el modulo de la operacion igual al digito verificador?
 	    return mod == Integer.parseInt(checkerDigit);
-	}	    
+	}
 
 }

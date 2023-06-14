@@ -87,7 +87,6 @@ public class Main extends JFrame {
         contentPane.add(cardPanel);
         cardPanel.add(loginPanel, "login");
         cardPanel.add(signupPanel, "signup");
-        cardPanel.add(eventPanel, "event");
 
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
