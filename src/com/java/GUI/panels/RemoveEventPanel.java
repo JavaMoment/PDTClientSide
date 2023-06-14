@@ -18,96 +18,139 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class RemoveEventPanel extends JPanel {
 
-	private JTable tableEvents;
+    private JTable tableEvents;
 
-	public RemoveEventPanel(){
-		
-		JLabel lblTitle = new JLabel("BORRAR EVENTO");
-		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+    public RemoveEventPanel() {
 
-		String[] columnNames = new String[] { "Titulo", "Fecha de inicio", "Fecha de fin", "Modalidad", "ITR",
-				"Estado" };
-		String[][] rowData = new String[][] {
-				{ "IT BUILDER", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
-				{ "CHARLA VME 1", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
-				{ "CHARLA VME 5", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" } };
+        JLabel lblTitle = new JLabel("ELIMINAR EVENTO");
+        lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
-		@SuppressWarnings("serial")
-		DefaultTableModel model = new DefaultTableModel(rowData, columnNames) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// Hacer que todas las celdas sean no editables
-				return false;
-			}
-		};
+        String[] columnNames = new String[] { "Titulo", "Fecha de inicio", "Fecha de fin", "Modalidad", "ITR",
+                "Estado" };
+        String[][] rowData = new String[][] {
+                { "IT BUILDER", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
+                { "CHARLA VME 1", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
+                { "CHARLA VME 5", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" } };
 
-		JScrollPane scrollPane = new JScrollPane();
+        @SuppressWarnings("serial")
+        DefaultTableModel model = new DefaultTableModel(rowData, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Hacer que todas las celdas sean no editables
+                return false;
+            }
+        };
 
-		JButton btnListEvents = new JButton("Filtrar");
-		btnListEvents.setFont(new Font("Arial", Font.PLAIN, 13));
+        JScrollPane scrollPane = new JScrollPane();
 
-		JLabel lblAdvice = new JLabel("Estamos trabajando con la implementacion de filtors para mejorar su experincia");
-		lblAdvice.setForeground(Color.DARK_GRAY);
+        JButton btnDeleteEvents = new JButton("Eliminar");
+        btnDeleteEvents.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableEvents.getSelectedRow();
+                if (selectedRow != -1) {
+                    int confirm = JOptionPane.showConfirmDialog(null,
+                            "¿Está seguro de que desea eliminar el evento seleccionado?", "Confirmar eliminación",
+                            JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        DefaultTableModel model = (DefaultTableModel) tableEvents.getModel();
+                        model.removeRow(selectedRow);
+                        JOptionPane.showMessageDialog(null, "El evento ha sido eliminado del sistema.",
+                                "Evento eliminado", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Seleccione un evento para eliminar.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        btnDeleteEvents.setFont(new Font("Arial", Font.PLAIN, 13));
 
-		tableEvents = new JTable(model);
-		scrollPane.setViewportView(tableEvents);
+        tableEvents = new JTable(model);
+        scrollPane.setViewportView(tableEvents);
 
-		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-	            @Override
-	            public void valueChanged(ListSelectionEvent event) {
-	                if (!event.getValueIsAdjusting()) {
-	                    // Obtener la fila seleccionada
-	                    int selectedRow = tableEvents.getSelectedRow();
-	                    
-	                    // Verificar si hay una fila seleccionada
-	                    if (selectedRow != -1) {
-	                        // Obtener los datos de la fila seleccionada
-	                        Object[] rowData = new Object[columnNames.length];
-	                        for (int i = 0; i < columnNames.length; i++) {
-	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
-	                        }
+        tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    // Obtener la fila seleccionada
+                    int selectedRow = tableEvents.getSelectedRow();
 
-	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
-	                        int option = JOptionPane.showConfirmDialog(null, "¿Estás seguro de eliminar el evento?", "Confirmación", JOptionPane.YES_NO_OPTION);
+                    // Verificar si hay una fila seleccionada
+                    if (selectedRow != -1) {
+                        // Obtener los datos de la fila seleccionada
+                        Object[] rowData = new Object[columnNames.length];
+                        for (int i = 0; i < columnNames.length; i++) {
+                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
+                        }
 
-	                        if (option == JOptionPane.YES_OPTION) {
-	                        	//aplicar logica para dar la baja del evento
-	                            System.out.println("Confirmado");
-	                        } else {
-	                            System.out.println("Cancelado");
-	                        } 
-	                    }
-	                }
-	            }
-	        });
+                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
+                        JFrame sheetEvent = new JFrame();
+                        sheetEvent.getContentPane().add(new JLabel("EN ESTE ESPACIO SE MOSTRARA LA FICHA DEL EVENTO"));
+                        sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        sheetEvent.pack();
+                        sheetEvent.setVisible(true);
+                    }
+                }
+            }
+        });
 
-		
-	
-		
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
-				groupLayout.createSequentialGroup().addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblTitle, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 500,
-										Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-										.addComponent(lblAdvice).addGap(39).addComponent(btnListEvents)))
-						.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup().addContainerGap()
-						.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE).addGap(26)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblAdvice)
-								.addComponent(btnListEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
-						.addGap(18)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap()));
+        JButton btnRemoveEvent = new JButton("Eliminar");
+        btnRemoveEvent.setFont(new Font("Arial", Font.PLAIN, 13));
 
-		setLayout(groupLayout);
+        btnRemoveEvent.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableEvents.getSelectedRow();
+                if (selectedRow != -1) {
+                    int confirm = JOptionPane.showConfirmDialog(null,
+                            "¿Está seguro de que desea eliminar el evento seleccionado?", "Confirmar eliminación",
+                            JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        DefaultTableModel model = (DefaultTableModel) tableEvents.getModel();
+                        model.removeRow(selectedRow);
+                        JOptionPane.showMessageDialog(null, "El evento ha sido eliminado del sistema.",
+                                "Evento eliminado", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Seleccione un evento para eliminar.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
-	}
+        GroupLayout groupLayout = new GroupLayout(this);
+        groupLayout.setHorizontalGroup(
+        	groupLayout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(groupLayout.createSequentialGroup()
+        			.addContainerGap(480, Short.MAX_VALUE)
+        			.addComponent(btnDeleteEvents)
+        			.addContainerGap())
+        		.addGroup(groupLayout.createSequentialGroup()
+        			.addGap(68)
+        			.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+        			.addGap(35))
+        		.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+        			.addContainerGap())
+        );
+        groupLayout.setVerticalGroup(
+        	groupLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(groupLayout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(btnDeleteEvents, GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
+        );
+
+        setLayout(groupLayout);
+
+    }
 }
