@@ -12,15 +12,24 @@ import javax.swing.*;
 import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.enums.Estado;
+import com.enums.Modalidad;
+import com.enums.TipoEvento;
+
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.Color;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 
 public class ListEventPanel extends JPanel {
 	
 	private JTable tableEvents;
 	private SheetEventPanel sheetEventPanel;
+	private TipoEvento tipoEvento;
+	private Modalidad modalidad;
+	private Estado estado;
 
 	public ListEventPanel(){
 		
@@ -50,9 +59,6 @@ public class ListEventPanel extends JPanel {
 		
 		JButton btnListEvents = new JButton("Filtrar");
 		btnListEvents.setFont(new Font("Arial", Font.PLAIN, 13));
-		
-		JLabel lblAdvice = new JLabel("Estamos trabajando con la implementacion de filtors para mejorar su experincia");
-		lblAdvice.setForeground(Color.DARK_GRAY);
 
 		tableEvents = new JTable(model);
 		scrollPane.setViewportView(tableEvents);
@@ -83,21 +89,44 @@ public class ListEventPanel extends JPanel {
 	                }
 	            }
 	        });
-
 		
-	
+		JComboBox cBoxTipoEvento = new JComboBox();
+		cBoxTipoEvento.addItem(tipoEvento.DEFENSA_DE_PROYECTO);
+		cBoxTipoEvento.addItem(tipoEvento.JORNADA_PRESENCIAL);
+		cBoxTipoEvento.addItem(tipoEvento.EXAMEN);
+		cBoxTipoEvento.addItem(tipoEvento.PRUEBA_FINAL);
+		
+		
+		JComboBox cBoxModalidad = new JComboBox();
+		cBoxModalidad.addItem(modalidad.PRESENCIAL);
+		cBoxModalidad.addItem(modalidad.SEMIPRESENCIAL);
+		cBoxModalidad.addItem(modalidad.VIRTUAL);
+
+		JComboBox cBoxITR = new JComboBox();
+		
+		JComboBox cBoxEstado = new JComboBox();
+		cBoxEstado.addItem(estado.FUTURO);
+		cBoxEstado.addItem(estado.CORRIENTE);
+		cBoxEstado.addItem(estado.FINALIZADO);
+
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTitle, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addComponent(lblAdvice)
-							.addGap(39)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+						.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(cBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+							.addComponent(cBoxModalidad, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(cBoxITR, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(cBoxEstado, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnListEvents)))
 					.addContainerGap())
 		);
@@ -108,8 +137,11 @@ public class ListEventPanel extends JPanel {
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 					.addGap(26)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAdvice)
-						.addComponent(btnListEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+						.addComponent(btnListEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+						.addComponent(cBoxEstado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cBoxITR, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cBoxModalidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
@@ -119,7 +151,7 @@ public class ListEventPanel extends JPanel {
 				
 		setLayout(groupLayout);
 	
-		
-		
+			
 	}
+	
 }
