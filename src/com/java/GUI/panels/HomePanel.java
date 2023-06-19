@@ -3,10 +3,17 @@ package com.java.GUI.panels;
 import java.awt.Color;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import com.java.GUI.Main;
+
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 
 public class HomePanel extends JPanel {
@@ -27,6 +34,16 @@ public class HomePanel extends JPanel {
 		btnUserMngmnt.setBackground(new Color(125, 229, 251));
 		btnUserMngmnt.setForeground(new Color(40, 40, 40));   
 		btnUserMngmnt.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/management.png")));
+		btnUserMngmnt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Main main = (Main) SwingUtilities.getWindowAncestor(HomePanel.this);
+		        main.initUserMngmnt();
+				main.revalidate();
+			}
+			
+		});
 		GridBagConstraints gbc_btnUserMngmnt = new GridBagConstraints();
 		gbc_btnUserMngmnt.fill = GridBagConstraints.BOTH;
 		gbc_btnUserMngmnt.insets = new Insets(0, 0, 5, 5);

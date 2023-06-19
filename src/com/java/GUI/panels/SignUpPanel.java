@@ -4,6 +4,10 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -13,6 +17,7 @@ import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeListener;
 
 import com.entities.Usuario;
 import com.java.enums.Genres;
@@ -109,10 +115,19 @@ public class SignUpPanel extends JPanel {
         var txtFields = List.of(txtFieldUsername, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
         		txtFieldEmail, txtFieldLastName1);
         
-        comboBoxCity = new JComboBox(localidadBean.selectAllNames().toArray());
+        comboBoxCity = new JComboBox(localidadBean.selectAllNamesBy((long) 1).toArray());
         comboBoxGenre = new JComboBox<Genres>(Genres.values());
         comboBoxItr = new JComboBox(itrBean.selectAllNames().toArray());
         comboBoxDepas = new JComboBox(depaBean.selectAllNames().toArray());
+        
+        comboBoxDepas.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				long idDepa = (long) comboBoxDepas.getSelectedIndex() + 1;
+				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllNamesBy(idDepa).toArray()));
+			}
+        });
 
         btnSignup = new JButton("Registrarme!");
         btnGoBack = new JButton("Back to login");
