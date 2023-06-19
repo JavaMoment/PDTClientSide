@@ -29,6 +29,9 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 
 import com.entities.Usuario;
+import com.entities.Departamento;
+import com.entities.Localidad;
+import com.entities.Itr;
 import com.java.enums.Genres;
 import com.services.DepartamentoBeanRemote;
 import com.services.ItrBeanRemote;
@@ -66,11 +69,11 @@ public class SignUpPanel extends JPanel {
 	private JLabel lblGenre;
 	private JComboBox<Genres> comboBoxGenre;
 	private JLabel lblDepartamento;
-	private JComboBox<String> comboBoxDepas;
+	private JComboBox comboBoxDepas;
 	private JLabel lblCity;
-	private JComboBox<String> comboBoxCity;
+	private JComboBox comboBoxCity;
 	private JLabel lblItr;
-	private JComboBox<String> comboBoxItr;
+	private JComboBox comboBoxItr;
 	private JLabel lblPhone;
 	private JTextField txtFieldPhone;
 	private JLabel lblCi;
@@ -115,17 +118,20 @@ public class SignUpPanel extends JPanel {
         var txtFields = List.of(txtFieldUsername, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
         		txtFieldEmail, txtFieldLastName1);
         
-        comboBoxCity = new JComboBox(localidadBean.selectAllNamesBy((long) 1).toArray());
+        comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
         comboBoxGenre = new JComboBox<Genres>(Genres.values());
-        comboBoxItr = new JComboBox(itrBean.selectAllNames().toArray());
-        comboBoxDepas = new JComboBox(depaBean.selectAllNames().toArray());
+        comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
+        comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
         
+        Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+        System.out.println(comboBoxCity.getSelectedItem().getClass() + " " + depa.getNombre() + " " + comboBoxItr.getSelectedItem().getClass());
         comboBoxDepas.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				// TODO Auto-generated method stub
-				long idDepa = (long) comboBoxDepas.getSelectedIndex() + 1;
-				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllNamesBy(idDepa).toArray()));
+				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+				long idDepa = (long) depa.getIdDepartamento();
+				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllBy(idDepa).toArray()));
 			}
         });
 
@@ -160,10 +166,19 @@ public class SignUpPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String email = txtFieldEmail.getText();
-				char[] passwArr = txtfldPassword.getPassword();
-				char[] passwArr2 = txtFldPassw2.getPassword();
-				String passw = new String(passwArr);
-				String passw2 = new String(passwArr2);
+				String passw = new String(txtfldPassword.getPassword());
+				String passw2 = new String(txtFldPassw2.getPassword());
+				String lastName1 = txtFieldLastName1.getText();
+				String lastName2 = txtFieldLastname2.getText();
+				String name1 = txtFieldName1.getText();
+				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+				String ci = txtFieldCi.getText();
+				Date birthdate = (Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+				char genre = comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O';
+				Itr itr = (Itr) comboBoxItr.getSelectedItem();
+				System.out.println(itr.getNombre() + " " + itr.getClass());
+				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
+				String username = txtFieldUsername.getText();
 				
 				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
@@ -221,11 +236,7 @@ public class SignUpPanel extends JPanel {
 					return;
 				}
 				
-				Usuario newUser = new Usuario(txtFieldUsername.getText(), txtFieldLastName1.getText(), txtFieldLastname2.getText(), 
-						passw, txtFieldCi.getText().replaceAll("\\D", ""), Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()), 
-						comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O',
-						comboBoxDepas.getSelectedIndex() + 1, comboBoxItr.getSelectedIndex() + 1, comboBoxCity.getSelectedIndex() + 1, 
-		        		txtFieldEmail.getText(), txtFieldName1.getText());
+				Usuario newUser = new Usuario(username, lastName1, lastName2, passw, ci, birthdate, genre, depa, itr, city, email, name1);
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
 					newUser.setTelefono(txtFieldPhone.getText());
