@@ -4,8 +4,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -25,14 +23,16 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeListener;
 
 import com.entities.Usuario;
+import com.entities.Analista;
 import com.entities.Departamento;
 import com.entities.Localidad;
 import com.entities.Itr;
 import com.java.enums.Genres;
+import com.services.AnalistaBeanRemote;
 import com.services.DepartamentoBeanRemote;
 import com.services.ItrBeanRemote;
 import com.services.LocalidadBeanRemote;
@@ -41,6 +41,7 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class SignUpPanel extends JPanel {
@@ -78,13 +79,15 @@ public class SignUpPanel extends JPanel {
 	private JTextField txtFieldPhone;
 	private JLabel lblCi;
 	private JTextField txtFieldCi;
+	private JLabel lblUserType;
+	private JComboBox<String> comboBoxUserType;
 	
 
 	/**
 	 * Create the panel.
 	 */
 	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, DepartamentoBeanRemote depaBean,
-			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean) {
+			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean) {
 		
         lblUsername = new JLabel("Nombre de usuario (*):");
         lblSignUpTitle = new JLabel("Registro");
@@ -102,6 +105,7 @@ public class SignUpPanel extends JPanel {
         lblName2 = new JLabel("Segundo nombre:");
         lblPassword = new JLabel("Contraseña (*):");
         lblPhone = new JLabel("Télefono:");
+        lblUserType = new JLabel("Tipo de usuario (*):");
         
         txtfldPassword = new JPasswordField();
         txtFldPassw2 = new JPasswordField();
@@ -122,9 +126,10 @@ public class SignUpPanel extends JPanel {
         comboBoxGenre = new JComboBox<Genres>(Genres.values());
         comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
         comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
+        String[] userTypes = {"Analista", "Tutor", "Estudiante"};
+        comboBoxUserType = new JComboBox<String>(userTypes);
         
         Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
-        System.out.println(comboBoxCity.getSelectedItem().getClass() + " " + depa.getNombre() + " " + comboBoxItr.getSelectedItem().getClass());
         comboBoxDepas.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -247,12 +252,19 @@ public class SignUpPanel extends JPanel {
 				}
 				
 				int exitCode = usuarioBean.create(newUser);
+				
+				switch((String) comboBoxUserType.getSelectedItem()) {
+					case "Analista":
+						Analista analista = new Analista(newUser);
+						exitCode = analiBean.create(analista);
+				}
+
 				if(exitCode == 0) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");
 				} else {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
 				}
-
+				
 				txtFields.stream().forEach(txt -> txt.setText(""));
 				dcBirthdate.setDate(Date.from(Instant.now()));
 				comboBoxCity.setSelectedIndex(0);
@@ -265,9 +277,9 @@ public class SignUpPanel extends JPanel {
 				txtFldPassw2.setText("");
 			}
 		});
-
+        
         GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -295,6 +307,7 @@ public class SignUpPanel extends JPanel {
                     .addComponent(txtFieldPhone)
                     .addComponent(lblDepartamento)
                     .addComponent(comboBoxDepas)
+                    .addComponent(lblUserType)
                     .addComponent(lblSignUpTitle, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                     .addComponent(txtfldPassword, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFldPassw2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -306,7 +319,8 @@ public class SignUpPanel extends JPanel {
 	                .addComponent(txtFieldName1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldCi, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                .addComponent(dcBirthdate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	                .addComponent(dcBirthdate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(comboBoxUserType, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -374,6 +388,10 @@ public class SignUpPanel extends JPanel {
                 .addComponent(lblPhone, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(txtFieldPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(comboBoxUserType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addGap(30, 30, 30)
                 .addComponent(btnSignup, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
