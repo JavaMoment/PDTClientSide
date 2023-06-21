@@ -23,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 
 import com.entities.Usuario;
@@ -41,7 +40,6 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class SignUpPanel extends JPanel {
@@ -55,8 +53,8 @@ public class SignUpPanel extends JPanel {
 	private JPasswordField txtFldPassw2;
 	private JLabel lblEmail;
 	private JTextField txtFieldEmail;
-	private JLabel lblUsername;
-	private JTextField txtFieldUsername;
+	private JLabel lblMail1;
+	private JTextField txtFieldMail1;
 	private JLabel lblName1;
 	private JTextField txtFieldName1;
 	private JLabel lblName2;
@@ -89,13 +87,13 @@ public class SignUpPanel extends JPanel {
 	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, DepartamentoBeanRemote depaBean,
 			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean) {
 		
-        lblUsername = new JLabel("Nombre de usuario (*):");
+        lblMail1 = new JLabel("Correo personal (*):");
         lblSignUpTitle = new JLabel("Registro");
         lblBirthdate = new JLabel("Fecha de nacimiento (*):");
         lblCi = new JLabel("Cédula de identidad (*):");
         lblCity = new JLabel("Ciudad de residencia (*):");
         lblDepartamento = new JLabel("Departamento de residencia (*):");
-        lblEmail = new JLabel("Correo (*):");
+        lblEmail = new JLabel("Correo institucional (*):");
         lblGenre = new JLabel("Genero (*):");
         lblItr = new JLabel("ITR a la que pertenece (*):");
         lblLastName1 = new JLabel("Primer apellido (*):");
@@ -109,7 +107,7 @@ public class SignUpPanel extends JPanel {
         
         txtfldPassword = new JPasswordField();
         txtFldPassw2 = new JPasswordField();
-        txtFieldUsername = new JTextField();
+        txtFieldMail1 = new JTextField();
         txtFieldEmail = new JTextField();
         txtFieldName1 = new JTextField();
         txtFieldName2 = new JTextField();
@@ -119,7 +117,7 @@ public class SignUpPanel extends JPanel {
         txtFieldLastname2 = new JTextField();
         txtFieldPhone = new JTextField();
         
-        var txtFields = List.of(txtFieldUsername, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
+        var txtFields = List.of(txtFieldMail1, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
         		txtFieldEmail, txtFieldLastName1);
         
         comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
@@ -183,7 +181,9 @@ public class SignUpPanel extends JPanel {
 				Itr itr = (Itr) comboBoxItr.getSelectedItem();
 				System.out.println(itr.getNombre() + " " + itr.getClass());
 				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
-				String username = txtFieldUsername.getText();
+				String username = email.split("@")[0];
+				String mailDomain = email.split("@")[1];
+				String personalMail = txtFieldMail1.getText();
 				
 				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
@@ -192,19 +192,21 @@ public class SignUpPanel extends JPanel {
 				
 				try {
 					InternetAddress correoInternet = new InternetAddress(email);
+					InternetAddress personalEmailInet = new InternetAddress(personalMail);
 					correoInternet.validate();
+					personalEmailInet.validate();
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
 					return;
 				}
 				
-				if(!email.split("@")[1].endsWith(".utec.edu.uy")) {
+				if(!mailDomain.endsWith(".utec.edu.uy")) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico institucional con terminación: \".utec.edu.uy\".");
 					return;
 				}
 				
-				if(usuarioBean.isUserRegistered(txtFieldUsername.getText())) {
+				if(usuarioBean.isUserRegistered(txtFieldMail1.getText())) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El nombre de usuario ingresado ya se encuentra registrado.");
 					return;
 				}
@@ -287,7 +289,7 @@ public class SignUpPanel extends JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblEmail)
                     .addComponent(lblPassword)
-                    .addComponent(lblUsername)
+                    .addComponent(lblMail1)
                     .addComponent(lblBirthdate)
                     .addComponent(dcBirthdate)
                     .addComponent(lblCi)
@@ -314,7 +316,7 @@ public class SignUpPanel extends JPanel {
                     .addComponent(btnSignup, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGoBack, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblPassw2)
-                    .addComponent(txtFieldUsername, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFieldMail1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFieldEmail, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -329,9 +331,9 @@ public class SignUpPanel extends JPanel {
                 .addContainerGap(50, Short.MAX_VALUE)
                 .addComponent(lblSignUpTitle)
                 .addGap(18, 18, 18)
-                .addComponent(lblUsername, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblMail1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(txtFieldUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFieldMail1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEmail, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)

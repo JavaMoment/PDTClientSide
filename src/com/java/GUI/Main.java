@@ -3,7 +3,6 @@ package com.java.GUI;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,8 +31,6 @@ import com.services.UsuarioBeanRemote;
 
 import java.awt.Toolkit;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 
 public class Main extends JFrame {
 
