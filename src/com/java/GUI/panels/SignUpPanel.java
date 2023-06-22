@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
 import java.time.Instant;
+import java.time.Year;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -26,20 +27,28 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
 import com.entities.Usuario;
+import com.enums.Roles;
 import com.entities.Analista;
+import com.entities.Area;
 import com.entities.Departamento;
+import com.entities.Estudiante;
 import com.entities.Localidad;
+import com.entities.Tutor;
 import com.entities.Itr;
 import com.java.enums.Genres;
 import com.services.AnalistaBeanRemote;
+import com.services.AreaBeanRemote;
 import com.services.DepartamentoBeanRemote;
+import com.services.EstudianteBeanRemote;
 import com.services.ItrBeanRemote;
 import com.services.LocalidadBeanRemote;
+import com.services.TutorBeanRemote;
 import com.services.UsuarioBeanRemote;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 
 @SuppressWarnings("serial")
 public class SignUpPanel extends JPanel {
@@ -79,13 +88,20 @@ public class SignUpPanel extends JPanel {
 	private JTextField txtFieldCi;
 	private JLabel lblUserType;
 	private JComboBox<String> comboBoxUserType;
+	private JLabel lblGen;
+	private JSpinner spinnGen;
+	private JLabel lblArea;
+	private JComboBox comboBoxArea;
+	private JLabel lblRol;
+	private JComboBox comboBoxRol;
 	
 
 	/**
 	 * Create the panel.
 	 */
 	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, DepartamentoBeanRemote depaBean,
-			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean) {
+			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean,
+			EstudianteBeanRemote estudBean, AreaBeanRemote areaBean, TutorBeanRemote tutorBean) {
 		
         lblMail1 = new JLabel("Correo personal (*):");
         lblSignUpTitle = new JLabel("Registro");
@@ -104,6 +120,15 @@ public class SignUpPanel extends JPanel {
         lblPassword = new JLabel("Contraseña (*):");
         lblPhone = new JLabel("Télefono:");
         lblUserType = new JLabel("Tipo de usuario (*):");
+        lblGen = new JLabel("Generación de ingreso a la carrera (*): ");
+        lblGen.setEnabled(false);
+        lblGen.setVisible(false);
+        lblArea = new JLabel("Area a la que pertenece (*):");
+        lblArea.setVisible(false);
+        lblArea.setEnabled(false);
+        lblRol = new JLabel("Rol asignado (*):");
+        lblRol.setVisible(false);
+        lblRol.setEnabled(false);
         
         txtfldPassword = new JPasswordField();
         txtFldPassw2 = new JPasswordField();
@@ -126,6 +151,70 @@ public class SignUpPanel extends JPanel {
         comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
         String[] userTypes = {"Analista", "Tutor", "Estudiante"};
         comboBoxUserType = new JComboBox<String>(userTypes);
+        comboBoxUserType.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				switch((String) comboBoxUserType.getSelectedItem()) {
+					case "Estudiante":
+						lblGen.setEnabled(true);
+						lblGen.setVisible(true);
+						spinnGen.setEnabled(true);
+						spinnGen.setVisible(true);
+				        lblRol.setVisible(false);
+				        lblRol.setEnabled(false);
+				        comboBoxRol.setVisible(false);
+				        comboBoxRol.setEditable(false);
+				        lblArea.setVisible(false);
+				        lblArea.setEnabled(false);
+				        comboBoxArea.setVisible(false);
+				        comboBoxArea.setEnabled(false);
+						break;
+					case "Tutor":
+						lblGen.setEnabled(false);
+						lblGen.setVisible(false);
+						spinnGen.setEnabled(false);
+						spinnGen.setVisible(false);
+						lblRol.setVisible(true);
+				        lblRol.setEnabled(true);
+				        comboBoxRol.setVisible(true);
+				        comboBoxRol.setEnabled(true);
+				        lblArea.setVisible(true);
+				        lblArea.setEnabled(true);
+				        comboBoxArea.setVisible(true);
+				        comboBoxArea.setEnabled(true);
+						break;
+					default:
+						lblGen.setEnabled(false);
+						lblGen.setVisible(false);
+						spinnGen.setEnabled(false);
+						spinnGen.setVisible(false);
+				        lblRol.setVisible(false);
+				        lblRol.setEnabled(false);
+				        comboBoxRol.setVisible(false);
+				        comboBoxRol.setEditable(false);
+				        lblArea.setVisible(false);
+				        lblArea.setEnabled(false);
+				        comboBoxArea.setVisible(false);
+				        comboBoxArea.setEnabled(false);
+						break;
+						
+				}
+			}
+        });
+        comboBoxRol = new JComboBox(Roles.values());
+        comboBoxRol.setVisible(false);
+        comboBoxRol.setEnabled(false);
+        comboBoxArea = new JComboBox(areaBean.selectAll().toArray());
+        comboBoxArea.setVisible(false);
+        comboBoxArea.setEnabled(false);
+        
+        var comboBoxes = List.of(comboBoxArea, comboBoxDepas, comboBoxCity, comboBoxGenre, comboBoxItr, comboBoxItr, comboBoxRol, comboBoxUserType);
+        
+        spinnGen = new JSpinner();
+        spinnGen.setValue(Year.now().getValue());
+        spinnGen.setEnabled(false);
+        spinnGen.setVisible(false);
         
         Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
         comboBoxDepas.addItemListener(new ItemListener() {
@@ -145,14 +234,14 @@ public class SignUpPanel extends JPanel {
 
         setBackground(new Color(255, 255, 255));
 
-        lblSignUpTitle.setFont(new Font("sansserif", 1, 48)); // NOI18N
+        lblSignUpTitle.setFont(new Font("sansserif", 1, 48));
         lblSignUpTitle.setForeground(new Color(69, 68, 68));
         lblSignUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
         btnSignup.setBackground(new Color(125, 229, 251));
         btnSignup.setForeground(new Color(40, 40, 40));
 
-        btnGoBack.setFont(new Font("sansserif", 1, 12)); // NOI18N
+        btnGoBack.setFont(new Font("sansserif", 1, 12));
         btnGoBack.setForeground(new Color(30, 122, 236));
         btnGoBack.setContentAreaFilled(false);
         btnGoBack.setBorder(null);
@@ -258,25 +347,51 @@ public class SignUpPanel extends JPanel {
 				}
 				
 				int exitCode = usuarioBean.create(newUser);
+				if(exitCode != 0) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
+				}
 				
 				switch((String) comboBoxUserType.getSelectedItem()) {
 					case "Analista":
 						Analista analista = new Analista(newUser);
 						exitCode = analiBean.create(analista);
+						break;
+					case "Estudiante":
+						if((Integer) spinnGen.getValue() > Year.now().getValue()) {
+							JOptionPane.showMessageDialog(SignUpPanel.this, "El año de la generación no puede ser mayor al año actual, intente nuevamente.", "Año de la generación incorrecto", JOptionPane.WARNING_MESSAGE);
+							return;
+						}
+						String gen = spinnGen.getValue().toString();
+						Estudiante estud = new Estudiante(newUser, gen);
+						exitCode = estudBean.create(estud);
+						break;
+					case "Tutor":
+						Roles rol = (Roles) comboBoxRol.getSelectedItem();
+						Area area = (Area) comboBoxArea.getSelectedItem();
+						Tutor tutor = new Tutor(newUser, area, rol);
+						exitCode = tutorBean.create(tutor);
+						break;
+					default:
+						break;
 				}
 
 				if(exitCode == 0) {
+					int answerCode = JOptionPane.showConfirmDialog(SignUpPanel.this, "Su solicitud será revisada antes de activar su cuenta.\n¿Está de acuerdo?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+					if(answerCode == 1) {
+						return;
+					}
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");
 				} else {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
 				}
 				
 				txtFields.stream().forEach(txt -> txt.setText(""));
+				comboBoxes.stream().forEach(box -> box.setSelectedIndex(0));
 				dcBirthdate.setDate(Date.from(Instant.now()));
-				comboBoxCity.setSelectedIndex(0);
+				/*comboBoxCity.setSelectedIndex(0);
 				comboBoxDepas.setSelectedIndex(0);
 				comboBoxGenre.setSelectedIndex(0);
-				comboBoxItr.setSelectedIndex(0);
+				comboBoxItr.setSelectedIndex(0);*/
 				txtFieldLastname2.setText("");
 				txtFieldPhone.setText("");
 				txtfldPassword.setText("");
@@ -284,6 +399,9 @@ public class SignUpPanel extends JPanel {
 			}
 		});
         
+        /**
+         * UI manager creation and allignment of the Swing components
+         */
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -326,7 +444,13 @@ public class SignUpPanel extends JPanel {
 	                .addComponent(txtFieldName2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldCi, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(dcBirthdate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                .addComponent(comboBoxUserType, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	                .addComponent(comboBoxUserType, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(lblGen)
+	                .addComponent(spinnGen, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(lblRol)
+	                .addComponent(comboBoxRol, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(lblArea)
+	                .addComponent(comboBoxArea, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -398,6 +522,18 @@ public class SignUpPanel extends JPanel {
                 .addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(comboBoxUserType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblGen, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(spinnGen, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblArea, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(comboBoxArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(lblRol, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(comboBoxRol, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addGap(30, 30, 30)
                 .addComponent(btnSignup, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
