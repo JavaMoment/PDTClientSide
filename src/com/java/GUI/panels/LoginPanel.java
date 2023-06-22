@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import com.entities.Usuario;
 import com.java.GUI.Main;
 import com.services.UsuarioBeanRemote;
 
@@ -42,13 +43,13 @@ public class LoginPanel extends JPanel {
 	public LoginPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean) {
 		this.contentPane = contentPane;
 		setBackground(new Color(255, 255, 255));
-		lblMail = new JLabel("Correo:");
+		lblMail = new JLabel("Ingrese su correo institucional o nombre de usuario:");
 		lblMail.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		txtFieldMail = new JTextField();
 		txtFieldMail.setColumns(10);
 		
-		lblPassword = new JLabel("Contraseña:");
+		lblPassword = new JLabel("Ingrese su contraseña:");
 		
 		passwordField = new JPasswordField();
 		
@@ -59,11 +60,11 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// Implementar logica para ingreso a sistema
-				String email = txtFieldMail.getText();
+				String emailOrUsername = txtFieldMail.getText();
 				char[] passwArr = passwordField.getPassword();
 				String passw = new String(passwArr);
 				
-				if(email.isEmpty() || passw.isEmpty()) {
+				if(emailOrUsername.isEmpty() || passw.isEmpty()) {
 					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
@@ -77,28 +78,30 @@ public class LoginPanel extends JPanel {
 					return;
 				}
 				
-				try {
-					InternetAddress correoInternet = new InternetAddress(email);
-					correoInternet.validate();
-				} catch (AddressException ex) {
-					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.", "Cuidadiiitooo", JOptionPane.WARNING_MESSAGE);
-					passwordField.setText("");
-					return;
+				if(emailOrUsername.contains("@")) {
+					try {
+						InternetAddress correoInternet = new InternetAddress(emailOrUsername);
+						correoInternet.validate();
+					} catch (AddressException ex) {
+						// Muestra un mensaje de error si el correo electrónico no es válido
+						JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.", "Cuidadiiitooo", JOptionPane.WARNING_MESSAGE);
+						passwordField.setText("");
+						return;
+					}
 				}
 
-				String passwBDD = usuarioBean.selectPasswBy(email);
-				if(passwBDD == null) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "El correo electronico ingresado no es correcto", "¡Oh no! Oh no no no", JOptionPane.WARNING_MESSAGE);
+				Usuario userBDD = usuarioBean.selectUserBy(emailOrUsername);
+				if(userBDD == null) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "El correo electronico o nombre de usuario ingresado no es correcto", "¡Oh no! Oh no no no", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
-				else if(!passwBDD.equals(passw)) {
+				else if(!userBDD.isValidUser(passw)) {
 					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
 					passwordField.setText("");
 					return;
 				} else {
-					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!");
+					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido/a!");
 					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
 			        main.initHome();
 					main.revalidate();
