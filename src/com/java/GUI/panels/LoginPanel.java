@@ -97,7 +97,7 @@ public class LoginPanel extends JPanel {
 					return;
 				}
 				else if(!userBDD.isValidUser(passw)) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(LoginPanel.this, "La contraseña ingresada es incorrecta o usted no se encuentra habilitado para ingresar", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
 					passwordField.setText("");
 					return;
 				} else {
