@@ -36,7 +36,7 @@ public class Main extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel loginPanel;
-	private JPanel signupPanel;
+	private JPanel signupPanel; 
 	private static UsuarioBeanRemote usuarioBean;
 	private static DepartamentoBeanRemote depaBean;
 	private static LocalidadBeanRemote localidadBean;
@@ -93,6 +93,7 @@ public class Main extends JFrame {
 		contentPane.setLayout(gbl_contentPane);
         
 		CardLayout cardLayout = new CardLayout();
+
 		JPanel cardPanel = new JPanel(cardLayout);
 		loginPanel = new LoginPanel(cardPanel, usuarioBean);
 		signupPanel = new SignUpPanel(cardPanel, usuarioBean, depaBean, localidadBean, itrBean, analiBean);
