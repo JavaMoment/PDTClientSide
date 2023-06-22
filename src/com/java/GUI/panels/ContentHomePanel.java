@@ -6,10 +6,18 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.LayoutStyle.ComponentPlacement;
+
+import com.java.GUI.Main;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ContentHomePanel extends JPanel {
 
@@ -20,21 +28,37 @@ public class ContentHomePanel extends JPanel {
 		
 		JLabel lblUtecLogo = new JLabel("New label");
 		lblUtecLogo.setIcon(new ImageIcon(ContentHomePanel.class.getResource("/com/java/resources/images/06-isologotipo-para-fondo-blanco.png")));
+		JButton btnLogout = new JButton("");
+		btnLogout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Main main = (Main) SwingUtilities.getWindowAncestor(ContentHomePanel.this);
+		        main.initLogin();
+				main.revalidate();
+			}
+		});
+		btnLogout.setIcon(new ImageIcon(ContentHomePanel.class.getResource("/com/java/resources/images/cerrar-sesion.png")));
+		btnLogout.setToolTipText("Cerrar sesión");
+		btnLogout.setContentAreaFilled(false);
+		btnLogout.setBorder(null);
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					//.addGap(43)
-					.addComponent(lblUtecLogo, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-					)//.addContainerGap(405, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					//.addGap(32)
-					.addComponent(lblUtecLogo, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-					)//.addContainerGap(496, Short.MAX_VALUE))
-		);
+			    groupLayout.createParallelGroup()
+			        .addGroup(groupLayout.createSequentialGroup()
+			            .addComponent(lblUtecLogo, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+			            .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			            .addComponent(btnLogout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+			        )
+			);
+			groupLayout.setVerticalGroup(
+			    groupLayout.createParallelGroup(Alignment.LEADING)
+			        .addGroup(groupLayout.createSequentialGroup()
+			            .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+			                .addComponent(lblUtecLogo, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+			                .addComponent(btnLogout, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+			            )
+			        )
+			);
 		setLayout(groupLayout);
 
 	}

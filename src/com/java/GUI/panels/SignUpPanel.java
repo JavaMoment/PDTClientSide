@@ -4,6 +4,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -13,6 +15,7 @@ import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,7 +26,12 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
 import com.entities.Usuario;
+import com.entities.Analista;
+import com.entities.Departamento;
+import com.entities.Localidad;
+import com.entities.Itr;
 import com.java.enums.Genres;
+import com.services.AnalistaBeanRemote;
 import com.services.DepartamentoBeanRemote;
 import com.services.ItrBeanRemote;
 import com.services.LocalidadBeanRemote;
@@ -45,8 +53,8 @@ public class SignUpPanel extends JPanel {
 	private JPasswordField txtFldPassw2;
 	private JLabel lblEmail;
 	private JTextField txtFieldEmail;
-	private JLabel lblUsername;
-	private JTextField txtFieldUsername;
+	private JLabel lblMail1;
+	private JTextField txtFieldMail1;
 	private JLabel lblName1;
 	private JTextField txtFieldName1;
 	private JLabel lblName2;
@@ -60,30 +68,32 @@ public class SignUpPanel extends JPanel {
 	private JLabel lblGenre;
 	private JComboBox<Genres> comboBoxGenre;
 	private JLabel lblDepartamento;
-	private JComboBox<String> comboBoxDepas;
+	private JComboBox comboBoxDepas;
 	private JLabel lblCity;
-	private JComboBox<String> comboBoxCity;
+	private JComboBox comboBoxCity;
 	private JLabel lblItr;
 	private JComboBox comboBoxItr;
 	private JLabel lblPhone;
 	private JTextField txtFieldPhone;
 	private JLabel lblCi;
 	private JTextField txtFieldCi;
+	private JLabel lblUserType;
+	private JComboBox<String> comboBoxUserType;
 	
 
 	/**
 	 * Create the panel.
 	 */
 	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, DepartamentoBeanRemote depaBean,
-			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean) {
+			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean) {
 		
-        lblUsername = new JLabel("Nombre de usuario (*):");
+        lblMail1 = new JLabel("Correo personal (*):");
         lblSignUpTitle = new JLabel("Registro");
         lblBirthdate = new JLabel("Fecha de nacimiento (*):");
         lblCi = new JLabel("Cédula de identidad (*):");
         lblCity = new JLabel("Ciudad de residencia (*):");
         lblDepartamento = new JLabel("Departamento de residencia (*):");
-        lblEmail = new JLabel("Correo (*):");
+        lblEmail = new JLabel("Correo institucional (*):");
         lblGenre = new JLabel("Genero (*):");
         lblItr = new JLabel("ITR a la que pertenece (*):");
         lblLastName1 = new JLabel("Primer apellido (*):");
@@ -93,10 +103,11 @@ public class SignUpPanel extends JPanel {
         lblName2 = new JLabel("Segundo nombre:");
         lblPassword = new JLabel("Contraseña (*):");
         lblPhone = new JLabel("Télefono:");
+        lblUserType = new JLabel("Tipo de usuario (*):");
         
         txtfldPassword = new JPasswordField();
         txtFldPassw2 = new JPasswordField();
-        txtFieldUsername = new JTextField();
+        txtFieldMail1 = new JTextField();
         txtFieldEmail = new JTextField();
         txtFieldName1 = new JTextField();
         txtFieldName2 = new JTextField();
@@ -106,13 +117,26 @@ public class SignUpPanel extends JPanel {
         txtFieldLastname2 = new JTextField();
         txtFieldPhone = new JTextField();
         
-        var txtFields = List.of(txtFieldUsername, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
+        var txtFields = List.of(txtFieldMail1, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
         		txtFieldEmail, txtFieldLastName1);
         
-        comboBoxCity = new JComboBox(localidadBean.selectAllNames().toArray());
+        comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
         comboBoxGenre = new JComboBox<Genres>(Genres.values());
-        comboBoxItr = new JComboBox(itrBean.selectAllNames().toArray());
-        comboBoxDepas = new JComboBox(depaBean.selectAllNames().toArray());
+        comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
+        comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
+        String[] userTypes = {"Analista", "Tutor", "Estudiante"};
+        comboBoxUserType = new JComboBox<String>(userTypes);
+        
+        Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+        comboBoxDepas.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+				long idDepa = (long) depa.getIdDepartamento();
+				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllBy(idDepa).toArray()));
+			}
+        });
 
         btnSignup = new JButton("Registrarme!");
         btnGoBack = new JButton("Back to login");
@@ -145,52 +169,85 @@ public class SignUpPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String email = txtFieldEmail.getText();
-				char[] passwArr = txtfldPassword.getPassword();
-				char[] passwArr2 = txtFldPassw2.getPassword();
-				String passw = new String(passwArr);
-				String passw2 = new String(passwArr2);
+				String passw = new String(txtfldPassword.getPassword());
+				String passw2 = new String(txtFldPassw2.getPassword());
+				String lastName1 = txtFieldLastName1.getText();
+				String lastName2 = txtFieldLastname2.getText();
+				String name1 = txtFieldName1.getText();
+				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
+				String ci = txtFieldCi.getText();
+				Date birthdate = (Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+				char genre = comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O';
+				Itr itr = (Itr) comboBoxItr.getSelectedItem();
+				System.out.println(itr.getNombre() + " " + itr.getClass());
+				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
+				String username = email.split("@")[0];
+				String mailDomain = email.split("@")[1];
+				String personalMail = txtFieldMail1.getText();
 				
-				for(JTextField txtField : txtFields) {
-					if(txtField.getText().isEmpty()) {
-						JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
+				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 				
 				try {
 					InternetAddress correoInternet = new InternetAddress(email);
+					InternetAddress personalEmailInet = new InternetAddress(personalMail);
 					correoInternet.validate();
+					personalEmailInet.validate();
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(null, "Por favor ingrese una dirección de correo electrónico válida.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
+					return;
+				}
+				
+				if(!mailDomain.endsWith(".utec.edu.uy")) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico institucional con terminación: \".utec.edu.uy\".");
+					return;
+				}
+				
+				if(usuarioBean.isUserRegistered(txtFieldMail1.getText())) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "El nombre de usuario ingresado ya se encuentra registrado.");
 					return;
 				}
 				
 				if(!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$") || !passw2.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
 					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
-					JOptionPane.showMessageDialog(null,
+					JOptionPane.showMessageDialog(SignUpPanel.this,
 							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
 					return;
 				}
 				
 				if(!passw.equals(passw2)) {
-					JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas no coinciden.");
+					return;
+				}
+				
+				if((txtFieldName1.getText().length() > 50) || (txtFieldName2.getText().length() > 50)) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "El largo del nombre es mayor al máximo permitido (50 caracteres)");
+					return;
+				}
+				
+				if(!dcBirthdate.getDate().before(Date.from(Instant.now()))) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor, ingrese una fecha de nacimiento anterior a la fecha actual.");
 					return;
 				}
 				
 				if(!isAnUruguayanCI(txtFieldCi.getText())) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "La cedula ingresada no es válida.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "La cedula ingresada no es válida y/o no contiene 8 digitos de largo.");
+					return;
 				}
 				
-				if(!txtFieldPhone.getText().matches("^\\d{8}$") && !txtFieldPhone.getText().isEmpty()) {
+				if(!txtFieldPhone.getText().matches("^\\d{9}$") && !txtFieldPhone.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El número de telefono ingresado no contiene sólo números y/o tiene menos o mas de 8 digitos");
+					return;
 				}
 				
-				Usuario newUser = new Usuario(txtFieldUsername.getText(), txtFieldLastName1.getText(), txtFieldLastname2.getText(), 
-						passw, txtFieldCi.getText(), Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()), 
-						comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O',
-						comboBoxDepas.getSelectedIndex(), comboBoxItr.getSelectedIndex(), comboBoxCity.getSelectedIndex(), 
-		        		txtFieldEmail.getText(), txtFieldName1.getText());
+				Usuario newUser = new Usuario(username, lastName1, lastName2,
+						passw, ci, birthdate,
+						genre, depa, itr,
+						city, email, personalMail,
+						name1);
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
 					newUser.setTelefono(txtFieldPhone.getText());
@@ -201,15 +258,20 @@ public class SignUpPanel extends JPanel {
 				}
 				
 				int exitCode = usuarioBean.create(newUser);
+				
+				switch((String) comboBoxUserType.getSelectedItem()) {
+					case "Analista":
+						Analista analista = new Analista(newUser);
+						exitCode = analiBean.create(analista);
+				}
+
 				if(exitCode == 0) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");
 				} else {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
 				}
-
-				for(JTextField txtField : txtFields) {
-					txtField.setText("");
-				}
+				
+				txtFields.stream().forEach(txt -> txt.setText(""));
 				dcBirthdate.setDate(Date.from(Instant.now()));
 				comboBoxCity.setSelectedIndex(0);
 				comboBoxDepas.setSelectedIndex(0);
@@ -221,9 +283,9 @@ public class SignUpPanel extends JPanel {
 				txtFldPassw2.setText("");
 			}
 		});
-
+        
         GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -231,7 +293,7 @@ public class SignUpPanel extends JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblEmail)
                     .addComponent(lblPassword)
-                    .addComponent(lblUsername)
+                    .addComponent(lblMail1)
                     .addComponent(lblBirthdate)
                     .addComponent(dcBirthdate)
                     .addComponent(lblCi)
@@ -251,18 +313,20 @@ public class SignUpPanel extends JPanel {
                     .addComponent(txtFieldPhone)
                     .addComponent(lblDepartamento)
                     .addComponent(comboBoxDepas)
+                    .addComponent(lblUserType)
                     .addComponent(lblSignUpTitle, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                     .addComponent(txtfldPassword, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFldPassw2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSignup, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGoBack, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblPassw2)
-                    .addComponent(txtFieldUsername, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFieldMail1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFieldEmail, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldCi, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                .addComponent(dcBirthdate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+	                .addComponent(dcBirthdate, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(comboBoxUserType, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -271,9 +335,9 @@ public class SignUpPanel extends JPanel {
                 .addContainerGap(50, Short.MAX_VALUE)
                 .addComponent(lblSignUpTitle)
                 .addGap(18, 18, 18)
-                .addComponent(lblUsername, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblMail1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(txtFieldUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFieldMail1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEmail, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -331,6 +395,10 @@ public class SignUpPanel extends JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(txtFieldPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
+                .addComponent(lblUserType, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(comboBoxUserType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGap(30, 30, 30)
                 .addComponent(btnSignup, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
@@ -348,28 +416,23 @@ public class SignUpPanel extends JPanel {
 	 * @return {@code true} if the CI is valid, {@code false} otherwise.
 	 */
 	private boolean isAnUruguayanCI(String ci) {
-	    // Paso 1: Remover caracteres no numericos
+		// Paso 1: Remover caracteres no numericos
 	    String digitsOnly = ci.replaceAll("\\D", "");
 
 	    // Paso 2: Chequear largo de la cedula
-	    if (digitsOnly.length() != 7 && digitsOnly.length() != 8) {
+	    if (digitsOnly.length() != 8) {
 	        return false;
 	    }
 
-	    // Paso 3: Agregar 0 en caso de que la cedula sea de 6 digitos
-	    if (digitsOnly.length() == 7) {
-	        digitsOnly = "0" + digitsOnly;
-	    }
-
-	    // Paso 4: Separar digito verificador de los demas digitos
+	    // Paso 3: Separar digito verificador de los demas digitos
 	    String digits = digitsOnly.substring(0, digitsOnly.length()-1);
 	    String checkerDigit = digitsOnly.substring(digitsOnly.length()-1, digitsOnly.length());
 
-	    // Paso 5: Convertir los digitos a vectores y crear operador verificador
+	    // Paso 4: Convertir los digitos a vectores y crear operador verificador
 	    String[] digitsArr = digits.split("");
 	    int[] verifier = {2, 9, 8, 7, 6, 3, 4};
 
-	    // Paso 6: El modulo 10 de la multiplicacion vectorial entre digitos y vector verificador debe ser igual al digito verificador
+	    // Paso 5: El modulo 10 de la multiplicacion vectorial entre digitos y vector verificador debe ser igual al digito verificador
 	    int mod = 0;
 	    for(int i = 0; i<digitsArr.length; i++) {
 	    	mod += (Integer.parseInt(digitsArr[i]) * verifier[i]) % 10;
@@ -378,8 +441,8 @@ public class SignUpPanel extends JPanel {
 	    mod = (mod - 10) * -1;
 	    mod %= 10;
 	    
-	    // Paso 7: ¿Es el modulo de la operacion igual al digito verificador?
+	    // Paso 6: ¿Es el modulo de la operacion igual al digito verificador?
 	    return mod == Integer.parseInt(checkerDigit);
-	}	    
+	}
 
 }
