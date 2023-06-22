@@ -23,9 +23,12 @@ import com.java.GUI.panels.UsersListPanel;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
 import com.services.AnalistaBeanRemote;
+import com.services.AreaBeanRemote;
 import com.services.DepartamentoBeanRemote;
+import com.services.EstudianteBeanRemote;
 import com.services.ItrBeanRemote;
 import com.services.LocalidadBeanRemote;
+import com.services.TutorBeanRemote;
 import com.services.UsuarioBeanRemote;
 
 
@@ -42,13 +45,15 @@ public class Main extends JFrame {
 	private static LocalidadBeanRemote localidadBean;
 	private static ItrBeanRemote itrBean;
 	private static AnalistaBeanRemote analiBean;
+	private static EstudianteBeanRemote estudBean;
+	private static AreaBeanRemote areaBean;
+	private static TutorBeanRemote tutorBean;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-
 			public void run() {
 				try {
 					usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
@@ -56,6 +61,9 @@ public class Main extends JFrame {
 					localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
 					itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
 					analiBean = BeansFactory.getBean(Beans.Analista, AnalistaBeanRemote.class);
+					estudBean = BeansFactory.getBean(Beans.Estudiante, EstudianteBeanRemote.class);
+					areaBean = BeansFactory.getBean(Beans.Area, AreaBeanRemote.class);
+					tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -96,7 +104,7 @@ public class Main extends JFrame {
 
 		JPanel cardPanel = new JPanel(cardLayout);
 		loginPanel = new LoginPanel(cardPanel, usuarioBean);
-		signupPanel = new SignUpPanel(cardPanel, usuarioBean, depaBean, localidadBean, itrBean, analiBean);
+		signupPanel = new SignUpPanel(cardPanel, usuarioBean, depaBean, localidadBean, itrBean, analiBean, estudBean, areaBean, tutorBean);
 		JScrollPane scrollPane = new JScrollPane(signupPanel);
 		cardPanel.add(loginPanel, "login");
 		cardPanel.add(scrollPane, "signup");
