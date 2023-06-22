@@ -243,7 +243,11 @@ public class SignUpPanel extends JPanel {
 					return;
 				}
 				
-				Usuario newUser = new Usuario(username, lastName1, lastName2, passw, ci, birthdate, genre, depa, itr, city, email, name1);
+				Usuario newUser = new Usuario(username, lastName1, lastName2,
+						passw, ci, birthdate,
+						genre, depa, itr,
+						city, email, personalMail,
+						name1);
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
 					newUser.setTelefono(txtFieldPhone.getText());
