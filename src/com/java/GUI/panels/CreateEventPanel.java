@@ -15,6 +15,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import java.util.Date;
 
+import com.entities.Evento;
+import com.services.EventoBeanRemote;
+import com.services.EventoBean;
+
+
+
+
 public class CreateEventPanel extends JPanel {
     private JTextField titleField;
     private JTextField typeField;
@@ -26,7 +33,7 @@ public class CreateEventPanel extends JPanel {
     private JButton submitButton;
     private JButton cancelButton;
 
-    public CreateEventPanel() {
+    public CreateEventPanel(EventoBeanRemote eventoBeanRemote, EventoBean eventoBean) {
         JLabel titleLabel = new JLabel("Título del evento:");
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 10));
 
@@ -72,12 +79,15 @@ public class CreateEventPanel extends JPanel {
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateData() && validateDates()) {
-                    registerEvent();
+               
+                    registerEvent(eventoBeanRemote, eventoBean);
+                    System.out.println("entra al if");
                     showConfirmationMessage("El evento se registró correctamente.");
                 }
             }
         });
 
+      
         cancelButton = new JButton("Cancelar");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -215,7 +225,8 @@ public class CreateEventPanel extends JPanel {
         return true;
     }
 
-    private void registerEvent() {
+    
+    private void registerEvent(EventoBeanRemote eventoBeanRemote, EventoBean eventoBean) {
     	  	String title = titleField.getText();
     	    String type = typeField.getText();
     	    Date startDate = startDateChooser.getDate();
@@ -224,6 +235,15 @@ public class CreateEventPanel extends JPanel {
     	    String itr = itrField.getText();
     	    String location = locationField.getText();
     	    
+    	    Evento newEvento = new Evento(title, type, startDate, endDate, modality, itr, location);
+    	    
+    	    int exitCode = eventoBean.create(newEvento);
+			if(exitCode == 0) {
+				JOptionPane.showMessageDialog(CreateEventPanel.this, "El evento ha sido correctamente creado.");
+			} else {
+				JOptionPane.showMessageDialog(CreateEventPanel.this, "Ha ocurrido un error mientras se intentaba crear el evento.\nPor favor, intente de nuevo.");
+			}
+
     }
 
     private void cancelEventRegistration() {
@@ -238,6 +258,7 @@ public class CreateEventPanel extends JPanel {
    //     tutorList.clearSelection(); LO COMENTO PQ DA ERROR ANDA A SABER PQ
         
         // Muestra un mensaje de cancelación
+        System.out.println("entra al cancelar");
         showConfirmationMessage("El registro del evento se canceló.");
     }
 
@@ -248,6 +269,29 @@ public class CreateEventPanel extends JPanel {
 
     private void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void PruebaCrearEvento() {
+    
+    EventoBeanRemote eventoBeanRemote = new EventoBean();
+    EventoBean eventoBean = new EventoBean();
+
+    String title = "Prueba de Evento";
+    String type = "Prueba";
+    Date startDate = new Date(1234567890L); // Reemplaza con la fecha y hora de inicio deseada
+    Date endDate = new Date(1234567890L); // Reemplaza con la fecha y hora de finalización deseada
+    String modality = "Presencial";
+    String itr = "12345";
+    String location = "Sala de conferencias";
+
+    Evento newEvento = new Evento(title, type, startDate, endDate, modality, itr, location);
+
+    int exitCode = eventoBean.create(newEvento);
+    if (exitCode == 0) {
+        System.out.println("El evento se ha creado correctamente.");
+    } else {
+        System.out.println("Ha ocurrido un error al crear el evento.");
+    }
     }
 }
 

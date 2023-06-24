@@ -337,6 +337,7 @@ public class SignUpPanel extends JPanel {
 						genre, depa, itr,
 						city, email, personalMail,
 						name1);
+
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
 					newUser.setTelefono(txtFieldPhone.getText());
