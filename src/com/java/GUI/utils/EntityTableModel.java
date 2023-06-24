@@ -19,16 +19,18 @@ public class EntityTableModel<E> extends AbstractTableModel {
 	private int columnCount;
 	private String[] columnNames;
 	
-	public EntityTableModel(String[] columnNames, List<E> dbObjects) {
+	public EntityTableModel(String[] colsNames, List<E> dbObjects) {
+		 this.columnNames = Arrays.stream(colsNames)
+				    .map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1))
+				    .toArray(String[]::new);
 		 this.columnCount = columnNames.length;
-		 this.columnNames = columnNames;
 		 
 		 for(E t : dbObjects) {
 			 Object[] row = new Object[columnCount];
 			 for(int i = 0; i < columnCount; i++) {
-				 String actualColumn = "get" + columnNames[i].substring(0, 1).toUpperCase() + columnNames[i].substring(1);
+				 String actualColumn = "get" + colsNames[i].substring(0, 1).toUpperCase() + colsNames[i].substring(1);
 				 List<Method> methods = Arrays.asList(t.getClass().getMethods());
-				 Optional<Method> actualColMethod = methods.stream().filter(m -> m.getName().equals(actualColumn)).findFirst();
+				 Optional<Method> actualColMethod = methods.stream().filter(m -> m.getName().equalsIgnoreCase(actualColumn)).findFirst();
 				 try {
 					 final Object r = actualColMethod.get().invoke(t);
 					 row[i] = r;

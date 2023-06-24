@@ -20,6 +20,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.enums.Estado;
 import com.enums.Modalidad;
@@ -27,7 +28,6 @@ import com.enums.TipoEvento;
 
 
 public class RemoveEventPanel extends JPanel {
-
 
 	private JTable tableEvents;
 	private SheetEventPanel sheetEventPanel;
