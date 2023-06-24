@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import com.entities.Usuario;
 import com.java.GUI.Main;
 import com.services.UsuarioBeanRemote;
 
@@ -42,13 +43,13 @@ public class LoginPanel extends JPanel {
 	public LoginPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean) {
 		this.contentPane = contentPane;
 		setBackground(new Color(255, 255, 255));
-		lblMail = new JLabel("Correo:");
+		lblMail = new JLabel("Ingrese su correo institucional o nombre de usuario:");
 		lblMail.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		txtFieldMail = new JTextField();
 		txtFieldMail.setColumns(10);
 		
-		lblPassword = new JLabel("Contraseña:");
+		lblPassword = new JLabel("Ingrese su contraseña:");
 		
 		passwordField = new JPasswordField();
 		
@@ -59,12 +60,12 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// Implementar logica para ingreso a sistema
-				String email = txtFieldMail.getText();
+				String emailOrUsername = txtFieldMail.getText();
 				char[] passwArr = passwordField.getPassword();
 				String passw = new String(passwArr);
 				
-				if(email.isEmpty() || passw.isEmpty()) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.ERROR_MESSAGE);
+				if(emailOrUsername.isEmpty() || passw.isEmpty()) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
@@ -72,35 +73,36 @@ public class LoginPanel extends JPanel {
 				if (!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
 					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
 					JOptionPane.showMessageDialog(LoginPanel.this,
-							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
+							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.", "¡Cuidadiiitoo!", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
 				
-				try {
-					InternetAddress correoInternet = new InternetAddress(email);
-					correoInternet.validate();
-				} catch (AddressException ex) {
-					// Muestra un mensaje de error si el correo electrónico no es válido
-					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
-					passwordField.setText("");
-					return;
+				if(emailOrUsername.contains("@")) {
+					try {
+						InternetAddress correoInternet = new InternetAddress(emailOrUsername);
+						correoInternet.validate();
+					} catch (AddressException ex) {
+						// Muestra un mensaje de error si el correo electrónico no es válido
+						JOptionPane.showMessageDialog(LoginPanel.this, "Por favor ingrese una dirección de correo electrónico válida.", "Cuidadiiitooo", JOptionPane.WARNING_MESSAGE);
+						passwordField.setText("");
+						return;
+					}
 				}
 
-				String passwBDD = usuarioBean.selectPasswBy(email);
-				if(passwBDD == null) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "Salió todo mal loco no podes", "Mal ahiiii makina", JOptionPane.INFORMATION_MESSAGE);
+				Usuario userBDD = usuarioBean.selectUserBy(emailOrUsername);
+				if(userBDD == null) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "El correo electronico o nombre de usuario ingresado no es correcto", "¡Oh no! Oh no no no", JOptionPane.WARNING_MESSAGE);
 					passwordField.setText("");
 					return;
 				}
-				else if(!passwBDD.equals(passw)) {
-					JOptionPane.showMessageDialog(LoginPanel.this, "El usuario y/o contraseña es incorrecto", "mal ahiiii makina", JOptionPane.ERROR_MESSAGE);
+				else if(!userBDD.isValidUser(passw)) {
+					JOptionPane.showMessageDialog(LoginPanel.this, "La contraseña ingresada es incorrecta o usted no se encuentra habilitado para ingresar", "¡Oh no! Oh no no no", JOptionPane.ERROR_MESSAGE);
 					passwordField.setText("");
 					return;
 				} else {
-					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido!", "Holaaa :D", JOptionPane.YES_OPTION);
+					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido/a!");
 					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
-			        //main.setContentPane(new ContentHomePanel());
 			        main.initHome();
 					main.revalidate();
 				}
@@ -133,23 +135,27 @@ public class LoginPanel extends JPanel {
 		login_layout.setHorizontalGroup(
 			login_layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(login_layout.createSequentialGroup()
-					.addContainerGap(168, Short.MAX_VALUE)
+					.addContainerGap(1, GroupLayout.PREFERRED_SIZE)
+					.addGap(100)
 					.addGroup(login_layout.createParallelGroup(Alignment.LEADING, false)
+						.addGap(100)
 						.addComponent(btnLogin, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(lblPassword)
 						.addComponent(lblMail)
 						.addComponent(passwordField)
 						.addComponent(txtFieldMail)
-						.addComponent(lblLoginTitle, GroupLayout.PREFERRED_SIZE, 257, Short.MAX_VALUE)
+						.addComponent(lblLoginTitle, GroupLayout.PREFERRED_SIZE, 260, Short.MAX_VALUE)
 						.addComponent(btnRegister, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(148, Short.MAX_VALUE))
+					.addContainerGap(1, GroupLayout.PREFERRED_SIZE)
+					.addGap(100))
 		);
 		login_layout.setVerticalGroup(
 			login_layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(login_layout.createSequentialGroup()
-					.addContainerGap(18, Short.MAX_VALUE)
+					.addContainerGap(1, Short.MAX_VALUE)
+					.addGap(50)
 					.addComponent(lblLoginTitle)
-					.addGap(18)
+					.addGap(150)
 					.addComponent(lblMail, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
 					.addGap(0)
 					.addComponent(txtFieldMail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -159,7 +165,7 @@ public class LoginPanel extends JPanel {
 					.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(30)
 					.addComponent(btnLogin)
-					.addGap(137)
+					.addGap(100)
 					.addComponent(btnRegister)
 					.addGap(200))
 		);
