@@ -108,7 +108,6 @@ public class ModifyEventPanel extends JPanel {
 					.addGap(16)
 					.addComponent(btnModifyEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
 					.addGap(18)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		

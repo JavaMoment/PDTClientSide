@@ -51,6 +51,9 @@ public class BeansFactory {
             	case Area:
             		String areaRoute = baseRoute + "AreaBean!com.services.AreaBeanRemote";
             		return expectedType.cast(jndi.lookup(areaRoute));
+            	case Modalidad:
+            		String modalidadRoute = baseRoute + "ModalidadBean!com.services.ModalidadBeanRemote";
+            		return expectedType.cast(jndi.lookup(modalidadRoute));
             	default:
             		return null;
             }

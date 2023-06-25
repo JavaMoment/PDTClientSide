@@ -23,6 +23,7 @@ import com.services.EventoBean;
 
 
 public class CreateEventPanel extends JPanel {
+	
     private JTextField titleField;
     private JTextField typeField;
     private JDateChooser startDateChooser;
@@ -177,7 +178,11 @@ public class CreateEventPanel extends JPanel {
         typeLabel = new JLabel("Tipo de evento:");
     }
 
-    private boolean validateData() {
+    public CreateEventPanel() {
+		// TODO Auto-generated constructor stub
+	}
+
+	private boolean validateData() {
         String errorMessage = "";
 
         if (titleField.getText().isEmpty()) {
@@ -294,4 +299,3 @@ public class CreateEventPanel extends JPanel {
     }
     }
 }
-

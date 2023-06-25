@@ -12,5 +12,7 @@ public enum Beans {
 	Reclamo,
 	Constancia,
 	StatusCertificados,
-	Area
+	Area,
+	Modalidad
+
 }
