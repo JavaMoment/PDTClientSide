@@ -17,7 +17,7 @@ import java.awt.Insets;
 
 public class EventsPanel extends JPanel{
 	
-		private CreateEventPanel createEvent = new CreateEventPanel();
+		private CreateEventPanel createEvent;
 		private ListEventPanel listEvent = new ListEventPanel();
 		private ModifyEventPanel modifyEvent = new ModifyEventPanel();
 		private RemoveEventPanel removeEvent = new RemoveEventPanel();
@@ -32,6 +32,9 @@ public class EventsPanel extends JPanel{
 		
 
 		 public EventsPanel() {
+			 
+				 CreateEventPanel createEvent = new CreateEventPanel (null, null);
+
 			setBackground(new Color(255, 255, 255));
 
 			JButton btnVolver = new JButton("Volver");

@@ -48,6 +48,9 @@ public class BeansFactory {
             	case StatusCertificados:
             		String statusRoute = baseRoute + "StatusCertificadosBean!com.services.StatusCertificadosBeanRemote";
             		return expectedType.cast(jndi.lookup(statusRoute));
+            	case Area:
+            		String areaRoute = baseRoute + "AreaBean!com.services.AreaBeanRemote";
+            		return expectedType.cast(jndi.lookup(areaRoute));
             	default:
             		return null;
             }
