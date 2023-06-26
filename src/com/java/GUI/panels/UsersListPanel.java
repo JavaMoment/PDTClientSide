@@ -3,7 +3,7 @@ package com.java.GUI.panels;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.RowFilter;
-
+import javax.swing.SwingWorker;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -21,6 +21,7 @@ import javax.swing.table.TableRowSorter;
 
 import com.entities.Itr;
 import com.entities.Usuario;
+import com.java.GUI.utils.DefaultComboBox;
 import com.java.GUI.utils.EntityTableModel;
 import com.services.ItrBeanRemote;
 import com.services.UsuarioBeanRemote;
@@ -28,7 +29,11 @@ import com.services.UsuarioBeanRemote;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -81,8 +86,16 @@ public class UsersListPanel extends JPanel {
 		JLabel lblItr = new JLabel("ITR:");
 		add(lblItr, "flowy,cell 0 2");
 		
-		JComboBox comboBoxItr = new JComboBox(itrs.toArray());
+		JComboBox comboBoxItr = new JComboBox(new DefaultComboBox(itrs.toArray()));
 		lblItr.setLabelFor(comboBoxItr);
+		comboBoxItr.setSelectedIndex(0);
+		comboBoxItr.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TO be implemented
+				return;
+			}
+		});
 		add(comboBoxItr, "cell 0 2,growx");
 		
 		JLabel lblGeneration = new JLabel("Generación:");
@@ -150,12 +163,53 @@ public class UsersListPanel extends JPanel {
 		add(btnRefresh, "cell 1 0");
 		
 		JButton btnEditUser = new JButton("");
-		btnEditUser.setIcon(new ImageIcon(UsersListPanel.class.getResource("/com/java/resources/images/user.png")));
+		btnEditUser.setIcon(new ImageIcon(UsersListPanel.class.getResource("/com/java/resources/images/edit-user.png")));
 		btnEditUser.setFont(new Font("sansserif", 1, 12));
         btnEditUser.setForeground(new Color(30, 122, 236));
         btnEditUser.setContentAreaFilled(false);
         btnEditUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEditUser.setBorder(null);
+        btnEditUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+					@Override
+                    protected String doInBackground() throws Exception {
+						int resultCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "Elija un nombre de usuario que desee modificar.", "¡Atención!", JOptionPane.OK_CANCEL_OPTION);
+						
+						if(resultCode == JOptionPane.CANCEL_OPTION) {
+							return null;
+						}
+						while (table.getSelectedRow() < 0 || table.getSelectedColumn() < 0) {
+                            Thread.sleep(100); // Wait para no sobreecargar cpu
+                        }
+						// Cell selected, perform the desired action
+                        int selectedRow = table.getSelectedRow();
+                        int selectedColumn = table.getSelectedColumn();
+                        table.clearSelection();
+                        if(!table.getColumnName(selectedColumn).equals("NombreUsuario")) {
+                        	return null;
+                        }
+                        String cellValue = table.getValueAt(selectedRow, selectedColumn).toString();
+                        return cellValue;
+					}
+					@Override
+                    protected void done() {
+						try {
+                    		String cellValue = get();
+                    		if(cellValue == null) {
+                    			JOptionPane.showMessageDialog(UsersListPanel.this, "Ups! La columna seleccionada no es nombre de usuario. Intente de nuevo,");
+                    			return;
+                    		}
+                    		JOptionPane.showMessageDialog(UsersListPanel.this, "El nombre de usuario seleccionado es: " + cellValue);
+                    	} catch (Exception e) {
+                    		e.printStackTrace();
+                    	}
+					}
+				};
+				worker.execute();
+			}
+		});
 		add(btnEditUser, "flowx,cell 2 0");
 		
 		JButton btnDeleteUser = new JButton("");
@@ -169,5 +223,4 @@ public class UsersListPanel extends JPanel {
 		
 
 	}
-
 }
