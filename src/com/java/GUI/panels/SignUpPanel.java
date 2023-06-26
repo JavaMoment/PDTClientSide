@@ -389,10 +389,6 @@ public class SignUpPanel extends JPanel {
 				txtFields.stream().forEach(txt -> txt.setText(""));
 				comboBoxes.stream().forEach(box -> box.setSelectedIndex(0));
 				dcBirthdate.setDate(Date.from(Instant.now()));
-				/*comboBoxCity.setSelectedIndex(0);
-				comboBoxDepas.setSelectedIndex(0);
-				comboBoxGenre.setSelectedIndex(0);
-				comboBoxItr.setSelectedIndex(0);*/
 				txtFieldLastname2.setText("");
 				txtFieldPhone.setText("");
 				txtfldPassword.setText("");
