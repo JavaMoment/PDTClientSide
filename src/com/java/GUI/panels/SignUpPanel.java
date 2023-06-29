@@ -257,22 +257,21 @@ public class SignUpPanel extends JPanel {
         btnSignup.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				String email = txtFieldEmail.getText();
+				String email = txtFieldEmail.getText().trim();
 				String passw = new String(txtfldPassword.getPassword());
 				String passw2 = new String(txtFldPassw2.getPassword());
-				String lastName1 = txtFieldLastName1.getText();
-				String lastName2 = txtFieldLastname2.getText();
-				String name1 = txtFieldName1.getText();
+				String lastName1 = txtFieldLastName1.getText().trim();
+				String lastName2 = txtFieldLastname2.getText().trim();
+				String name1 = txtFieldName1.getText().trim();
 				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
 				String ci = txtFieldCi.getText();
 				Date birthdate = (Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
 				char genre = comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O';
 				Itr itr = (Itr) comboBoxItr.getSelectedItem();
-				System.out.println(itr.getNombre() + " " + itr.getClass());
 				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
 				String username = email.split("@")[0];
 				String mailDomain = email.split("@")[1];
-				String personalMail = txtFieldMail1.getText();
+				String personalMail = txtFieldMail1.getText().trim();
 				
 				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
