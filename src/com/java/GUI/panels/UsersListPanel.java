@@ -120,6 +120,79 @@ public class UsersListPanel extends JPanel {
 		btnDeleteUser.setContentAreaFilled(false);
 		btnDeleteUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnDeleteUser.setBorder(null);
+		btnDeleteUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+					@Override
+		            protected String doInBackground() throws Exception {
+
+		                if(table.getSelectionModel().isSelectionEmpty()) {
+		                	int resultCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "Elija un nombre de usuario que desee dar de baja.", "¡Atención!", JOptionPane.OK_CANCEL_OPTION);
+		                	if(resultCode == JOptionPane.CANCEL_OPTION) {
+		                		return null;
+		                	}
+		                }
+						
+						while (table.getSelectedRow() < 0 || table.getSelectedColumn() < 0) {
+		                    Thread.sleep(100); // Wait para no sobreecargar cpu
+		                }
+						
+						int selectedRow = table.getSelectedRow();
+						int selectedColumn = table.getSelectedColumn();
+						int activoColumn = table.getColumn("Activo").getModelIndex();
+
+						if(!table.getColumnName(selectedColumn).equals("NombreUsuario")) {
+							table.clearSelection();
+		                	return null;
+		                }
+						
+						if(!table.getValueAt(selectedRow, activoColumn).equals((byte) 1)) {
+							return null;
+						}
+		                
+		                table.clearSelection();
+		                String cellValue = table.getValueAt(selectedRow, selectedColumn).toString();
+		                return cellValue;
+					}
+					@Override
+		            protected void done() {
+						try {
+		            		String cellValue = get();
+		            		if(cellValue == null) {
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "Ups! La columna seleccionada no es nombre de usuario o el usuario ya se encuentra dado de baja :D.\nIntente de nuevo");
+		            			return;
+		            		}
+		            		if(cellValue.equals("0")) {
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Hey! El usuario ya se encuentra dado de baja :)");
+		            			return;
+		            		}
+		            		int optionCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "¿Está seguro que desea dar de baja al usuario: " + cellValue + "?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+		            		if(optionCode == JOptionPane.NO_OPTION) {
+		            			return;
+		            		}
+		            		int exitCode = usuarioBean.logicalDeleteByUsername(cellValue);
+		            		if(exitCode == 0) {
+		            			List<Usuario> users = usuarioBean.selectAll();
+		            			String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
+		            					.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
+		            							&& !value.equals("contrasenia"))
+		            					.toArray(String[]::new);
+		            			String[] transientCols = {"tipoUsuario", "generacion"};
+		            			TableModel usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
+		            			table.setModel(usersTableModel);
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Yep! El usuario ha sido dado de baja exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
+		            			return;
+		            		}
+		            		JOptionPane.showMessageDialog(UsersListPanel.this, "¡Oh no :(! Ocurrió un error mientras intentabamos dar de baja al usuario: " + cellValue + "\n Por favor, intente de nuevo más tarde");
+		            	} catch (Exception e) {
+		            		e.printStackTrace();
+		            	}
+					}
+				};
+				worker.execute();
+			}
+		});
 		add(btnDeleteUser, "cell 2 2");
 		
 		JLabel lblFilterTitle = new JLabel("Filtrar por:");
