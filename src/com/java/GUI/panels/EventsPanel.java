@@ -24,13 +24,12 @@ public class EventsPanel extends JPanel{
 		private RegisterAssistsEventPanel registerAsissistsEvent;
 		private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel;
 		private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel;
+		private CreateEventPanel createEvent_1;
 
 
 
 		 public EventsPanel() {
 			 
-				 CreateEventPanel createEvent = new CreateEventPanel (null, null);
-
 			setBackground(new Color(255, 255, 255));
 
 			JButton btnVolver = new JButton("Volver");
@@ -42,11 +41,8 @@ public class EventsPanel extends JPanel{
 			lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 			lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
 			
-			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
-			
-			createEvent = new CreateEventPanel();
-			tabbedPane.addTab("Alta evento", createEvent);
 			
 			listEvent = new ListEventPanel();
 			tabbedPane.addTab("Listar eventos", listEvent);
@@ -101,6 +97,9 @@ public class EventsPanel extends JPanel{
 						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 511, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(18, Short.MAX_VALUE))
 			);
+			
+			createEvent_1 = new CreateEventPanel();
+			tabbedPane.addTab("Alta evento", createEvent_1);
 
 			setLayout(groupLayout);
 			

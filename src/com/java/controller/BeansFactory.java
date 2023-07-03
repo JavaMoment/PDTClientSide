@@ -54,6 +54,9 @@ public class BeansFactory {
             	case Modalidad:
             		String modalidadRoute = baseRoute + "ModalidadBean!com.services.ModalidadBeanRemote";
             		return expectedType.cast(jndi.lookup(modalidadRoute));
+            	case Estado:
+            		String estadoRoute = baseRoute + "EstadoBean!com.services.EstadoBeanRemote";
+            		return expectedType.cast(jndi.lookup(estadoRoute));
             	default:
             		return null;
             }

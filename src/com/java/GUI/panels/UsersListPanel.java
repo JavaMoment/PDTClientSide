@@ -12,12 +12,12 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
 
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import net.miginfocom.swing.MigLayout;
 
 import com.entities.Itr;
 import com.entities.Usuario;

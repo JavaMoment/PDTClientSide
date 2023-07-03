@@ -55,33 +55,6 @@ public class ModifyEventPanel extends JPanel {
 		
 
 		
-
-		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-	            @Override
-	            public void valueChanged(ListSelectionEvent event) {
-	                if (!event.getValueIsAdjusting()) {
-	                    // Obtener la fila seleccionada
-	                    int selectedRow = tableEvents.getSelectedRow();
-	                    
-	                    // Verificar si hay una fila seleccionada
-	                    if (selectedRow != -1) {
-	                        // Obtener los datos de la fila seleccionada
-	                        Object[] rowData = new Object[columnNames.length];
-	                        for (int i = 0; i < columnNames.length; i++) {
-	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
-	                        }
-
-	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
-	                        JFrame sheetModify = new JFrame();
-	                        sheetModifyPanel = new SheetModifyPanel();
-	                        sheetModify.getContentPane().add(sheetModifyPanel);
-	                        sheetModify.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	                        sheetModify.pack();
-	                        sheetModify.setVisible(true);
-	                    }
-	                }
-	            }
-	        });
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(

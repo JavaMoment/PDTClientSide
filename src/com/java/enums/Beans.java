@@ -13,6 +13,7 @@ public enum Beans {
 	Constancia,
 	StatusCertificados,
 	Area,
-	Modalidad
+	Modalidad, 
+	Estado
 
 }
