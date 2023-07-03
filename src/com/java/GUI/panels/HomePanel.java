@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class HomePanel extends JPanel {
 
@@ -52,6 +54,12 @@ public class HomePanel extends JPanel {
 		add(btnUserMngmnt, gbc_btnUserMngmnt);
 		
 		JButton btnEventsMngmnt = new JButton("Gestión de Eventos");
+		btnEventsMngmnt.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+		});
 		btnEventsMngmnt.setBackground(new Color(125, 229, 251));
 		btnEventsMngmnt.setForeground(new Color(40, 40, 40));   
 		btnEventsMngmnt.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/calendar.png")));

@@ -11,6 +11,11 @@ import java.awt.Font;
 import javax.swing.*;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EventoBeanRemote;
+import com.services.ItrBeanRemote;
+
 import java.awt.Insets;
 
 
@@ -27,13 +32,17 @@ public class EventsPanel extends JPanel{
 		private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
 		private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
 
-		
+		private EventoBeanRemote eventoBeanRemote;
+		private ItrBeanRemote itrBeanRemote;
 
 		
 
 		 public EventsPanel() {
 			 
-				 CreateEventPanel createEvent = new CreateEventPanel (null, null);
+			eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+			itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+
+			CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote);
 
 			setBackground(new Color(255, 255, 255));
 
