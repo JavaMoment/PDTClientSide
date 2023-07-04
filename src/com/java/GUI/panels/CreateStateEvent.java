@@ -1,32 +1,34 @@
 package com.java.GUI.panels;
 
-import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 
+import com.entities.Estado;
 import com.entities.Modalidad;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
+import com.services.EstadoBeanRemote;
 import com.services.ModalidadBeanRemote;
 
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-public class CreateModalityPanel extends JPanel {
+public class CreateStateEvent extends JPanel{
+	
 	private JTextField textField;
-	private Modalidad modalidad; 
-	public CreateModalityPanel() {
+	private Estado estado; 
+	public CreateStateEvent() {
 		
-		ModalidadBeanRemote modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
+		EstadoBeanRemote estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
 		
-		JLabel lblTitle = new JLabel("ALTA NUEVA MODALIDAD");
+		JLabel lblTitle = new JLabel("ALTA NUEVO ESTADO");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 17));
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -37,14 +39,14 @@ public class CreateModalityPanel extends JPanel {
 		
 		
 		
-		JButton btnNewButton = new JButton("Crear modalidad");
+		JButton btnNewButton = new JButton("Crear estado");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = textField.getText();
-				modalidad = new Modalidad();
-				modalidad.setNombre(name);
-				modalidad.setActivo(1);
-				modalidadBean.create(modalidad);
+				estado = new Estado();
+				estado.setNombre(name);
+				estado.setActivo(1);
+				estadoBean.create(estado);
 			}
 		});
 		btnNewButton.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -66,9 +68,9 @@ public class CreateModalityPanel extends JPanel {
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(18)
 					.addComponent(btnNewButton)
-					.addContainerGap(40, Short.MAX_VALUE))
+					.addContainerGap(85, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
 	}

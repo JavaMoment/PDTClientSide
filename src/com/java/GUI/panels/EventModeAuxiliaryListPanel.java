@@ -36,6 +36,7 @@ import java.awt.event.ActionEvent;
 
 public class EventModeAuxiliaryListPanel extends JPanel{
 
+	private List<Modalidad> modalidades;
 	private JTable modalidadList;
 	private EntityTableModel modelo;
 
@@ -53,7 +54,7 @@ public class EventModeAuxiliaryListPanel extends JPanel{
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "cell 0 3 4 4,grow");
 		
-		List<Modalidad> modalidades = modalidadBean.selectAll();
+		modalidades = modalidadBean.selectAll();
 		
 		String[] modalidadColNames = Arrays.stream(modalidadBean.getColsNames())
                 .filter(value -> !value.equals("eventos") && !value.equals("idModalidad"))
@@ -73,7 +74,7 @@ public class EventModeAuxiliaryListPanel extends JPanel{
                 sheetModality.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 sheetModality.addWindowListener(new WindowAdapter(){
                 	public void windowClosing(WindowEvent e) {
-                		modalidadBean.selectAll();
+                		modalidades = modalidadBean.selectAll();
                 		TableModel modelo = new EntityTableModel<>(modalidadColNames, modalidades);
                 		modalidadList.setModel(modelo);
                 	}

@@ -35,8 +35,9 @@ import javax.swing.JScrollPane;
 
 public class AuxiliaryListofEventStatesPanel extends JPanel{
 	
+	private List<Estado> estados;
 	private JTable estadosList;
-	private EntityTableModel modelo;
+	private EntityTableModel listModel;
 
 	public AuxiliaryListofEventStatesPanel() {	
 		
@@ -52,29 +53,33 @@ public class AuxiliaryListofEventStatesPanel extends JPanel{
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "cell 0 3 4 4,grow");
 		
-		List<Estado> estados = estadoBean.selectAll();
+		estados = estadoBean.selectAll();
 		
 		String[] estadosColNames = Arrays.stream(estadoBean.getColsNames())
-                .filter(value -> !value.equals("idEstado"))
+                .filter(value -> !value.equals("idEstado") && !value.equals("eventos"))
                 .toArray(String[]::new);
+		
+		for(String e : estadosColNames) {
+			System.out.println(e);
+		}
 				
 		estadosList = new JTable();
-		TableModel modelo = new EntityTableModel<>(estadosColNames, estados);
-		estadosList.setModel(modelo);
+		TableModel listModel = new EntityTableModel<>(estadosColNames, estados);
+		estadosList.setModel(listModel);
 		scrollPane.setViewportView(estadosList);
 		
 		JButton btnNewButton = new JButton("AGREAGAR NUEVA MODALIDAD");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFrame sheetStates = new JFrame();
-                CreateModalityPanel  modalityCreate = new CreateModalityPanel();
-                sheetStates.getContentPane().add(modalityCreate);
+                CreateStateEvent  stateCreate = new CreateStateEvent();
+                sheetStates.getContentPane().add(stateCreate);
                 sheetStates.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 sheetStates.addWindowListener(new WindowAdapter(){
                 	public void windowClosing(WindowEvent e) {
-                		estadoBean.selectAll();
-                		TableModel modelo = new EntityTableModel<>(estadosColNames, estados);
-                		estadosList.setModel(modelo);
+                		estados = estadoBean.selectAll();
+                		TableModel listModel = new EntityTableModel<>(estadosColNames, estados);
+                		estadosList.setModel(listModel);
                 	}
                 });
                 sheetStates.pack();
@@ -112,7 +117,7 @@ public class AuxiliaryListofEventStatesPanel extends JPanel{
                         sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         sheetEvent.addWindowListener(new WindowAdapter(){
                         	public void windowClosing(WindowEvent e) {
-                        		estadoBean.selectAll();
+                        		estados = estadoBean.selectAll();
                         		TableModel modelo = new EntityTableModel<>(estadosColNames, estados);
                         		estadosList.setModel(modelo);
                         	}
