@@ -15,6 +15,7 @@ import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
 import com.services.EventoBeanRemote;
 import com.services.ItrBeanRemote;
+import com.services.TutorBeanRemote;
 
 import java.awt.Insets;
 
@@ -34,6 +35,7 @@ public class EventsPanel extends JPanel{
 
 		private EventoBeanRemote eventoBeanRemote;
 		private ItrBeanRemote itrBeanRemote;
+		private TutorBeanRemote tutorBeanRemote;
 
 		
 
@@ -41,8 +43,10 @@ public class EventsPanel extends JPanel{
 			 
 			eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 			itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+			tutorBeanRemote = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 
-			CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote);
+
+			CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
 
 			setBackground(new Color(255, 255, 255));
 
