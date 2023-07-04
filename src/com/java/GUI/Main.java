@@ -113,7 +113,6 @@ public class Main extends JFrame {
 		gbc_cardPanel.anchor = GridBagConstraints.CENTER;
 		gbc_cardPanel.gridx = 0;
 		gbc_cardPanel.gridy = 0;
-		
 
         contentPane.add(cardPanel, gbc_cardPanel);
 	}
