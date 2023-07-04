@@ -58,6 +58,7 @@ public class UsersListPanel extends JPanel {
 		setLayout(new MigLayout("", "[89px][176.00px,grow][]", "[][][][][23px,grow][][][][][][][][][][][]"));
 		
 		JButton btnEditUser = new JButton("");
+		btnEditUser.setToolTipText("Modificar usuario");
 		btnEditUser.setIcon(new ImageIcon(UsersListPanel.class.getResource("/com/java/resources/images/edit-user.png")));
 		btnEditUser.setFont(new Font("sansserif", 1, 12));
 		btnEditUser.setForeground(new Color(30, 122, 236));
@@ -114,6 +115,7 @@ public class UsersListPanel extends JPanel {
 		add(btnEditUser, "cell 2 1");
 		
 		JButton btnDeleteUser = new JButton("");
+		btnDeleteUser.setToolTipText("Dar de baja a usuario");
 		btnDeleteUser.setIcon(new ImageIcon(UsersListPanel.class.getResource("/com/java/resources/images/delete-user.png")));
 		btnDeleteUser.setFont(new Font("sansserif", 1, 12));
 		btnDeleteUser.setForeground(new Color(30, 122, 236));
@@ -194,6 +196,89 @@ public class UsersListPanel extends JPanel {
 			}
 		});
 		add(btnDeleteUser, "cell 2 2");
+		
+		JButton btnAddUser = new JButton("");
+		btnAddUser.setToolTipText("Activar usuario");
+		btnAddUser.setIcon(new ImageIcon(UsersListPanel.class.getResource("/com/java/resources/images/add-user.png")));
+		btnAddUser.setFont(new Font("sansserif", 1, 12));
+		btnAddUser.setForeground(new Color(30, 122, 236));
+		btnAddUser.setContentAreaFilled(false);
+		btnAddUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnAddUser.setBorder(null);
+		btnAddUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+					@Override
+		            protected String doInBackground() throws Exception {
+
+		                if(table.getSelectionModel().isSelectionEmpty()) {
+		                	int resultCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "Elija un nombre de usuario que desee dar de alta.", "¡Atención!", JOptionPane.OK_CANCEL_OPTION);
+		                	if(resultCode == JOptionPane.CANCEL_OPTION) {
+		                		return null;
+		                	}
+		                }
+						
+						while (table.getSelectedRow() < 0 || table.getSelectedColumn() < 0) {
+		                    Thread.sleep(100); // Wait para no sobreecargar cpu
+		                }
+						
+						int selectedRow = table.getSelectedRow();
+						int selectedColumn = table.getSelectedColumn();
+						int activoColumn = table.getColumn("Activo").getModelIndex();
+
+						if(!table.getColumnName(selectedColumn).equals("NombreUsuario")) {
+							table.clearSelection();
+		                	return null;
+		                }
+						
+						if(!table.getValueAt(selectedRow, activoColumn).equals((byte) 0)) {
+							return null;
+						}
+		                
+		                table.clearSelection();
+		                String cellValue = table.getValueAt(selectedRow, selectedColumn).toString();
+		                return cellValue;
+					}
+					@Override
+		            protected void done() {
+						try {
+		            		String cellValue = get();
+		            		if(cellValue == null) {
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "Ups! La columna seleccionada no es nombre de usuario o el usuario ya se encuentra dado de alta :D.\nIntente de nuevo");
+		            			return;
+		            		}
+		            		if(cellValue.equals("1")) {
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Hey! El usuario ya se encuentra dado de alta :)");
+		            			return;
+		            		}
+		            		int optionCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "¿Está seguro que desea dar de alta al usuario: " + cellValue + "?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+		            		if(optionCode == JOptionPane.NO_OPTION) {
+		            			return;
+		            		}
+		            		int exitCode = usuarioBean.activeUserBy(cellValue);
+		            		if(exitCode == 0) {
+		            			List<Usuario> users = usuarioBean.selectAll();
+		            			String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
+		            					.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
+		            							&& !value.equals("contrasenia"))
+		            					.toArray(String[]::new);
+		            			String[] transientCols = {"tipoUsuario", "generacion"};
+		            			TableModel usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
+		            			table.setModel(usersTableModel);
+		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Yep! El usuario ha sido dado de alta exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
+		            			return;
+		            		}
+		            		JOptionPane.showMessageDialog(UsersListPanel.this, "¡Oh no :(! Ocurrió un error mientras intentabamos dar de alta al usuario: " + cellValue + "\n Por favor, intente de nuevo más tarde");
+		            	} catch (Exception e) {
+		            		e.printStackTrace();
+		            	}
+					}
+				};
+				worker.execute();
+			}
+		});
+		add(btnAddUser, "cell 2 3");
 		
 		JLabel lblFilterTitle = new JLabel("Filtrar por:");
 		add(lblFilterTitle, "cell 0 3");
@@ -315,6 +400,7 @@ public class UsersListPanel extends JPanel {
 					lblGeneration.setVisible(false);
 					spinnerYearGen.setEnabled(false);
 					spinnerYearGen.setVisible(false);
+					spinnerYearGen.setValue(ACTUAL_YEAR);
 					filters.remove("gen");
 				}
 				String selectedUserType = (String) comboBoxUserType.getSelectedItem();
