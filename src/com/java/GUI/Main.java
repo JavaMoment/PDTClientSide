@@ -3,11 +3,14 @@ package com.java.GUI;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,6 +36,8 @@ import com.services.UsuarioBeanRemote;
 
 
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class Main extends JFrame {
@@ -84,8 +89,8 @@ public class Main extends JFrame {
 		setLocationRelativeTo(null);
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("UTEC ERP");
-		//initUserMngmnt();
-		initLogin();
+		initUserMngmnt();
+		//initLogin();
 	}
 	
 	public void initLogin() {
@@ -157,20 +162,36 @@ public class Main extends JFrame {
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabs, "userManagement");
 		
+		JButton logout = new JButton ();
+		logout.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/icons8-go-back-16.png")));
+		logout.setBackground(new Color(125, 229, 251));
+		logout.setForeground(new Color(40, 40, 40));
+		logout.setContentAreaFilled(false);
+		logout.setBorder(null);
+		logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		logout.setToolTipText("Click aquí para volver hacia el menú de Home");
+	    logout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+		        initHome();
+				revalidate();
+			}
+		});
+
+	    tabs.addTab("", null, new JPanel(), null);
+	    
+	    tabs.setTabComponentAt(tabs.getTabCount() - 1, logout);
+		
 		JPanel panel = new UsersListPanel(usuarioBean, itrBean);
 		tabs.addTab("Listado de usuarios", null, panel, null);
 		
 		JPanel panel2 = new JPanel();
-		tabs.addTab("Modificación de usuarios", null, panel2, null);
-		
-		JPanel panel3 = new JPanel();
-		tabs.addTab("Modificación de usuarios", null, panel3, null);
+		tabs.addTab("Modificación de datos de usuario/s", null, panel2, null);
 		
 		JPanel panel4 = new JPanel();
 		tabs.addTab("Modificación de datos propios", null, panel4, null);
 		
-		JPanel panel5 = new JPanel();
-		tabs.addTab("Baja de usuarios", null, panel5, null);
+		tabs.setSelectedIndex(1);
 	}
 
 }
