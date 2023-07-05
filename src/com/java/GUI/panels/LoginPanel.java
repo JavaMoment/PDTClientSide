@@ -60,9 +60,8 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// Implementar logica para ingreso a sistema
-				String emailOrUsername = txtFieldMail.getText();
-				char[] passwArr = passwordField.getPassword();
-				String passw = new String(passwArr);
+				String emailOrUsername = txtFieldMail.getText().trim();
+				String passw = new String(passwordField.getPassword());
 				
 				if(emailOrUsername.isEmpty() || passw.isEmpty()) {
 					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
