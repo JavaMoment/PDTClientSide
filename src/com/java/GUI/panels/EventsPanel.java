@@ -24,7 +24,7 @@ import java.awt.Insets;
 public class EventsPanel extends JPanel{
 	
 		private CreateEventPanel createEvent;
-		private ListEventPanel listEvent = new ListEventPanel();
+		private ListEventPanel listEvent;
 		private ModifyEventPanel modifyEvent = new ModifyEventPanel();
 		private RemoveEventPanel removeEvent = new RemoveEventPanel();
 		private ModifyCallsEventPanel modifyCallsEvent = new ModifyCallsEventPanel();
@@ -47,6 +47,7 @@ public class EventsPanel extends JPanel{
 
 
 			CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
+			ListEventPanel listEvent = new ListEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
 
 			setBackground(new Color(255, 255, 255));
 

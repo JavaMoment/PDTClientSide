@@ -13,6 +13,10 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +25,24 @@ import com.services.EventoBeanRemote;
 import com.services.EventoBean;
 import com.entities.Itr;
 import com.entities.Tutor;
+import com.entities.Usuario;
 import com.services.ItrBeanRemote;
 import com.services.TutorBeanRemote;
 import com.enums.Modalidad;
 import com.enums.Status;
 import com.enums.TipoEvento;
+import com.java.GUI.utils.EntityTableModel;
+
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JMenuBar;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.SwingConstants;
+import javax.swing.JTable;
+import javax.swing.JScrollBar;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 public class CreateEventPanel extends JPanel {
     private JTextField titleField;
@@ -40,8 +55,14 @@ public class CreateEventPanel extends JPanel {
     private JComboBox comboBoxModalidad;
     private JComboBox comboBoxStatus;
     private JComboBox comboBoxItr;
-    private JComboBox comboBoxTutor;
     private List<Tutor> tutor;
+    private JTable tableOrigen;
+    private JTable tableDestino;
+    private DefaultTableModel tableModel;
+    private ArrayList <String> tutoresElegidos = new ArrayList <String>();
+	
+
+    
 
 
     public CreateEventPanel(EventoBeanRemote eventoBeanRemote, ItrBeanRemote itrBean, TutorBeanRemote tutorBean) {
@@ -69,7 +90,7 @@ public class CreateEventPanel extends JPanel {
 
         locationField = new JTextField();
 
-        JLabel tutorLabel = new JLabel("Tutor encargado:");
+        JLabel tutorLabel = new JLabel("Nombre de Usuario de Tutores");
 
         JLabel title = new JLabel("Crear Evento");
         title.setFont(new Font("Arial", Font.PLAIN, 21));
@@ -78,8 +99,13 @@ public class CreateEventPanel extends JPanel {
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (validateData() && validateDates()) {
-                    registerEvent(eventoBeanRemote, itrBean, tutorBean);
+                	
+                	//where in y popular con arraylist
+                    registerEvent(eventoBeanRemote, tutorBean);
+                    System.out.println(eventoBeanRemote.getColsNames().toString());
+                
                     showConfirmationMessage("El evento se registró correctamente.");
+                    
                 }
             }
         });
@@ -105,15 +131,63 @@ public class CreateEventPanel extends JPanel {
 
         comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
         
-  //      comboBoxTutor = new JComboBox(tutorBean.selectAll().toArray());
-        
-        comboBoxTutor = new JComboBox();
-        tutor = tutorBean.selectAll();
-        comboBoxTutor.setModel(new DefaultComboBoxModel(tutor.toArray()));
+        //codigo para pasar de una tabla de tutores a otra
 
+        tableOrigen = new JTable();
+       
+     
+       
+   
+		List<Tutor> tutores = tutorBean.selectAll();
+		String[] tutoresColNames = Arrays.stream(tutorBean.getColsNames())
+				.filter(value -> value.equals("usuario"))
+				.toArray(String[]::new);
+		
+		TableModel tutoresTableModel = new EntityTableModel<>(tutoresColNames, tutores);
+
+		tableOrigen.setModel(tutoresTableModel);
+		tableOrigen.setColumnSelectionAllowed(true);
+		tableOrigen.setCellSelectionEnabled(true);
+		
+		JScrollPane scrollPane = new JScrollPane ();
+		scrollPane.add(tableOrigen);
+		scrollPane.setViewportView(tableOrigen);
+
+		//PASAR A TABLEDESTINO
+		
+		
+        tableDestino = new JTable();
+        JButton btnAgregar = new JButton("Agregar tutor");
+     
+     
+        btnAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+            	DefaultTableModel DTM = new DefaultTableModel (tutoresColNames, 0); //0 es el header
+            	
+            	//selecciono los datos de la celda
+            	int selectedRow = tableOrigen.getSelectedRow();
+				int selectedColumn = tableOrigen.getSelectedColumn();
+                String cellValue = tableOrigen.getValueAt(selectedRow, selectedColumn).toString();
+                
+                //para agregar al arraylist
+                
+                tutoresElegidos.add(cellValue);
+               
+                
+                //agregar a la tabla
+            	DTM.addRow(tutoresElegidos.toArray());
+            	
+                tableDestino.setModel(DTM);
+               
+            }
+        });
+
+ 
         GroupLayout groupLayout = new GroupLayout(this);
         groupLayout.setHorizontalGroup(
-        	groupLayout.createParallelGroup(Alignment.TRAILING)
+        	groupLayout.createParallelGroup(Alignment.LEADING)
         		.addGroup(groupLayout.createSequentialGroup()
         			.addGap(182)
         			.addComponent(title, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
@@ -141,18 +215,24 @@ public class CreateEventPanel extends JPanel {
         					.addComponent(titleField, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
         					.addComponent(titleLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)))
         			.addGap(236))
-        		.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+        		.addGroup(groupLayout.createSequentialGroup()
         			.addContainerGap()
-        			.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-        				.addComponent(comboBoxTutor, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        				.addComponent(comboBoxStatus, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        				.addComponent(tutorLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-        					.addGap(88)
-        					.addComponent(submitButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
-        					.addGap(68)
-        					.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(27, Short.MAX_VALUE))
+        			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(groupLayout.createSequentialGroup()
+        					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
+        					.addGap(18)
+        					.addComponent(btnAgregar)
+        					.addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+        					.addComponent(tableDestino, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(comboBoxStatus, 0, 511, Short.MAX_VALUE)
+        				.addComponent(tutorLabel, GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE))
+        			.addContainerGap(202, Short.MAX_VALUE))
+        		.addGroup(groupLayout.createSequentialGroup()
+        			.addGap(103)
+        			.addComponent(submitButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+        			.addGap(62)
+        			.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(322, Short.MAX_VALUE))
         );
         groupLayout.setVerticalGroup(
         	groupLayout.createParallelGroup(Alignment.LEADING)
@@ -193,13 +273,20 @@ public class CreateEventPanel extends JPanel {
         			.addComponent(comboBoxStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         			.addGap(14)
         			.addComponent(tutorLabel)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(comboBoxTutor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(32)
+        			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(groupLayout.createSequentialGroup()
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+        						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(tableDestino, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
+        				.addGroup(groupLayout.createSequentialGroup()
+        					.addGap(20)
+        					.addComponent(btnAgregar)))
+        			.addGap(30)
         			.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(submitButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
         				.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-        			.addContainerGap())
+        			.addGap(52))
         );
         setLayout(groupLayout);
         typeLabel = new JLabel("Tipo de evento:");
@@ -242,7 +329,7 @@ public class CreateEventPanel extends JPanel {
     }
 
 
-    private void registerEvent(EventoBeanRemote eventoBeanRemote, ItrBeanRemote itrBean, TutorBeanRemote tutorBean) {
+    private void registerEvent(EventoBeanRemote eventoBeanRemote, TutorBeanRemote tutorBean) {
         String titulo = titleField.getText();
         Date fechaHoraInicio = startDateChooser.getDate();
         Date fechaHoraFinal = endDateChooser.getDate();
@@ -251,9 +338,10 @@ public class CreateEventPanel extends JPanel {
         TipoEvento tipoEvento = (TipoEvento) comboBoxTipoEvento.getSelectedItem();
         Modalidad modalidad = (Modalidad) comboBoxModalidad.getSelectedItem();
         Status status = (Status) comboBoxStatus.getSelectedItem();
-        List<Tutor> tutores = (List<Tutor>) comboBoxTutor.getSelectedItem();
+     
+        
 
-        Evento newEvento = new Evento(titulo, tipoEvento, fechaHoraInicio, fechaHoraFinal, modalidad, itr, localizacion, status, tutores);
+        Evento newEvento = new Evento(titulo, tipoEvento, fechaHoraInicio, fechaHoraFinal, modalidad, itr, localizacion, status, tutor);
 
         int exitCode = eventoBeanRemote.create(newEvento);
         if (exitCode == 0) {
