@@ -2,6 +2,7 @@ package com.java.GUI.panels;
 
 import javax.swing.JButton;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -17,6 +18,7 @@ import java.util.List;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -98,7 +100,20 @@ public class UsersListPanel extends ContentPanel {
 		            			JOptionPane.showMessageDialog(UsersListPanel.this, "Ups! La columna seleccionada no es nombre de usuario. Intente de nuevo,");
 		            			return;
 		            		}
+		            		int optionCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "¿Está seguro que desea modificar al usuario: " + cellValue + "?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+		            		if(optionCode == JOptionPane.NO_OPTION) {
+		            			return;
+		            		}
 		            		JOptionPane.showMessageDialog(UsersListPanel.this, "El nombre de usuario seleccionado es: " + cellValue);
+		            		JTabbedPane jtp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, UsersListPanel.this);
+		            		jtp.setSelectedIndex(2);
+		            		jtp.revalidate();
+		            		
+		            		Usuario user = usuarioBean.selectUserBy(cellValue);
+		            		
+		            		UserDataModificationPanel usrDataModPanel = ((UserDataModificationPanel) ((JScrollPane) jtp.getSelectedComponent()).getViewport().getView());
+		            		usrDataModPanel.populateComponents(user);
+		            		
 		            	} catch (Exception e) {
 		            		e.printStackTrace();
 		            	}

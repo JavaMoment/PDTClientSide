@@ -18,12 +18,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
+import com.entities.Usuario;
 import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.ContentPanel;
 import com.java.GUI.panels.HomePanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
+import com.java.GUI.panels.UserDataModificationPanel;
 import com.java.GUI.panels.UsersListPanel;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
@@ -47,6 +49,7 @@ public class Main extends JFrame {
 	private JPanel contentPane;
 	private JPanel loginPanel;
 	private JPanel signupPanel; 
+	private Usuario user;
 	private static UsuarioBeanRemote usuarioBean;
 	private static DepartamentoBeanRemote depaBean;
 	private static LocalidadBeanRemote localidadBean;
@@ -184,11 +187,12 @@ public class Main extends JFrame {
 	    
 	    tabs.setTabComponentAt(tabs.getTabCount() - 1, logout);
 		
-		JPanel panel = new UsersListPanel(usuarioBean, itrBean);
-		tabs.addTab("Listado de usuarios", null, panel, null);
+		JPanel usersListPanel = new UsersListPanel(usuarioBean, itrBean);
+		tabs.addTab("Listado de usuarios", null, usersListPanel, null);
 		
-		JPanel panel2 = new JPanel();
-		tabs.addTab("Modificación de datos de usuario/s", null, panel2, null);
+		JPanel userDataModPanel = new UserDataModificationPanel();
+		JScrollPane scrollPane = new JScrollPane(userDataModPanel);
+		tabs.addTab("Modificación de datos de usuario/s", null, scrollPane, null);
 		
 		JPanel panel4 = new JPanel();
 		tabs.addTab("Modificación de datos propios", null, panel4, null);
