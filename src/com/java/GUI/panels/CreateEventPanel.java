@@ -240,14 +240,8 @@ public class CreateEventPanel extends JPanel {
     	    String itr = itrField.getText();
     	    String location = locationField.getText();
     	    
-    	    Evento newEvento = new Evento(title, type, startDate, endDate, modality, itr, location);
     	    
-    	    int exitCode = eventoBean.create(newEvento);
-			if(exitCode == 0) {
-				JOptionPane.showMessageDialog(CreateEventPanel.this, "El evento ha sido correctamente creado.");
-			} else {
-				JOptionPane.showMessageDialog(CreateEventPanel.this, "Ha ocurrido un error mientras se intentaba crear el evento.\nPor favor, intente de nuevo.");
-			}
+    	   
 
     }
 
@@ -289,13 +283,7 @@ public class CreateEventPanel extends JPanel {
     String itr = "12345";
     String location = "Sala de conferencias";
 
-    Evento newEvento = new Evento(title, type, startDate, endDate, modality, itr, location);
 
-    int exitCode = eventoBean.create(newEvento);
-    if (exitCode == 0) {
-        System.out.println("El evento se ha creado correctamente.");
-    } else {
-        System.out.println("Ha ocurrido un error al crear el evento.");
-    }
+ 
     }
 }

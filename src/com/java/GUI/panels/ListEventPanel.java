@@ -17,7 +17,7 @@ import java.util.Arrays;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.enums.Estado;
+import com.enums.Asistencia;
 import com.enums.Modalidad;
 import com.enums.TipoEvento;
 import com.java.GUI.utils.EntityTableModel;
@@ -39,7 +39,7 @@ public class ListEventPanel extends JPanel {
 	private EntityTableModel jtableModel;
 	private TipoEvento tipoEvento;
 	private Modalidad modalidad;
-	private Estado estado;
+	private Asistencia estado;
 
 	public ListEventPanel(){
 		
@@ -107,9 +107,7 @@ public class ListEventPanel extends JPanel {
 		JComboBox cBoxITR = new JComboBox();
 		
 		JComboBox cBoxEstado = new JComboBox();
-		cBoxEstado.addItem(estado.FUTURO);
-		cBoxEstado.addItem(estado.CORRIENTE);
-		cBoxEstado.addItem(estado.FINALIZADO);
+
 
 		
 		GroupLayout groupLayout = new GroupLayout(this);

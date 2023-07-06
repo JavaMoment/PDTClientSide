@@ -59,9 +59,6 @@ public class AuxiliaryListofEventStatesPanel extends JPanel{
                 .filter(value -> !value.equals("idEstado") && !value.equals("eventos"))
                 .toArray(String[]::new);
 		
-		for(String e : estadosColNames) {
-			System.out.println(e);
-		}
 				
 		estadosList = new JTable();
 		TableModel listModel = new EntityTableModel<>(estadosColNames, estados);

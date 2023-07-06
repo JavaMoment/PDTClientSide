@@ -7,8 +7,15 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import com.entities.Estado;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EstadoBeanRemote;
+import com.services.ModalidadBeanRemote;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
@@ -18,6 +25,9 @@ public class SheetModifyStatesEvent extends JPanel {
 	
 	public SheetModifyStatesEvent(Estado estado) {
 		
+		EstadoBeanRemote estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
+
+		
 		JLabel lblNewLabel = new JLabel("Modificaciones en:");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -26,12 +36,38 @@ public class SheetModifyStatesEvent extends JPanel {
 		textField.setColumns(10);
 		
 		JButton btnChangeName = new JButton("Cambiar nombre");
+		btnChangeName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = textField.getText();
+				estado.setNombre(name);
+				estadoBean.update(estado);
+				
+			}
+		});
 		
 		JButton btnActivar = new JButton("Activar estado ");
 		btnActivar.setFont(new Font("Arial", Font.PLAIN, 14));
+		btnActivar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int activo = 1;
+				estado.setActivo(activo);
+				estadoBean.update(estado);
+				
+			}
+		});
+		
 		
 		JButton btnDesactivar = new JButton("Desactivar estado ");
 		btnDesactivar.setFont(new Font("Arial", Font.PLAIN, 14));
+		btnDesactivar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int borrado = 0;
+				estado.setActivo(borrado);
+				estadoBean.update(estado);
+				
+			}
+		});
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
