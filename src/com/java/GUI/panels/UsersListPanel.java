@@ -1,6 +1,5 @@
 package com.java.GUI.panels;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.RowFilter;
 import javax.swing.SwingWorker;
@@ -10,11 +9,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +39,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class UsersListPanel extends JPanel {
+public class UsersListPanel extends ContentPanel {
 
 	private JTable table;
 	private JTextField textFieldSearch;
@@ -541,20 +536,4 @@ public class UsersListPanel extends JPanel {
 		
 	}
 	
-	@Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        Graphics2D g2d = (Graphics2D) g.create();
-        
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        
-        Color skyBlue = new Color(135, 206, 235, 250);
-        
-        g2d.setPaint(skyBlue);
-        g2d.fillRect(0, 0, panelWidth, panelHeight);
-        
-        g2d.dispose();
-    }
 }
