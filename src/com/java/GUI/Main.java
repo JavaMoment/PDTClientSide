@@ -16,9 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
+import com.java.GUI.panels.ContentPanel;
 import com.java.GUI.panels.HomePanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
@@ -155,7 +157,7 @@ public class Main extends JFrame {
 	}
 	
 	public void initUserMngmnt() {
-		contentPane = new JPanel();
+		contentPane = new ContentPanel();
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
