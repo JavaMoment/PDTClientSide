@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -35,6 +34,8 @@ import com.entities.Localidad;
 import com.entities.Tutor;
 import com.entities.Usuario;
 import com.enums.Roles;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.java.enums.Genres;
 import com.services.AnalistaBeanRemote;
 import com.services.AreaBeanRemote;
@@ -59,17 +60,13 @@ public class UserDataModificationPanel extends ContentPanel {
 	private JLabel lblItr;
 	private JLabel lblLastName1;
 	private JLabel lblLastName2;
-	private JLabel lblPassw2;
 	private JLabel lblName1;
 	private JLabel lblName2;
-	private JLabel lblPassword;
 	private JLabel lblPhone;
 	private JLabel lblUserType;
 	private JLabel lblGen;
 	private JLabel lblArea;
 	private JLabel lblRol;
-	private JPasswordField txtfldPassword;
-	private JPasswordField txtFldPassw2;
 	private JTextField txtFieldMail1;
 	private JTextField txtFieldEmail;
 	private JTextField txtFieldName1;
@@ -86,23 +83,25 @@ public class UserDataModificationPanel extends ContentPanel {
 	private JComboBox comboBoxRol;
 	private JComboBox comboBoxArea;
 	private JSpinner spinnGen;
-	private JButton btnSignup;
-	private JButton btnGoBack;
+	private JButton btnModify;
 	private JDateChooser dcBirthdate;
+	private JButton btnCancel;
 
-	private LocalidadBeanRemote localidadBean;
-	private TutorBeanRemote tutorBean;
-	private EstudianteBeanRemote estudBean;
-	private AnalistaBeanRemote analiBean;
-	private UsuarioBeanRemote usuarioBean;
-	private ItrBeanRemote itrBean;
-	private DepartamentoBeanRemote depaBean;
-	private AreaBeanRemote areaBean;
+	private LocalidadBeanRemote localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
+	private TutorBeanRemote tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);;
+	private EstudianteBeanRemote estudBean = BeansFactory.getBean(Beans.Estudiante, EstudianteBeanRemote.class);;
+	private AnalistaBeanRemote analiBean = BeansFactory.getBean(Beans.Analista, AnalistaBeanRemote.class);;
+	private UsuarioBeanRemote usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);;
+	private ItrBeanRemote itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);;
+	private DepartamentoBeanRemote depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);;
+	private AreaBeanRemote areaBean = BeansFactory.getBean(Beans.Area, AreaBeanRemote.class);
+	
+	private Usuario user;
 	
 	public UserDataModificationPanel() {
-
+		
         lblMail1 = new JLabel("Correo personal (*):");
-        lblSignUpTitle = new JLabel("Registro");
+        lblSignUpTitle = new JLabel("Modificación de los datos del usuario");
         lblBirthdate = new JLabel("Fecha de nacimiento (*):");
         lblCi = new JLabel("Cédula de identidad (*):");
         lblCity = new JLabel("Ciudad de residencia (*):");
@@ -112,10 +111,8 @@ public class UserDataModificationPanel extends ContentPanel {
         lblItr = new JLabel("ITR a la que pertenece (*):");
         lblLastName1 = new JLabel("Primer apellido (*):");
         lblLastName2 = new JLabel("Segundo apellido (*):");
-        lblPassw2 = new JLabel("Re-ingrese su contraseña (*):");
         lblName1 = new JLabel("Primer nombre (*):");
         lblName2 = new JLabel("Segundo nombre:");
-        lblPassword = new JLabel("Contraseña (*):");
         lblPhone = new JLabel("Télefono:");
         lblUserType = new JLabel("Tipo de usuario (*):");
         lblGen = new JLabel("Generación de ingreso a la carrera (*): ");
@@ -128,14 +125,11 @@ public class UserDataModificationPanel extends ContentPanel {
         lblRol.setVisible(false);
         lblRol.setEnabled(false);
         
-        txtfldPassword = new JPasswordField();
-        txtFldPassw2 = new JPasswordField();
         txtFieldMail1 = new JTextField();
         txtFieldEmail = new JTextField();
         txtFieldName1 = new JTextField();
         txtFieldName2 = new JTextField();
         txtFieldCi = new JTextField();
-        txtFieldEmail = new JTextField();
         txtFieldLastName1 = new JTextField();
         txtFieldLastname2 = new JTextField();
         txtFieldPhone = new JTextField();
@@ -226,7 +220,8 @@ public class UserDataModificationPanel extends ContentPanel {
 			}
         });
 
-        btnSignup = new JButton("Registrarme!");
+        btnModify = new JButton("Modificar");
+        btnCancel = new JButton("Cancelar");
         
         dcBirthdate = new JDateChooser();
 
@@ -235,16 +230,16 @@ public class UserDataModificationPanel extends ContentPanel {
         lblSignUpTitle.setFont(new Font("sansserif", 1, 48));
         lblSignUpTitle.setForeground(new Color(69, 68, 68));
         lblSignUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        btnCancel.setBackground(new Color(244, 113, 116));
 
-        btnSignup.setBackground(new Color(125, 229, 251));
-        btnSignup.setForeground(new Color(40, 40, 40));
-        btnSignup.addMouseListener(new MouseAdapter() {
+        btnModify.setBackground(new Color(125, 229, 251));
+        btnModify.setForeground(new Color(40, 40, 40));
+        btnModify.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String email = txtFieldEmail.getText().trim();
-				String passw = new String(txtfldPassword.getPassword());
-				String passw2 = new String(txtFldPassw2.getPassword());
 				String lastName1 = txtFieldLastName1.getText().trim();
 				String lastName2 = txtFieldLastname2.getText().trim();
 				String name1 = txtFieldName1.getText().trim();
@@ -284,18 +279,6 @@ public class UserDataModificationPanel extends ContentPanel {
 					return;
 				}
 				
-				if(!passw.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$") || !passw2.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=]).{8,}$")) {
-					// Muestra un mensaje de error si la contraseña no cumple con los requisitos mínimos
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this,
-							"Por favor ingrese una contraseña válida que contenga al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y tenga una longitud de al menos 8 caracteres.");
-					return;
-				}
-				
-				if(!passw.equals(passw2)) {
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Las contraseñas no coinciden.");
-					return;
-				}
-				
 				if((txtFieldName1.getText().length() > 50) || (txtFieldName2.getText().length() > 50)) {
 					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "El largo del nombre es mayor al máximo permitido (50 caracteres)");
 					return;
@@ -316,11 +299,7 @@ public class UserDataModificationPanel extends ContentPanel {
 					return;
 				}
 				
-				Usuario newUser = new Usuario(username, lastName1, lastName2,
-						passw, ci, birthdate,
-						genre, depa, itr,
-						city, email, personalMail,
-						name1);
+				Usuario newUser = new Usuario();
 
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
@@ -375,8 +354,6 @@ public class UserDataModificationPanel extends ContentPanel {
 				dcBirthdate.setDate(Date.from(Instant.now()));
 				txtFieldLastname2.setText("");
 				txtFieldPhone.setText("");
-				txtfldPassword.setText("");
-				txtFldPassw2.setText("");
 			}
 		});
         
@@ -391,7 +368,6 @@ public class UserDataModificationPanel extends ContentPanel {
                 .addContainerGap(50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblEmail)
-                    .addComponent(lblPassword)
                     .addComponent(lblMail1)
                     .addComponent(lblBirthdate)
                     .addComponent(dcBirthdate)
@@ -414,11 +390,6 @@ public class UserDataModificationPanel extends ContentPanel {
                     .addComponent(comboBoxDepas)
                     .addComponent(lblUserType)
                     .addComponent(lblSignUpTitle, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                    .addComponent(txtfldPassword, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFldPassw2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSignup, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGoBack, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblPassw2)
                     .addComponent(txtFieldMail1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFieldEmail, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(txtFieldName1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -432,7 +403,14 @@ public class UserDataModificationPanel extends ContentPanel {
 	                .addComponent(comboBoxRol, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(lblArea)
 	                .addComponent(comboBoxArea, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+            		.addContainerGap(50, Short.MAX_VALUE)
+            		.addComponent(btnModify, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            		.addComponent(btnCancel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+            		.addContainerGap(25, Short.MAX_VALUE)
+            		)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -448,13 +426,6 @@ public class UserDataModificationPanel extends ContentPanel {
                 .addGap(0, 0, 0)
                 .addComponent(txtFieldEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(lblPassword, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(txtfldPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblPassw2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(txtFldPassw2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblName1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -516,11 +487,14 @@ public class UserDataModificationPanel extends ContentPanel {
                 .addGap(0, 0, 0)
                 .addComponent(comboBoxRol, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addGap(30, 30, 30)
-                .addComponent(btnSignup, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(1)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(btnGoBack)
-                .addGap(30, 30, 30))
+                .addGroup(layout.createBaselineGroup(false, false)
+                		.addComponent(btnModify)
+                		.addComponent(btnCancel)
+                		.addGap(30))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                		)
         );
 	}
 	
@@ -562,5 +536,36 @@ public class UserDataModificationPanel extends ContentPanel {
 	    return mod == Integer.parseInt(checkerDigit);
 	}
 
+	public void setUser(Usuario user) {
+		this.user = user;
+	}
+	
+	public void populateComponents(Usuario user) {
+		if(this.user == null) {
+			if(user == null) {
+				String chooseCode = JOptionPane.showInputDialog("Ingrese el nombre de usuario de la persona a modificar:");
+				user = usuarioBean.selectUserBy(chooseCode);
+			}
+		}
+		txtFieldMail1.setText(user.getMailPersonal());
+		txtFieldEmail.setText(user.getMailInstitucional());
+		txtFieldName1.setText(user.getNombre1());
+		txtFieldName2.setText(user.getNombre2());
+		
+		txtFieldCi = new JTextField();
+        txtFieldLastName1 = new JTextField();
+        txtFieldLastname2 = new JTextField();
+        txtFieldPhone = new JTextField();
+        
+        var txtFields = List.of(txtFieldMail1, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
+        		txtFieldEmail, txtFieldLastName1);
+        
+        comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
+        comboBoxGenre = new JComboBox<Genres>(Genres.values());
+        comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
+        comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
+        comboBoxUserType = new JComboBox<String>(userTypes);
+
+	}
 }
 	
