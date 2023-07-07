@@ -28,7 +28,7 @@ public class SheetModifyStatesEvent extends JPanel {
 		EstadoBeanRemote estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
 		
-		JLabel lblNewLabel = new JLabel("Modificaciones en:");
+		JLabel lblNewLabel = new JLabel("Modificaciones en: " + estado.getNombre());
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		

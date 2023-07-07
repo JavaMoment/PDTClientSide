@@ -14,6 +14,8 @@ public enum Beans {
 	StatusCertificados,
 	Area,
 	Modalidad, 
-	Estado
+	Estado,
+	EstudianteEventoPK,
+	EstudianteEvento
 
 }

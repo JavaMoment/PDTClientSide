@@ -65,7 +65,7 @@ public class AuxiliaryListofEventStatesPanel extends JPanel{
 		estadosList.setModel(listModel);
 		scrollPane.setViewportView(estadosList);
 		
-		JButton btnNewButton = new JButton("AGREAGAR NUEVA MODALIDAD");
+		JButton btnNewButton = new JButton("AGREAGAR NUEVO ESTADO");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFrame sheetStates = new JFrame();
