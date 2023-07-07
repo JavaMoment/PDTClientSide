@@ -104,6 +104,7 @@ public class LoginPanel extends JPanel {
 					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
 			        main.initHome();
 					main.revalidate();
+					main.setUser(userBDD);
 				}
 				txtFieldMail.setText("");
 				passwordField.setText("");
