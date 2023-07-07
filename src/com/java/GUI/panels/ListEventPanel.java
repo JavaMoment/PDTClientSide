@@ -176,13 +176,13 @@ public class ListEventPanel extends JPanel {
 						Modalidad modalidad = (Modalidad) rowData[4];
 						Status status = (Status) rowData[5];
 
-						List<Tutor> tutoresSeleccionados = obtenerTutoresSeleccionados(); // Obtener la lista de tutores seleccionados
+						String tutorSeleccionado = obtenerNombreTutor(); // Obtener la lista de tutores
+																							// seleccionados
 
-						
-						SheetEventPanel sheetEventPanel = new SheetEventPanel(titulo, fechaHoraInicio, fechaHoraFinal, itr, localizacion, tipoEvento, modalidad, status);
-						sheetEventPanel.setTutoresSeleccionados(tutoresSeleccionados);
+						SheetEventPanel sheetEventPanel = new SheetEventPanel(titulo, fechaHoraInicio, fechaHoraFinal,
+								itr, localizacion, tipoEvento, modalidad, status);
+						sheetEventPanel.setTutorSeleccionado(tutorSeleccionado);
 
-						
 						sheetEventPanel.setTitulo(titulo);
 						sheetEventPanel.setFechaHoraInicio(fechaHoraInicio);
 						sheetEventPanel.setFechaHoraFinal(fechaHoraFinal);
@@ -201,6 +201,19 @@ public class ListEventPanel extends JPanel {
 					}
 				}
 			}
+
+			private String obtenerNombreTutor() {
+				
+
+				int selectedRows = tableEvents.getSelectedRow();
+				
+				String nombreTutor = (String) tableEvents.getValueAt (selectedRows, 8);
+				
+				System.out.println(nombreTutor);
+				
+				return nombreTutor;
+			}
+
 		});
 
 		GroupLayout groupLayout = new GroupLayout(this);

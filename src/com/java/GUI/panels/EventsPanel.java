@@ -25,7 +25,7 @@
 		
 			private CreateEventPanel createEvent;
 			private ListEventPanel listEvent;
-			private ModifyEventPanel modifyEvent = new ModifyEventPanel();
+			private ModifyEventPanel modifyEvent;
 			private RemoveEventPanel removeEvent = new RemoveEventPanel();
 			private ModifyCallsEventPanel modifyCallsEvent = new ModifyCallsEventPanel();
 			private RegisterCallsEventPanel registerCallsEvent = new RegisterCallsEventPanel();
@@ -36,7 +36,6 @@
 			private EventoBeanRemote eventoBeanRemote;
 			private ItrBeanRemote itrBeanRemote;
 			private TutorBeanRemote tutorBeanRemote;
-	
 			
 	
 			 public EventsPanel() {
@@ -44,10 +43,11 @@
 				eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 				itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
 				tutorBeanRemote = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
-	
+					
 	
 				CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
 				ListEventPanel listEvent = new ListEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
+				ModifyEventPanel modifyEvent = new ModifyEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
 	
 				setBackground(new Color(255, 255, 255));
 	

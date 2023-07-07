@@ -26,17 +26,17 @@ public class SheetEventPanel extends JPanel {
 	private JTextField txtTipoEvento;
 	private JTextField txtModalidad;
 	private JTextField txtStatus;
-	private JTextField txtTutoresSeleccionados;
+	private JTextField txtTutorSeleccionado;
 
 	public SheetEventPanel(String titulo, Date fechaHoraInicio, Date fechaHoraFinal, Itr itr, String localizacion,
             TipoEvento tipoEvento, Modalidad modalidad, Status status) {
 	    setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][][]"));
-
+		    
 	    JLabel lblTitulo = new JLabel("Ficha Evento");
 	    lblTitulo.setFont(new Font("Verdana", Font.PLAIN, 31));
 	    lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 	    add(lblTitulo, "cell 1 0 3 1");
-
+	    
 	    JLabel lblTituloEvento = new JLabel("Título:");
 	    add(lblTituloEvento, "cell 1 1");
 
@@ -100,13 +100,13 @@ public class SheetEventPanel extends JPanel {
 		add(txtStatus, "cell 2 8");
 		txtStatus.setColumns(20);
 
-		JLabel lblTutoresSeleccionados = new JLabel("Tutores Seleccionados:");
-		add(lblTutoresSeleccionados, "cell 1 9");
+		JLabel lblTutorSeleccionado= new JLabel("Tutor Seleccionado:");
+		add(lblTutorSeleccionado, "cell 1 9");
 
-		txtTutoresSeleccionados = new JTextField();
-		txtTutoresSeleccionados.setEditable(false);
-		add(txtTutoresSeleccionados, "cell 2 9");
-		txtTutoresSeleccionados.setColumns(20);
+		txtTutorSeleccionado = new JTextField();
+		txtTutorSeleccionado.setEditable(false);
+		add(txtTutorSeleccionado, "cell 2 9");
+		txtTutorSeleccionado.setColumns(20);
 
 		// Establecer los datos del evento en los componentes correspondientes
 	    txtTitulo.setText(titulo);
@@ -154,15 +154,8 @@ public class SheetEventPanel extends JPanel {
 		txtStatus.setText(status.toString());
 	}
 
-	public void setTutoresSeleccionados(List<Tutor> tutoresSeleccionados) {
-		StringBuilder tutores = new StringBuilder();
-		for (Tutor tutor : tutoresSeleccionados) {
-			tutores.append(tutor.toString()).append(", ");
-		}
-		String tutoresSeleccionadosText = tutores.toString();
-		if (tutoresSeleccionadosText.length() > 0) {
-			tutoresSeleccionadosText = tutoresSeleccionadosText.substring(0, tutoresSeleccionadosText.length() - 2);
-		}
-		txtTutoresSeleccionados.setText(tutoresSeleccionadosText);
+	public void setTutorSeleccionado(String tutorSeleccionado) {
+		
+		txtTutorSeleccionado.setText(tutorSeleccionado);
 	}
 }
