@@ -99,12 +99,17 @@ public class SignUpPanel extends JPanel {
 	
 	private DepartamentoBeanRemote depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);
 	private LocalidadBeanRemote localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
+	private UsuarioBeanRemote usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
+	private ItrBeanRemote itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+	private AnalistaBeanRemote analiBean = BeansFactory.getBean(Beans.Analista, AnalistaBeanRemote.class);
+	private EstudianteBeanRemote estudBean = BeansFactory.getBean(Beans.Estudiante, EstudianteBeanRemote.class);
+	private AreaBeanRemote areaBean = BeansFactory.getBean(Beans.Area, AreaBeanRemote.class);
+	private TutorBeanRemote tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 
 	/**
 	 * Create the panel.
 	 */
-	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean,
-			EstudianteBeanRemote estudBean, AreaBeanRemote areaBean, TutorBeanRemote tutorBean) {
+	public SignUpPanel(JPanel contentPane) {
 		
         lblMail1 = new JLabel("Correo personal (*):");
         lblSignUpTitle = new JLabel("Registro");
