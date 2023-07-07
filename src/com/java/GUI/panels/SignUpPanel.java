@@ -35,6 +35,8 @@ import com.entities.Estudiante;
 import com.entities.Localidad;
 import com.entities.Tutor;
 import com.entities.Itr;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.java.enums.Genres;
 import com.services.AnalistaBeanRemote;
 import com.services.AreaBeanRemote;
@@ -95,12 +97,13 @@ public class SignUpPanel extends JPanel {
 	private JLabel lblRol;
 	private JComboBox comboBoxRol;
 	
+	private DepartamentoBeanRemote depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);
+	private LocalidadBeanRemote localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
 
 	/**
 	 * Create the panel.
 	 */
-	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, DepartamentoBeanRemote depaBean,
-			LocalidadBeanRemote localidadBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean,
+	public SignUpPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean, ItrBeanRemote itrBean, AnalistaBeanRemote analiBean,
 			EstudianteBeanRemote estudBean, AreaBeanRemote areaBean, TutorBeanRemote tutorBean) {
 		
         lblMail1 = new JLabel("Correo personal (*):");
@@ -222,8 +225,7 @@ public class SignUpPanel extends JPanel {
 			public void itemStateChanged(ItemEvent e) {
 				// TODO Auto-generated method stub
 				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
-				long idDepa = (long) depa.getIdDepartamento();
-				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllBy(idDepa).toArray()));
+				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllByObject(depa).toArray()));
 			}
         });
 
@@ -307,7 +309,7 @@ public class SignUpPanel extends JPanel {
 				}
 				
 				if(!passw.equals(passw2)) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas no coinciden.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas nuevas no coinciden.");
 					return;
 				}
 				
@@ -346,6 +348,11 @@ public class SignUpPanel extends JPanel {
 					newUser.setNombre2(txtFieldName2.getText());
 				}
 				
+				int answerCode = JOptionPane.showConfirmDialog(SignUpPanel.this, "Su solicitud será revisada antes de activar su cuenta.\n¿Está de acuerdo?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+				if(answerCode == 1) {
+					return;
+				}
+				
 				int exitCode = usuarioBean.create(newUser);
 				if(exitCode != 0) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
@@ -375,11 +382,8 @@ public class SignUpPanel extends JPanel {
 						break;
 				}
 
+				
 				if(exitCode == 0) {
-					int answerCode = JOptionPane.showConfirmDialog(SignUpPanel.this, "Su solicitud será revisada antes de activar su cuenta.\n¿Está de acuerdo?", "¡Atención!", JOptionPane.YES_NO_OPTION);
-					if(answerCode == 1) {
-						return;
-					}
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");
 				} else {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
