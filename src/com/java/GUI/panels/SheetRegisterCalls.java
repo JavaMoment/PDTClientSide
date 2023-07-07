@@ -4,6 +4,11 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,12 +17,17 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import com.entities.Estudiante;
+import com.entities.EstudianteEvento;
+import com.entities.EstudianteEventoPK;
 import com.entities.Evento;
 import com.java.GUI.utils.EntityTableModel;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
 import com.services.EstudianteBeanRemote;
+import com.services.EstudianteEventoBeanRemote;
+
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 public class SheetRegisterCalls extends JPanel {
 	
@@ -31,10 +41,11 @@ public class SheetRegisterCalls extends JPanel {
 	public SheetRegisterCalls(Evento evento) {
 		
 		EstudianteBeanRemote estudiantesBean = BeansFactory.getBean(Beans.Estudiante, EstudianteBeanRemote.class);
+		EstudianteEventoBeanRemote estudianteventoBean = BeansFactory.getBean(Beans.EstudianteEvento, EstudianteEventoBeanRemote.class);
 
 		setLayout(new MigLayout("", "[125,center][158.00,center][128.00,center][130,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 		
-		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTO");
+		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTO AL " + evento.getTitulo());
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
 		add(lblTitle, "cell 0 0 7 1");
 		
@@ -60,16 +71,53 @@ public class SheetRegisterCalls extends JPanel {
 		JScrollPane scrollPaneConvocados = new JScrollPane();
 		add(scrollPaneConvocados, "cell 4 2 3 9,grow");
 		
-		convocados = estudiantesBean.selectAll();
-
-		convocadosTable = new JTable();
-		TableModel listModel2 = new EntityTableModel<>(estudiantesColNames, convocados);
-		convocadosTable.setModel(listModel2);
-		scrollPaneConvocados.setViewportView(convocadosTable);
 		
-		JButton btnNewButton = new JButton("Seleccionar ");
-		btnNewButton.setFont(new Font("Arial", Font.PLAIN, 11));
-		add(btnNewButton, "cell 3 6");
+		
+		convocadosTable = new JTable();
+		convocados = new ArrayList<>();
+		scrollPaneConvocados.setViewportView(convocadosTable);
+
+		JButton btnSelect= new JButton("Seleccionar ");
+		btnSelect.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					int rowIndex = estudiantesTable.getSelectedRow();
+					Estudiante estudianteSeleccionado = estudiantes.get(rowIndex);
+					if(!convocados.contains(estudianteSeleccionado)) {
+						convocados.add(estudianteSeleccionado);
+					}
+					TableModel listModel2 = new EntityTableModel<>(estudiantesColNames, convocados, transientColNames);
+					convocadosTable.setModel(listModel2);
+				
+                	}
+                });
+		add(btnSelect, "cell 3 6");
+		
+		JButton btnAgregarEstudiantes = new JButton("Agregar estudiantes a evento");
+		btnAgregarEstudiantes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				long idEvento = evento.getIdEvento();
+				
+				try {
+					for(Estudiante es : convocados) {
+						long idEstudiante = es.getIdEstudiante();
+						EstudianteEventoPK relationEV = new EstudianteEventoPK();
+						relationEV.setIdEstudiante(idEstudiante);
+						relationEV.setIdEvento(idEvento);
+						EstudianteEvento relation = new EstudianteEvento();
+						relation.setId(relationEV);
+						relation.setAsistencia("");
+						relation.setCalificacion(0);
+						estudianteventoBean.create(relation);
+					}
+					System.out.println("creado");
+                }catch(Exception exception) {
+                	exception.printStackTrace();
+                }
+			 }
+            });
+		add(btnAgregarEstudiantes, "cell 4 11 3 1");
+		
 		
 	
 	}
