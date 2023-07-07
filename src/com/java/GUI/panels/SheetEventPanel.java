@@ -1,55 +1,168 @@
 package com.java.GUI.panels;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import com.entities.Tutor;
-import com.java.GUI.utils.EntityTableModel;
-import javax.swing.JLabel;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.JTextField;
-import javax.swing.JList;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.JOptionPane;
 import java.util.Date;
-import com.entities.Evento;
-import com.services.EventoBeanRemote;
-import com.services.EventoBean;
+import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import com.entities.Itr;
-import com.entities.Usuario;
-import com.services.ItrBeanRemote;
-import com.services.TutorBeanRemote;
-import com.services.TutorBean;
+import com.entities.Tutor;
 import com.enums.Modalidad;
 import com.enums.Status;
 import com.enums.TipoEvento;
 
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JMenuBar;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.SwingConstants;
-import javax.swing.JScrollBar;
+import net.miginfocom.swing.MigLayout;
+
+public class SheetEventPanel extends JPanel {
+	private JTextField txtTitulo;
+	private JTextField txtFechaHoraInicio;
+	private JTextField txtFechaHoraFinal;
+	private JTextField txtItr;
+	private JTextField txtLocalizacion;
+	private JTextField txtTipoEvento;
+	private JTextField txtModalidad;
+	private JTextField txtStatus;
+	private JTextField txtTutoresSeleccionados;
+
+	public SheetEventPanel(String titulo, Date fechaHoraInicio, Date fechaHoraFinal, Itr itr, String localizacion,
+            TipoEvento tipoEvento, Modalidad modalidad, Status status) {
+	    setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][][]"));
+
+	    JLabel lblTitulo = new JLabel("Ficha Evento");
+	    lblTitulo.setFont(new Font("Verdana", Font.PLAIN, 31));
+	    lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+	    add(lblTitulo, "cell 1 0 3 1");
+
+	    JLabel lblTituloEvento = new JLabel("Título:");
+	    add(lblTituloEvento, "cell 1 1");
+
+	    txtTitulo = new JTextField();
+	    txtTitulo.setEditable(false);
+	    add(txtTitulo, "cell 2 1");
+	    txtTitulo.setColumns(20);
+		JLabel lblFechaHoraInicio = new JLabel("Fecha y Hora de Inicio:");
+		add(lblFechaHoraInicio, "cell 1 2");
+
+		txtFechaHoraInicio = new JTextField();
+		txtFechaHoraInicio.setEditable(false);
+		add(txtFechaHoraInicio, "cell 2 2");
+		txtFechaHoraInicio.setColumns(20);
+
+		JLabel lblFechaHoraFinal = new JLabel("Fecha y Hora de Finalización:");
+		add(lblFechaHoraFinal, "cell 1 3");
+
+		txtFechaHoraFinal = new JTextField();
+		txtFechaHoraFinal.setEditable(false);
+		add(txtFechaHoraFinal, "cell 2 3");
+		txtFechaHoraFinal.setColumns(20);
+
+		JLabel lblItr = new JLabel("ITR:");
+		add(lblItr, "cell 1 4");
+
+		txtItr = new JTextField();
+		txtItr.setEditable(false);
+		add(txtItr, "cell 2 4");
+		txtItr.setColumns(20);
+
+		JLabel lblLocalizacion = new JLabel("Localización:");
+		add(lblLocalizacion, "cell 1 5");
+
+		txtLocalizacion = new JTextField();
+		txtLocalizacion.setEditable(false);
+		add(txtLocalizacion, "cell 2 5");
+		txtLocalizacion.setColumns(20);
+
+		JLabel lblTipoEvento = new JLabel("Tipo de Evento:");
+		add(lblTipoEvento, "cell 1 6");
+
+		txtTipoEvento = new JTextField();
+		txtTipoEvento.setEditable(false);
+		add(txtTipoEvento, "cell 2 6");
+		txtTipoEvento.setColumns(20);
+
+		JLabel lblModalidad = new JLabel("Modalidad:");
+		add(lblModalidad, "cell 1 7");
+
+		txtModalidad = new JTextField();
+		txtModalidad.setEditable(false);
+		add(txtModalidad, "cell 2 7");
+		txtModalidad.setColumns(20);
+
+		JLabel lblStatus = new JLabel("Status:");
+		add(lblStatus, "cell 1 8");
+
+		txtStatus = new JTextField();
+		txtStatus.setEditable(false);
+		add(txtStatus, "cell 2 8");
+		txtStatus.setColumns(20);
+
+		JLabel lblTutoresSeleccionados = new JLabel("Tutores Seleccionados:");
+		add(lblTutoresSeleccionados, "cell 1 9");
+
+		txtTutoresSeleccionados = new JTextField();
+		txtTutoresSeleccionados.setEditable(false);
+		add(txtTutoresSeleccionados, "cell 2 9");
+		txtTutoresSeleccionados.setColumns(20);
+
+		// Establecer los datos del evento en los componentes correspondientes
+	    txtTitulo.setText(titulo);
+	    txtFechaHoraInicio.setText(fechaHoraInicio.toString());
+	    txtFechaHoraFinal.setText(fechaHoraFinal.toString());
+	    txtItr.setText(itr.toString());
+	    txtLocalizacion.setText(localizacion);
+	    txtTipoEvento.setText(tipoEvento.toString());
+	    txtModalidad.setText(modalidad.toString());
+	    txtStatus.setText(status.toString());
+
+	}
 
 
-public class SheetEventPanel extends JPanel{
 
+	public void setTitulo(String titulo) {
+		txtTitulo.setText(titulo);
+	}
 
+	public void setFechaHoraInicio(Date fechaHoraInicio) {
+		txtFechaHoraInicio.setText(fechaHoraInicio.toString());
+	}
 
-	public SheetEventPanel() {
-		
-		
-		
-}}
+	public void setFechaHoraFinal(Date fechaHoraFinal) {
+		txtFechaHoraFinal.setText(fechaHoraFinal.toString());
+	}
+
+	public void setItr(Itr itr) {
+		txtItr.setText(itr.toString());
+	}
+
+	public void setLocalizacion(String localizacion) {
+		txtLocalizacion.setText(localizacion);
+	}
+
+	public void setTipoEvento(TipoEvento tipoEvento) {
+		txtTipoEvento.setText(tipoEvento.toString());
+	}
+
+	public void setModalidad(Modalidad modalidad) {
+		txtModalidad.setText(modalidad.toString());
+	}
+
+	public void setStatus(Status status) {
+		txtStatus.setText(status.toString());
+	}
+
+	public void setTutoresSeleccionados(List<Tutor> tutoresSeleccionados) {
+		StringBuilder tutores = new StringBuilder();
+		for (Tutor tutor : tutoresSeleccionados) {
+			tutores.append(tutor.toString()).append(", ");
+		}
+		String tutoresSeleccionadosText = tutores.toString();
+		if (tutoresSeleccionadosText.length() > 0) {
+			tutoresSeleccionadosText = tutoresSeleccionadosText.substring(0, tutoresSeleccionadosText.length() - 2);
+		}
+		txtTutoresSeleccionados.setText(tutoresSeleccionadosText);
+	}
+}

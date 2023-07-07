@@ -1,62 +1,62 @@
-package com.java.GUI.panels;
-
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.Font;
-import javax.swing.*;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-import com.java.controller.BeansFactory;
-import com.java.enums.Beans;
-import com.services.EventoBeanRemote;
-import com.services.ItrBeanRemote;
-import com.services.TutorBeanRemote;
-
-import java.awt.Insets;
-
-
-
-public class EventsPanel extends JPanel{
+	package com.java.GUI.panels;
 	
-		private CreateEventPanel createEvent;
-		private ListEventPanel listEvent;
-		private ModifyEventPanel modifyEvent = new ModifyEventPanel();
-		private RemoveEventPanel removeEvent = new RemoveEventPanel();
-		private ModifyCallsEventPanel modifyCallsEvent = new ModifyCallsEventPanel();
-		private RegisterCallsEventPanel registerCallsEvent = new RegisterCallsEventPanel();
-		private RegisterAssistsEventPanel registerAsissistsEvent = new RegisterAssistsEventPanel();
-		private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
-		private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
-
-		private EventoBeanRemote eventoBeanRemote;
-		private ItrBeanRemote itrBeanRemote;
-		private TutorBeanRemote tutorBeanRemote;
-
+	import java.awt.CardLayout;
+	import java.awt.Color;
+	import java.awt.Dimension;
+	
+	import javax.swing.JPanel;
+	import javax.swing.GroupLayout;
+	import javax.swing.GroupLayout.Alignment;
+	import java.awt.Font;
+	import javax.swing.*;
+	import javax.swing.LayoutStyle.ComponentPlacement;
+	
+	import com.java.controller.BeansFactory;
+	import com.java.enums.Beans;
+	import com.services.EventoBeanRemote;
+	import com.services.ItrBeanRemote;
+	import com.services.TutorBeanRemote;
+	
+	import java.awt.Insets;
+	
+	
+	
+	public class EventsPanel extends JPanel{
 		
-
-		 public EventsPanel() {
-			 
-			eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
-			itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
-			tutorBeanRemote = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
-
-
-			CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
-			ListEventPanel listEvent = new ListEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
-
-			setBackground(new Color(255, 255, 255));
-
-			JButton btnVolver = new JButton("Volver");
-			btnVolver.setPreferredSize(new Dimension(30, 30));
-			btnVolver.setBackground(new Color(255, 0, 0));
-
+			private CreateEventPanel createEvent;
+			private ListEventPanel listEvent;
+			private ModifyEventPanel modifyEvent = new ModifyEventPanel();
+			private RemoveEventPanel removeEvent = new RemoveEventPanel();
+			private ModifyCallsEventPanel modifyCallsEvent = new ModifyCallsEventPanel();
+			private RegisterCallsEventPanel registerCallsEvent = new RegisterCallsEventPanel();
+			private RegisterAssistsEventPanel registerAsissistsEvent = new RegisterAssistsEventPanel();
+			private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
+			private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
+	
+			private EventoBeanRemote eventoBeanRemote;
+			private ItrBeanRemote itrBeanRemote;
+			private TutorBeanRemote tutorBeanRemote;
+	
 			
-			JLabel lblTitle = new JLabel("GESTION DE EVENTOS");
+	
+			 public EventsPanel() {
+				 
+				eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+				itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+				tutorBeanRemote = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
+	
+	
+				CreateEventPanel createEvent = new CreateEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
+				ListEventPanel listEvent = new ListEventPanel (eventoBeanRemote, itrBeanRemote, tutorBeanRemote);
+	
+				setBackground(new Color(255, 255, 255));
+	
+				JButton btnVolver = new JButton("Volver");
+				btnVolver.setPreferredSize(new Dimension(30, 30));
+				btnVolver.setBackground(new Color(255, 0, 0));
+	
+				
+				JLabel lblTitle = new JLabel("GESTION DE EVENTOS");
 			lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 			lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
 			

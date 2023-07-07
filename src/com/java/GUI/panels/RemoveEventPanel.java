@@ -84,13 +84,7 @@ public class RemoveEventPanel extends JPanel {
 	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
 	                        }
 
-	                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
-	                        JFrame sheetEvent = new JFrame();
-	                        sheetEventPanel = new SheetEventPanel();
-	                        sheetEvent.getContentPane().add(sheetEventPanel);
-	                        sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	                        sheetEvent.pack();
-	                        sheetEvent.setVisible(true);
+	                      
 	                    }
 	                }
 	            }
