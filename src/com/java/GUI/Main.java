@@ -80,6 +80,8 @@ public class Main extends JFrame {
         
 		CardLayout cardLayout = new CardLayout();
 
+		
+
 		JPanel cardPanel = new JPanel(cardLayout);
 		loginPanel = new LoginPanel(cardPanel);
 		signupPanel = new SignUpPanel(cardPanel);

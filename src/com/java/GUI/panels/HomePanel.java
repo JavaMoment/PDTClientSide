@@ -53,7 +53,7 @@ public class HomePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Main main = (Main) SwingUtilities.getWindowAncestor(HomePanel.this);
-		        main.initUserMngmnt();
+		        main.initHome();
 				main.revalidate();
 			}
 			

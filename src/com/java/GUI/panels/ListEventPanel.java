@@ -10,12 +10,17 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.*;
 
 import java.awt.Font;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.enums.Estado;
+import com.enums.Asistencia;
 import com.enums.Modalidad;
 import com.enums.TipoEvento;
+import com.java.GUI.utils.EntityTableModel;
 
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
@@ -25,11 +30,16 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class ListEventPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTable tableEvents;
 	private SheetEventPanel sheetEventPanel;
+	private EntityTableModel jtableModel;
 	private TipoEvento tipoEvento;
 	private Modalidad modalidad;
-	private Estado estado;
+	private Asistencia estado;
 
 	public ListEventPanel(){
 		
@@ -38,32 +48,24 @@ public class ListEventPanel extends JPanel {
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		
 
-	    String[] columnNames = new String[] {"Titulo", "Fecha de inicio", "Fecha de fin", "Modalidad", "ITR", "Estado"};
-        String[][] rowData = new String[][]{
-        	{"IT BUILDER", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"},
-        	{"CHARLA VME 1", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"},
-        	{"CHARLA VME 5", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado"}
-        };
-        
-        @SuppressWarnings("serial")
-		DefaultTableModel model = new DefaultTableModel(rowData, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Hacer que todas las celdas sean no editables
-                return false;
-            }
-        };
+	    String[] columnNames = new String[] {"Titulo","Modalidad", "ITR", "Fecha de inicio", "Fecha de fin", "Estado"};
+	    
+	    List<String> rowData = new ArrayList<>();
+	   
 
 		
 		JScrollPane scrollPane = new JScrollPane();
 		
 		JButton btnListEvents = new JButton("Filtrar");
 		btnListEvents.setFont(new Font("Arial", Font.PLAIN, 13));
-
-		tableEvents = new JTable(model);
+		
+		jtableModel = new EntityTableModel(columnNames, rowData);
+		
+		tableEvents = new JTable(jtableModel);
+		
 		scrollPane.setViewportView(tableEvents);
 		
-		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		/*tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 	            @Override
 	            public void valueChanged(ListSelectionEvent event) {
 	                if (!event.getValueIsAdjusting()) {
@@ -88,7 +90,7 @@ public class ListEventPanel extends JPanel {
 	                    }
 	                }
 	            }
-	        });
+	        });*/
 		
 		JComboBox cBoxTipoEvento = new JComboBox();
 		cBoxTipoEvento.addItem(tipoEvento.DEFENSA_DE_PROYECTO);
@@ -105,9 +107,7 @@ public class ListEventPanel extends JPanel {
 		JComboBox cBoxITR = new JComboBox();
 		
 		JComboBox cBoxEstado = new JComboBox();
-		cBoxEstado.addItem(estado.FUTURO);
-		cBoxEstado.addItem(estado.CORRIENTE);
-		cBoxEstado.addItem(estado.FINALIZADO);
+
 
 		
 		GroupLayout groupLayout = new GroupLayout(this);
