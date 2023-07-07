@@ -19,6 +19,8 @@ import javax.swing.SwingUtilities;
 
 import com.entities.Usuario;
 import com.java.GUI.Main;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.services.UsuarioBeanRemote;
 
 import javax.swing.GroupLayout.Alignment;
@@ -36,11 +38,12 @@ public class LoginPanel extends JPanel {
 	private JButton btnRegister;
 	private JLabel lblLoginTitle;
 	private JPanel contentPane;
+	private UsuarioBeanRemote usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
 
 	/**
 	 * Create the panel.
 	 */
-	public LoginPanel(JPanel contentPane, UsuarioBeanRemote usuarioBean) {
+	public LoginPanel(JPanel contentPane) {
 		this.contentPane = contentPane;
 		setBackground(new Color(255, 255, 255));
 		lblMail = new JLabel("Ingrese su correo institucional o nombre de usuario:");
@@ -60,9 +63,8 @@ public class LoginPanel extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// Implementar logica para ingreso a sistema
-				String emailOrUsername = txtFieldMail.getText();
-				char[] passwArr = passwordField.getPassword();
-				String passw = new String(passwArr);
+				String emailOrUsername = txtFieldMail.getText().trim();
+				String passw = new String(passwordField.getPassword());
 				
 				if(emailOrUsername.isEmpty() || passw.isEmpty()) {
 					JOptionPane.showMessageDialog(LoginPanel.this, "Por favor, ingrese un correo o contraseña.", "Login Error", JOptionPane.WARNING_MESSAGE);
@@ -103,6 +105,8 @@ public class LoginPanel extends JPanel {
 				} else {
 					JOptionPane.showMessageDialog(LoginPanel.this, "¡Bienvenido/a!");
 					Main main = (Main) SwingUtilities.getWindowAncestor(LoginPanel.this);
+					main.setUserPanelFactory(userBDD);
+					main.setUser(userBDD);
 			        main.initHome();
 					main.revalidate();
 				}

@@ -12,42 +12,29 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTabbedPane;
 
+import com.entities.Usuario;
 import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
+import com.java.GUI.panels.ContentPanel;
 import com.java.GUI.panels.HomePanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
-import com.java.GUI.panels.UsersListPanel;
-import com.java.controller.BeansFactory;
-import com.java.enums.Beans;
-import com.services.AnalistaBeanRemote;
-import com.services.AreaBeanRemote;
-import com.services.DepartamentoBeanRemote;
-import com.services.EstudianteBeanRemote;
-import com.services.ItrBeanRemote;
-import com.services.LocalidadBeanRemote;
-import com.services.TutorBeanRemote;
-import com.services.UsuarioBeanRemote;
-
+import com.java.GUI.panels.UserManagementPanel;
+import com.java.GUI.panels.factory.UserPanelFactory;
+import com.java.GUI.panels.factory.UserPanelFactoryProvider;
 
 import java.awt.Toolkit;
 
 
+@SuppressWarnings("serial")
 public class Main extends JFrame {
 
 	private JPanel contentPane;
 	private JPanel loginPanel;
 	private JPanel signupPanel; 
-	private static UsuarioBeanRemote usuarioBean;
-	private static DepartamentoBeanRemote depaBean;
-	private static LocalidadBeanRemote localidadBean;
-	private static ItrBeanRemote itrBean;
-	private static AnalistaBeanRemote analiBean;
-	private static EstudianteBeanRemote estudBean;
-	private static AreaBeanRemote areaBean;
-	private static TutorBeanRemote tutorBean;
+	private Usuario user;
+	private UserPanelFactory userPanelFactory;
 
 	/**
 	 * Launch the application.
@@ -56,14 +43,6 @@ public class Main extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
-					depaBean = BeansFactory.getBean(Beans.Departamentos, DepartamentoBeanRemote.class);
-					localidadBean = BeansFactory.getBean(Beans.Localidades, LocalidadBeanRemote.class);
-					itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
-					analiBean = BeansFactory.getBean(Beans.Analista, AnalistaBeanRemote.class);
-					estudBean = BeansFactory.getBean(Beans.Estudiante, EstudianteBeanRemote.class);
-					areaBean = BeansFactory.getBean(Beans.Area, AreaBeanRemote.class);
-					tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -84,7 +63,6 @@ public class Main extends JFrame {
 		setLocationRelativeTo(null);
 		setExtendedState(MAXIMIZED_BOTH);
 		setTitle("UTEC ERP");
-		//initUserMngmnt();
 		initLogin();
 	}
 	
@@ -103,8 +81,8 @@ public class Main extends JFrame {
 		CardLayout cardLayout = new CardLayout();
 
 		JPanel cardPanel = new JPanel(cardLayout);
-		loginPanel = new LoginPanel(cardPanel, usuarioBean);
-		signupPanel = new SignUpPanel(cardPanel, usuarioBean, depaBean, localidadBean, itrBean, analiBean, estudBean, areaBean, tutorBean);
+		loginPanel = new LoginPanel(cardPanel);
+		signupPanel = new SignUpPanel(cardPanel);
 		JScrollPane scrollPane = new JScrollPane(signupPanel);
 		cardPanel.add(loginPanel, "login");
 		cardPanel.add(scrollPane, "signup");
@@ -124,7 +102,7 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		
 		ContentHomePanel homePanelContent = new ContentHomePanel();
-		HomePanel homePanel = new HomePanel();
+		HomePanel homePanel = (HomePanel) userPanelFactory.createHomePanel();
 		
 		CardLayout cardLayout = new CardLayout();
         JPanel cardPanel = new JPanel(cardLayout);
@@ -150,27 +128,24 @@ public class Main extends JFrame {
 	}
 	
 	public void initUserMngmnt() {
-		contentPane = new JPanel();
+		contentPane = new ContentPanel();
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
+		UserManagementPanel tabs = userPanelFactory.createUserManagement(user);
 		getContentPane().add(tabs, "userManagement");
 		
-		JPanel panel = new UsersListPanel(usuarioBean, itrBean);
-		tabs.addTab("Listado de usuarios", null, panel, null);
-		
-		JPanel panel2 = new JPanel();
-		tabs.addTab("Modificación de usuarios", null, panel2, null);
-		
-		JPanel panel3 = new JPanel();
-		tabs.addTab("Modificación de usuarios", null, panel3, null);
-		
-		JPanel panel4 = new JPanel();
-		tabs.addTab("Modificación de datos propios", null, panel4, null);
-		
-		JPanel panel5 = new JPanel();
-		tabs.addTab("Baja de usuarios", null, panel5, null);
 	}
 
+	public void setUser(Usuario user) {
+		this.user = user;
+	}
+	
+	public Usuario getUser() {
+		return user;
+	}
+	
+	public void setUserPanelFactory(Usuario user) {
+		this.userPanelFactory = UserPanelFactoryProvider.getUserPanel(user);
+	}
 }
