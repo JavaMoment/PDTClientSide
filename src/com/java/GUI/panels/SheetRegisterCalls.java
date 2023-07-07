@@ -3,6 +3,8 @@ package com.java.GUI.panels;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ import com.entities.Estudiante;
 import com.entities.EstudianteEvento;
 import com.entities.EstudianteEventoPK;
 import com.entities.Evento;
+import com.enums.Asistencia;
 import com.java.GUI.utils.EntityTableModel;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
@@ -36,6 +39,7 @@ public class SheetRegisterCalls extends JPanel {
 	private SheetEventPanel sheetEventPanel;
 	private List<Estudiante> estudiantes;
 	private List<Estudiante> convocados;
+	private Asistencia asistencia;
 
 	
 	public SheetRegisterCalls(Evento evento) {
@@ -99,18 +103,35 @@ public class SheetRegisterCalls extends JPanel {
 				long idEvento = evento.getIdEvento();
 				
 				try {
-					for(Estudiante es : convocados) {
-						long idEstudiante = es.getIdEstudiante();
-						EstudianteEventoPK relationEV = new EstudianteEventoPK();
-						relationEV.setIdEstudiante(idEstudiante);
-						relationEV.setIdEvento(idEvento);
-						EstudianteEvento relation = new EstudianteEvento();
-						relation.setId(relationEV);
-						relation.setAsistencia("");
-						relation.setCalificacion(0);
-						estudianteventoBean.create(relation);
+					int option = JOptionPane.showOptionDialog(
+		                        null,
+		                        "¿Desea crear la convocatoria a evento?",
+		                        "Confirmación",
+		                        JOptionPane.YES_NO_OPTION,
+		                        JOptionPane.QUESTION_MESSAGE,
+		                        null,
+		                        new Object[]{"Aceptar", "Cancelar"},
+		                        "Aceptar"
+		            );
+					
+					if(option == JOptionPane.YES_OPTION) {
+						for(Estudiante es : convocados) {
+							long idEstudiante = es.getIdEstudiante();
+							EstudianteEventoPK relationEV = new EstudianteEventoPK();
+							relationEV.setIdEstudiante(idEstudiante);
+							relationEV.setIdEvento(idEvento);
+							EstudianteEvento relation = new EstudianteEvento();
+							relation.setId(relationEV);
+							relation.setAsistencia(Asistencia.PENDIENTE.toString());
+							relation.setCalificacion(0);
+							estudianteventoBean.create(relation);
+						}
+						
+						convocados = new ArrayList<>();
+						TableModel listModel2 = new EntityTableModel<>(estudiantesColNames, convocados, transientColNames);
+						convocadosTable.setModel(listModel2);
 					}
-					System.out.println("creado");
+					
                 }catch(Exception exception) {
                 	exception.printStackTrace();
                 }
