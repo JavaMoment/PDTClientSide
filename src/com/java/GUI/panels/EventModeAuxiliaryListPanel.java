@@ -88,7 +88,6 @@ public class EventModeAuxiliaryListPanel extends JPanel{
 		
 		
 		//Permitir seleccioanar una sola fila del JTable para asi actualziar los datos con los cambios en la tabla
-				
 		
 		modalidadList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
