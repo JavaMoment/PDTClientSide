@@ -21,9 +21,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.entities.Analista;
 import com.entities.Area;
@@ -200,7 +202,7 @@ public class UserDataModificationPanel extends ContentPanel {
         comboBoxArea = new JComboBox(areaBean.selectAll().toArray());
         comboBoxArea.setVisible(false);
         comboBoxArea.setEnabled(false);
-        
+
         var comboBoxes = List.of(comboBoxArea, comboBoxDepas, comboBoxCity, comboBoxGenre, comboBoxItr, comboBoxItr, comboBoxRol, comboBoxUserType);
         
         spinnGen = new JSpinner();
@@ -215,8 +217,7 @@ public class UserDataModificationPanel extends ContentPanel {
 			public void itemStateChanged(ItemEvent e) {
 				// TODO Auto-generated method stub
 				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
-				long idDepa = (long) depa.getIdDepartamento();
-				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllBy(idDepa).toArray()));
+				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllByObject(depa).toArray()));
 			}
         });
 
@@ -224,6 +225,7 @@ public class UserDataModificationPanel extends ContentPanel {
         btnCancel = new JButton("Cancelar");
         
         dcBirthdate = new JDateChooser();
+        dcBirthdate.setDate(Date.from(Instant.now()));
 
         setBackground(new Color(255, 255, 255));
 
@@ -232,6 +234,18 @@ public class UserDataModificationPanel extends ContentPanel {
         lblSignUpTitle.setHorizontalAlignment(SwingConstants.CENTER);
         
         btnCancel.setBackground(new Color(244, 113, 116));
+        btnCancel.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		JTabbedPane jtp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, UserDataModificationPanel.this);
+        		jtp.setSelectedIndex(1);
+        		jtp.revalidate();
+        		txtFields.stream().forEach(box -> box.setText(""));
+        		comboBoxes.stream().forEach(combo -> combo.setSelectedIndex(0));
+        		dcBirthdate.setDate(Date.from(Instant.now()));
+        		txtFieldPhone.setText("");
+        	}
+        });
 
         btnModify.setBackground(new Color(125, 229, 251));
         btnModify.setForeground(new Color(40, 40, 40));
@@ -249,8 +263,6 @@ public class UserDataModificationPanel extends ContentPanel {
 				char genre = comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O';
 				Itr itr = (Itr) comboBoxItr.getSelectedItem();
 				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
-				String username = email.split("@")[0];
-				String mailDomain = email.split("@")[1];
 				String personalMail = txtFieldMail1.getText().trim();
 				
 				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
@@ -266,16 +278,6 @@ public class UserDataModificationPanel extends ContentPanel {
 				} catch (AddressException ex) {
 					// Muestra un mensaje de error si el correo electrónico no es válido
 					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
-					return;
-				}
-				
-				if(!mailDomain.endsWith(".utec.edu.uy")) {
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Por favor ingrese una dirección de correo electrónico institucional con terminación: \".utec.edu.uy\".");
-					return;
-				}
-				
-				if(usuarioBean.isUserRegistered(txtFieldMail1.getText())) {
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "El nombre de usuario ingresado ya se encuentra registrado.");
 					return;
 				}
 				
@@ -299,26 +301,41 @@ public class UserDataModificationPanel extends ContentPanel {
 					return;
 				}
 				
-				Usuario newUser = new Usuario();
-
+				user.setApellido1(lastName1);
+				user.setApellido2(lastName2);
+				user.setDepartamento(depa);
+				user.setDocumento(ci);
+				user.setFechaNacimiento(birthdate);
+				user.setGenero(genre);
+				user.setItr(itr);
+				user.setLocalidad(city);
+				user.setMailInstitucional(email);
+				user.setMailPersonal(personalMail);
+				user.setNombre1(name1);
 				
 				if(!txtFieldPhone.getText().isEmpty()) {
-					newUser.setTelefono(txtFieldPhone.getText());
+					user.setTelefono(txtFieldPhone.getText().trim());
 				}
 				
 				if(!txtFieldName2.getText().isEmpty()) {
-					newUser.setNombre2(txtFieldName2.getText());
-				}
-				
-				int exitCode = usuarioBean.create(newUser);
-				if(exitCode != 0) {
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
+					user.setNombre2(txtFieldName2.getText().trim());
 				}
 				
 				switch((String) comboBoxUserType.getSelectedItem()) {
 					case "Analista":
-						Analista analista = new Analista(newUser);
-						exitCode = analiBean.create(analista);
+						Analista analista = analiBean.selectUserBy(user.getNombreUsuario());
+						Tutor tutor = tutorBean.selectUserBy(user.getNombreUsuario());
+						Estudiante estud = estudBean.selectUserBy(user.getNombreUsuario());
+						
+						user.removeAnalista(analista);
+						user.removeEstudiante(estud);
+						user.removeTutor(tutor);
+						
+						if(analista == null) {
+							analista = new Analista(user);
+						}
+						
+						user.addAnalista(analista);
 						break;
 					case "Estudiante":
 						if((Integer) spinnGen.getValue() > Year.now().getValue()) {
@@ -326,27 +343,55 @@ public class UserDataModificationPanel extends ContentPanel {
 							return;
 						}
 						String gen = spinnGen.getValue().toString();
-						Estudiante estud = new Estudiante(newUser, gen);
-						exitCode = estudBean.create(estud);
+						
+						Estudiante estudi = estudBean.selectUserBy(user.getNombreUsuario());
+						Tutor tutor2 = tutorBean.selectUserBy(user.getNombreUsuario());
+						Analista anali2 = analiBean.selectUserBy(user.getNombreUsuario());
+						
+						user.removeAnalista(anali2);
+						user.removeEstudiante(estudi);
+						user.removeTutor(tutor2);
+						
+						if(estudi == null) {
+							estudi = new Estudiante(user, gen);
+						}
+						
+						user.addEstudiante(estudi);
 						break;
 					case "Tutor":
 						Roles rol = (Roles) comboBoxRol.getSelectedItem();
 						Area area = (Area) comboBoxArea.getSelectedItem();
-						Tutor tutor = new Tutor(newUser, area, rol);
-						exitCode = tutorBean.create(tutor);
+						
+						Analista anali3 = analiBean.selectUserBy(user.getNombreUsuario());
+						Tutor tutor3 = tutorBean.selectUserBy(user.getNombreUsuario());
+						Estudiante estud3 = estudBean.selectUserBy(user.getNombreUsuario());
+						
+						user.removeAnalista(anali3);
+						user.removeEstudiante(estud3);
+						user.removeTutor(tutor3);
+						
+						if(tutor3 == null) {
+							tutor3 = new Tutor(user, area, rol);
+						}
+						
+						user.addTutor(tutor3);
 						break;
 					default:
 						break;
 				}
-
+				
+				int answerCode = JOptionPane.showConfirmDialog(UserDataModificationPanel.this, "El usuario será modificado.\n¿Está de acuerdo?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+				if(answerCode == 1) {
+					return;
+				}
+				
+				int exitCode = usuarioBean.update(user);
+				
 				if(exitCode == 0) {
-					int answerCode = JOptionPane.showConfirmDialog(UserDataModificationPanel.this, "Su solicitud será revisada antes de activar su cuenta.\n¿Está de acuerdo?", "¡Atención!", JOptionPane.YES_NO_OPTION);
-					if(answerCode == 1) {
-						return;
-					}
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");
+					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "El usuario ha sido correctamente modificado.");
+					UsersListPanel.fireUpdateTableContentFromDB();
 				} else {
-					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
+					JOptionPane.showMessageDialog(UserDataModificationPanel.this, "Ha ocurrido un error mientras se intentaba modificar el usuario.\nPor favor, intente de nuevo.");
 				}
 				
 				txtFields.stream().forEach(txt -> txt.setText(""));
@@ -404,12 +449,12 @@ public class UserDataModificationPanel extends ContentPanel {
 	                .addComponent(lblArea)
 	                .addComponent(comboBoxArea, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-            		.addContainerGap(50, Short.MAX_VALUE)
+            .addGroup(GroupLayout.Alignment.CENTER,layout.createSequentialGroup()
+            		.addContainerGap(200, Short.MAX_VALUE)
             		.addComponent(btnModify, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             		.addComponent(btnCancel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-            		.addContainerGap(25, Short.MAX_VALUE)
+            		.addContainerGap(170, Short.MAX_VALUE)
             		)
         );
         layout.setVerticalGroup(
@@ -541,31 +586,32 @@ public class UserDataModificationPanel extends ContentPanel {
 	}
 	
 	public void populateComponents(Usuario user) {
-		if(this.user == null) {
-			if(user == null) {
-				String chooseCode = JOptionPane.showInputDialog("Ingrese el nombre de usuario de la persona a modificar:");
-				user = usuarioBean.selectUserBy(chooseCode);
-			}
-		}
+		this.user = user;
+
 		txtFieldMail1.setText(user.getMailPersonal());
 		txtFieldEmail.setText(user.getMailInstitucional());
 		txtFieldName1.setText(user.getNombre1());
 		txtFieldName2.setText(user.getNombre2());
-		
-		txtFieldCi = new JTextField();
-        txtFieldLastName1 = new JTextField();
-        txtFieldLastname2 = new JTextField();
-        txtFieldPhone = new JTextField();
+		txtFieldCi.setText(user.getDocumento());;
+        txtFieldLastName1.setText(user.getApellido1());;
+        txtFieldLastname2.setText(user.getApellido2());;
+        txtFieldPhone.setText(user.getTelefono());;
         
-        var txtFields = List.of(txtFieldMail1, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
-        		txtFieldEmail, txtFieldLastName1);
+        dcBirthdate.setDate(user.getFechaNacimiento());
         
-        comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
-        comboBoxGenre = new JComboBox<Genres>(Genres.values());
-        comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
-        comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
-        comboBoxUserType = new JComboBox<String>(userTypes);
-
+        comboBoxGenre.getModel().setSelectedItem(user.getGenero() == 'M' ? Genres.Masculino : user.getGenero() == 'F' ? Genres.Femenino : Genres.Otro);
+        comboBoxItr.getModel().setSelectedItem(user.getItr());;
+        comboBoxDepas.getModel().setSelectedItem(user.getDepartamento());;
+        comboBoxCity.getModel().setSelectedItem(user.getLocalidad());
+        comboBoxUserType.getModel().setSelectedItem(user.getTipoUsuario());
+        
+        if(user.getTipoUsuario().toUpperCase().equals("ESTUDIANTE")) {
+        	spinnGen.setValue(!user.getGeneracion().equals("") ? Integer.valueOf(user.getGeneracion()) : Year.now().getValue());
+        } else if(user.getTipoUsuario().toUpperCase().equals("TUTOR")) {
+        	comboBoxRol.getModel().setSelectedItem(user.getRol());;
+        	comboBoxArea.getModel().setSelectedItem(user.getArea());;
+        }
+        
 	}
 }
 	
