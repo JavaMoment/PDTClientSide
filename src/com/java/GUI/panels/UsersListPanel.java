@@ -1,8 +1,8 @@
 package com.java.GUI.panels;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -10,26 +10,25 @@ import javax.swing.event.ChangeListener;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import net.miginfocom.swing.MigLayout;
 
 import com.entities.Itr;
 import com.entities.Usuario;
 import com.java.GUI.utils.DefaultComboBox;
 import com.java.GUI.utils.EntityTableModel;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.services.ItrBeanRemote;
 import com.services.UsuarioBeanRemote;
 
@@ -44,17 +43,20 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class UsersListPanel extends JPanel {
+public class UsersListPanel extends ContentPanel {
 
-	private JTable table;
+	private static JTable table;
 	private JTextField textFieldSearch;
 	private HashMap<String, RowFilter<Object, Object>> filters = new HashMap<>();
 	private final int ACTUAL_YEAR = Year.now().getValue();
+	private static UsuarioBeanRemote usuarioBean = BeansFactory.getBean(Beans.Usuario, UsuarioBeanRemote.class);
+	private ItrBeanRemote itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+	private static EntityTableModel<Usuario> usersTableModel;
 
 	/**
 	 * Create the panel.
 	 */
-	public UsersListPanel(UsuarioBeanRemote usuarioBean, ItrBeanRemote itrBean) {
+	public UsersListPanel() {
 		setLayout(new MigLayout("", "[89px][176.00px,grow][]", "[][][][][23px,grow][][][][][][][][][][][]"));
 		
 		JButton btnEditUser = new JButton("");
@@ -103,7 +105,20 @@ public class UsersListPanel extends JPanel {
 		            			JOptionPane.showMessageDialog(UsersListPanel.this, "Ups! La columna seleccionada no es nombre de usuario. Intente de nuevo,");
 		            			return;
 		            		}
+		            		int optionCode = JOptionPane.showConfirmDialog(UsersListPanel.this, "¿Está seguro que desea modificar al usuario: " + cellValue + "?", "¡Atención!", JOptionPane.YES_NO_OPTION);
+		            		if(optionCode == JOptionPane.NO_OPTION) {
+		            			return;
+		            		}
 		            		JOptionPane.showMessageDialog(UsersListPanel.this, "El nombre de usuario seleccionado es: " + cellValue);
+		            		JTabbedPane jtp = (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, UsersListPanel.this);
+		            		jtp.setSelectedIndex(2);
+		            		jtp.revalidate();
+		            		
+		            		Usuario user = usuarioBean.selectUserBy(cellValue);
+		            		
+		            		UserDataModificationPanel usrDataModPanel = ((UserDataModificationPanel) ((JScrollPane) jtp.getSelectedComponent()).getViewport().getView());
+		            		usrDataModPanel.populateComponents(user);
+		            		
 		            	} catch (Exception e) {
 		            		e.printStackTrace();
 		            	}
@@ -175,14 +190,7 @@ public class UsersListPanel extends JPanel {
 		            		}
 		            		int exitCode = usuarioBean.logicalDeleteByUsername(cellValue);
 		            		if(exitCode == 0) {
-		            			List<Usuario> users = usuarioBean.selectAll();
-		            			String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
-		            					.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
-		            							&& !value.equals("contrasenia"))
-		            					.toArray(String[]::new);
-		            			String[] transientCols = {"tipoUsuario", "generacion"};
-		            			TableModel usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
-		            			table.setModel(usersTableModel);
+		            			fireUpdateTableContentFromDB();
 		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Yep! El usuario ha sido dado de baja exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
 		            			return;
 		            		}
@@ -258,14 +266,7 @@ public class UsersListPanel extends JPanel {
 		            		}
 		            		int exitCode = usuarioBean.activeUserBy(cellValue);
 		            		if(exitCode == 0) {
-		            			List<Usuario> users = usuarioBean.selectAll();
-		            			String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
-		            					.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
-		            							&& !value.equals("contrasenia"))
-		            					.toArray(String[]::new);
-		            			String[] transientCols = {"tipoUsuario", "generacion"};
-		            			TableModel usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
-		            			table.setModel(usersTableModel);
+		            			fireUpdateTableContentFromDB();
 		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Yep! El usuario ha sido dado de alta exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
 		            			return;
 		            		}
@@ -284,20 +285,13 @@ public class UsersListPanel extends JPanel {
 		add(lblFilterTitle, "cell 0 3");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane, "cell 1 1 1 15,grow");
+		add(scrollPane, "cell 1 1 1 5,grow");
 		
-		List<Usuario> users = usuarioBean.selectAll();
-		String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
-				.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
-						&& !value.equals("contrasenia"))
-				.toArray(String[]::new);
-		String[] transientCols = {"tipoUsuario", "generacion"};
 		
 		List<Itr> itrs = itrBean.selectAll();
 		
 		table = new JTable();
-		TableModel usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
-		table.setModel(usersTableModel);
+		fireUpdateTableContentFromDB();
 		table.setColumnSelectionAllowed(true);
 		table.setCellSelectionEnabled(true);
 		table.setOpaque(false);
@@ -535,26 +529,21 @@ public class UsersListPanel extends JPanel {
 				sorter.setRowFilter(null);
 				table.setRowSorter(sorter);
 				comboBoxes.stream().forEach(box -> box.setSelectedIndex(0));
+				textFieldSearch.setText("");
 			}
 		});
 		add(btnRefresh, "cell 1 0");
 		
 	}
 	
-	@Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        Graphics2D g2d = (Graphics2D) g.create();
-        
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        
-        Color skyBlue = new Color(135, 206, 235, 250);
-        
-        g2d.setPaint(skyBlue);
-        g2d.fillRect(0, 0, panelWidth, panelHeight);
-        
-        g2d.dispose();
-    }
+	public static void fireUpdateTableContentFromDB() {
+		List<Usuario> users = usuarioBean.selectAll();
+		String[] usersColNames = Arrays.stream(usuarioBean.getColsNames())
+				.filter(value -> !value.equals("estudiantes") && !value.equals("tutores") && !value.equals("analistas")
+						&& !value.equals("contrasenia"))
+				.toArray(String[]::new);
+		String[] transientCols = {"tipoUsuario", "generacion"};
+		usersTableModel = new EntityTableModel<>(usersColNames, users, transientCols);
+		table.setModel(usersTableModel);
+	}
 }

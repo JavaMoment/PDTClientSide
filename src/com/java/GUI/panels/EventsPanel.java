@@ -60,16 +60,31 @@
 			lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 			lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
 			
-			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
-			tabbedPane.addTab("Alta evento", createEvent);
+			
+			listEvent = new ListEventPanel();
 			tabbedPane.addTab("Listar eventos", listEvent);
-			tabbedPane.addTab("Modificar evento", modifyEvent);
+			
+			modifyEvent = new ModifyEventPanel();
+			//tabbedPane.addTab("Modificar evento", modifyEvent);
+			
+			removeEvent = new RemoveEventPanel();
 			tabbedPane.addTab("Borrar evento", removeEvent);
+			
+			modifyCallsEvent = new ModifyCallsEventPanel();
 			tabbedPane.addTab("Modificar convocatoria a evento", modifyCallsEvent);
+			
+			registerCallsEvent = new RegisterCallsEventPanel();
 			tabbedPane.addTab("Registrar convocatoria a evento", registerCallsEvent);
+			
+			registerAsissistsEvent = new RegisterAssistsEventPanel();
 			tabbedPane.addTab("Registrar asistencias a evento", registerAsissistsEvent);
+			
+			eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
 			tabbedPane.addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);
+			
+			auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
 			tabbedPane.addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
 
 
@@ -79,14 +94,14 @@
 			groupLayout.setHorizontalGroup(
 				groupLayout.createParallelGroup(Alignment.TRAILING)
 					.addGroup(groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGap(10)
-								.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 570, Short.MAX_VALUE))
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 							.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)))
+								.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE))
+							.addGroup(groupLayout.createSequentialGroup()
+								.addGap(10)
+								.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)))
 						.addContainerGap())
 			);
 			groupLayout.setVerticalGroup(
@@ -97,10 +112,13 @@
 							.addGroup(groupLayout.createSequentialGroup()
 								.addGap(11)
 								.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 413, Short.MAX_VALUE)
-						.addContainerGap())
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 511, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(18, Short.MAX_VALUE))
 			);
+			
+			createEvent_1 = new CreateEventPanel();
+			tabbedPane.addTab("Alta evento", createEvent_1);
 
 			setLayout(groupLayout);
 			
