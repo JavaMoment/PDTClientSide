@@ -1,4 +1,5 @@
 package com.java.controller;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -6,8 +7,8 @@ import javax.naming.NamingException;
 import com.java.enums.Beans;
 
 public class BeansFactory {
-    private static final String baseRoute = "ejb:/PDTServerSide/";
-    private static Context jndi;
+	private static final String baseRoute = "ejb:/PDTServerSide/";
+	private static Context jndi;
 
     public static <T> T getBean(Beans bean, Class<T> expectedType) {
         try {
@@ -71,4 +72,5 @@ public class BeansFactory {
             return null;
         }
     }
+
 }

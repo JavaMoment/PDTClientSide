@@ -59,7 +59,7 @@ public class RemoveEventPanel extends ContentPanel {
 		eventos = eventoBean.selectAll();
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal"))
+                .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
                 .toArray(String[]::new);
 		
 						
