@@ -122,7 +122,7 @@ public class SheetRegisterCalls extends JPanel {
 							relationEV.setIdEvento(idEvento);
 							EstudianteEvento relation = new EstudianteEvento();
 							relation.setId(relationEV);
-							relation.setAsistencia(Asistencia.PENDIENTE.toString());
+							//relation.setAsistencia(Asistencia.PENDIENTE.toString());
 							relation.setCalificacion(0);
 							estudianteventoBean.create(relation);
 						}
