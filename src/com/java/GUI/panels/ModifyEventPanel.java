@@ -20,17 +20,20 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.entities.Estado;
 import com.entities.Evento;
 import com.entities.Itr;
+import com.entities.Modalidad;
 import com.entities.Tutor;
-import com.enums.Modalidad;
-import com.enums.Status;
 import com.enums.TipoEvento;
 import com.java.GUI.utils.EntityTableModel;
+import com.services.EstadoBeanRemote;
 import com.services.EventoBeanRemote;
 import com.services.ItrBeanRemote;
+import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 import com.toedter.calendar.JDateChooser;
+import net.miginfocom.swing.MigLayout;
 
 public class ModifyEventPanel extends JPanel {
 
@@ -43,40 +46,46 @@ public class ModifyEventPanel extends JPanel {
 	private JButton cancelButton;
 	private JComboBox comboBoxTipoEvento;
 	private JComboBox comboBoxModalidad;
-	private JComboBox comboBoxStatus;
+	private JComboBox comboBoxEstado;
 	private JComboBox comboBoxItr;
 	private JTextField textLocalizacion;
 	private JTextField textTitulo;
 	private Object[] itrArray;
+	private Object[] modalidadArray;
+	private Object[] estadoArray;
+
 	private String tituloViejo = null;
 
-	public ModifyEventPanel(EventoBeanRemote eventoBean, ItrBeanRemote itrBean, TutorBeanRemote tutorBean) {
+	public ModifyEventPanel(EventoBeanRemote eventoBean, ItrBeanRemote itrBean, TutorBeanRemote tutorBean,
+			ModalidadBeanRemote modalidadBean, EstadoBeanRemote estadoBean) {
 		itrArray = itrBean.selectAll().toArray();
+		estadoArray = estadoBean.selectAllByActive(1).toArray();
+	//	estadoArray = estadoBean.selectAll().toArray();
+		modalidadArray = modalidadBean.selectAllByActive(1).toArray();
+	//	modalidadArray = modalidadBean.selectAll().toArray();
 
 		JLabel lblTitle = new JLabel("MODIFICACION DE EVENTOS");
-		setLayout(null);
+		setLayout(new MigLayout("", "[849px][104px][28px][85px][35px][163px]", "[37px][4px][23px][34px][25px][30px][21px][34px][21px][34px][26px][34px][21px][34px][26px][30px][30px][26px][29px][5px][21px]"));
 
 		JLabel lblModificacion = new JLabel("Modificación Evento");
-		lblModificacion.setBounds(36, 7, 849, 37);
 		lblModificacion.setHorizontalAlignment(SwingConstants.CENTER);
 		lblModificacion.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		add(lblModificacion);
+		add(lblModificacion, "cell 0 0,growx,aligny top");
 
 		JLabel lblEvento = new JLabel("Evento Seleccionado");
-		lblEvento.setBounds(1011, 34, 277, 37);
 		lblEvento.setFont(new Font("Tahoma", Font.PLAIN, 30));
-		add(lblEvento);
+		add(lblEvento, "cell 1 0 5 3,alignx center,aligny bottom");
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(36, 48, 849, 500);
-		add(scrollPane);
+		add(scrollPane, "cell 0 2 1 19,grow");
 
 		List<Evento> eventos = eventoBean.selectAll();
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
 				.filter(value -> !value.equals("idEvento") && !value.equals("analistas")).toArray(String[]::new);
 
 		tableEvents = new JTable();
-
+		tableEvents.getTableHeader().setReorderingAllowed(false);
+		
 		EntityTableModel<Evento> eventosTableModel = new EntityTableModel<>(eventosColNames, eventos);
 
 		int contador = 0;
@@ -94,10 +103,10 @@ public class ModifyEventPanel extends JPanel {
 			if (idTutor != 0) {
 				Tutor tutor = eventoBean.tutorDelEvento(idTutor);
 				String nombreTutor = tutor.getUsuario().getNombre1();
-				eventosTableModel.setValueAt(nombreTutor, contador, 8);
+				eventosTableModel.setValueAt(nombreTutor, contador, 9);
 				contador++;
 			} else {
-				eventosTableModel.setValueAt("-", contador, 8);
+				eventosTableModel.setValueAt("-", contador, 9);
 				contador++;
 			}
 
@@ -116,17 +125,17 @@ public class ModifyEventPanel extends JPanel {
 				System.out.println(selectedRow);
 				if (selectedRow != -1) {
 
-					String fechaHoraFinal = (String) tableEvents.getValueAt(selectedRow, 0).toString();
-					String fechaHoraInicio = (String) tableEvents.getValueAt(selectedRow, 1).toString();
+					String fechaHoraFinal = (String) tableEvents.getValueAt(selectedRow, 2).toString();
+					String fechaHoraInicio = (String) tableEvents.getValueAt(selectedRow, 3).toString();
 
-					String itr = (String) tableEvents.getValueAt(selectedRow, 2).toString();
-					String localizacion = (String) tableEvents.getValueAt(selectedRow, 3).toString();
+					String itr = (String) tableEvents.getValueAt(selectedRow, 4).toString();
+					String localizacion = (String) tableEvents.getValueAt(selectedRow, 5).toString();
 
-					String modalidad = (String) tableEvents.getValueAt(selectedRow, 4).toString();
-					String status = (String) tableEvents.getValueAt(selectedRow, 5).toString();
-					String tipoEvento = (String) tableEvents.getValueAt(selectedRow, 6).toString();
+					String modalidad = (String) tableEvents.getValueAt(selectedRow, 6).toString();
+					String estado = (String) tableEvents.getValueAt(selectedRow, 2).toString();
+					String tipoEvento = (String) tableEvents.getValueAt(selectedRow, 7).toString();
 
-					String titulo = (String) tableEvents.getValueAt(selectedRow, 7).toString();
+					String titulo = (String) tableEvents.getValueAt(selectedRow, 8).toString();
 					tituloViejo = titulo;
 					// Define el formato de fecha esperado
 					SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
@@ -158,15 +167,6 @@ public class ModifyEventPanel extends JPanel {
 					textTitulo.setText(titulo);
 					textLocalizacion.setText(localizacion);
 
-					for (Modalidad enumValue : Modalidad.values()) {
-
-						if (enumValue.toString().equals(modalidad)) {
-							comboBoxModalidad.setSelectedItem(enumValue);
-							break;
-						}
-
-					}
-
 					for (TipoEvento enumValue : TipoEvento.values()) {
 
 						if (enumValue.toString().equals(tipoEvento)) {
@@ -176,13 +176,18 @@ public class ModifyEventPanel extends JPanel {
 
 					}
 
-					for (Status enumValue : Status.values()) {
-
-						if (enumValue.toString().equals(status)) {
-							comboBoxStatus.setSelectedItem(enumValue);
+					for (Object estadoCom : estadoArray) {
+						if (String.valueOf(estadoCom).equals(estado)) {
+							comboBoxEstado.setSelectedItem(estadoCom);
 							break;
 						}
+					}
 
+					for (Object modalidadCom : modalidadArray) {
+						if (String.valueOf(modalidadCom).equals(modalidad)) {
+							comboBoxModalidad.setSelectedItem(modalidadCom);
+							break;
+						}
 					}
 
 					for (Object itrCom : itrArray) {
@@ -204,73 +209,55 @@ public class ModifyEventPanel extends JPanel {
 		titleField.setColumns(10);
 
 		JLabel typeLabel = new JLabel("Tipo de evento:");
-		typeLabel.setBounds(940, 441, 72, 13);
-		add(typeLabel);
+		add(typeLabel, "cell 1 16,alignx left,aligny top");
 
 		JLabel startTimeLabel = new JLabel("Fecha y hora de inicio:");
-		startTimeLabel.setBounds(940, 168, 104, 13);
-		add(startTimeLabel);
+		add(startTimeLabel, "cell 1 6,alignx left,aligny bottom");
 
 		JLabel itrLabel = new JLabel("ITR:");
-		itrLabel.setBounds(940, 223, 72, 13);
-		add(itrLabel);
+		add(itrLabel, "cell 1 8,growx,aligny bottom");
 
 		JLabel locationLabel = new JLabel("Localización:");
-		locationLabel.setBounds(940, 279, 72, 13);
-		add(locationLabel);
+		add(locationLabel, "cell 1 10,alignx left,aligny center");
 
 		JLabel statusLabel_1 = new JLabel("Status:");
-		statusLabel_1.setBounds(940, 388, 72, 13);
-		add(statusLabel_1);
+		add(statusLabel_1, "cell 1 14,growx,aligny top");
 
 		JLabel lblEndTime = new JLabel("Fecha y hora de finalización:");
-		lblEndTime.setBounds(940, 117, 161, 13);
-		add(lblEndTime);
+		add(lblEndTime, "cell 1 4 3 1,alignx left,aligny bottom");
 
 		JLabel lblModalidad = new JLabel("Modalidad");
-		lblModalidad.setBounds(940, 335, 72, 13);
-		add(lblModalidad);
+		add(lblModalidad, "cell 1 12,alignx left,aligny center");
 
 		JLabel lblTitulo = new JLabel("Título ");
-		lblTitulo.setBounds(940, 497, 95, 13);
-		add(lblTitulo);
+		add(lblTitulo, "cell 1 18,growx,aligny top");
 
-		comboBoxModalidad = new JComboBox();
-		comboBoxModalidad.setModel(new DefaultComboBoxModel(Modalidad.values()));
-		comboBoxModalidad.setBounds(1194, 330, 161, 21);
-		add(comboBoxModalidad);
+		comboBoxModalidad = new JComboBox(modalidadArray);
+		add(comboBoxModalidad, "cell 5 12,growx,aligny top");
 
 		comboBoxTipoEvento = new JComboBox();
 		comboBoxTipoEvento.setModel(new DefaultComboBoxModel(TipoEvento.values()));
-		comboBoxTipoEvento.setBounds(1194, 445, 161, 26);
-		add(comboBoxTipoEvento);
+		add(comboBoxTipoEvento, "cell 5 16,grow");
 
-		comboBoxStatus = new JComboBox();
-		comboBoxStatus.setModel(new DefaultComboBoxModel(Status.values()));
-		comboBoxStatus.setBounds(1194, 385, 161, 26);
-		add(comboBoxStatus);
+		comboBoxEstado = new JComboBox(estadoArray);
+		add(comboBoxEstado, "cell 5 14,grow");
 
 		comboBoxItr = new JComboBox(itrArray);
-		comboBoxItr.setBounds(1194, 215, 161, 21);
-		add(comboBoxItr);
+		add(comboBoxItr, "cell 5 8,growx,aligny top");
 
 		startDateChooser = new JDateChooser();
-		startDateChooser.setBounds(1194, 160, 161, 21);
-		add(startDateChooser);
+		add(startDateChooser, "cell 5 6,grow");
 
 		endDateChooser = new JDateChooser();
-		endDateChooser.setBounds(1194, 105, 161, 21);
-		add(endDateChooser);
+		add(endDateChooser, "cell 5 4,growx,aligny top");
 
 		textLocalizacion = new JTextField();
-		textLocalizacion.setBounds(1192, 270, 163, 26);
-		add(textLocalizacion);
+		add(textLocalizacion, "cell 5 10,grow");
 		textLocalizacion.setColumns(10);
 
 		textTitulo = new JTextField();
 		textTitulo.setColumns(10);
-		textTitulo.setBounds(1192, 505, 163, 21);
-		add(textTitulo);
+		add(textTitulo, "cell 5 18,growx,aligny bottom");
 
 		JButton btnEditar = new JButton("Editar");
 		btnEditar.addMouseListener(new MouseAdapter() {
@@ -285,10 +272,10 @@ public class ModifyEventPanel extends JPanel {
 					String localizacion = textLocalizacion.getText();
 					TipoEvento tipoEvento = (TipoEvento) comboBoxTipoEvento.getSelectedItem();
 					Modalidad modalidad = (Modalidad) comboBoxModalidad.getSelectedItem();
-					Status status = (Status) comboBoxStatus.getSelectedItem();
+					Estado estado = (Estado) comboBoxEstado.getSelectedItem();
 
 					Evento newEvento = new Evento(titulo, tipoEvento, fechaHoraInicio, fechaHoraFinal, modalidad, itr,
-							localizacion, status);
+							localizacion, estado, 1);
 					newEvento.setIdEvento(eventoBean.buscarId(tituloViejo));
 
 					try {
@@ -298,11 +285,11 @@ public class ModifyEventPanel extends JPanel {
 							tituloViejo = null;
 							cargarLista(eventoBean);
 							limpiarCampos();
-							JOptionPane.showMessageDialog(null, "El evento ha sido correctamente creado.");
+							JOptionPane.showMessageDialog(null, "El evento ha sido correctamente modificado.");
 
 						} else {
 							JOptionPane.showMessageDialog(null,
-									"Ha ocurrido un error mientras se intentaba crear el evento.\nPor favor, intente de nuevo.");
+									"Ha ocurrido un error mientras se intentaba modificar el evento.\nPor favor, intente de nuevo.");
 						}
 
 					} catch (Exception e2) {
@@ -313,8 +300,7 @@ public class ModifyEventPanel extends JPanel {
 
 			}
 		});
-		btnEditar.setBounds(1072, 531, 85, 21);
-		add(btnEditar);
+		add(btnEditar, "cell 3 20,growx,aligny top");
 
 	}
 
@@ -340,10 +326,10 @@ public class ModifyEventPanel extends JPanel {
 			if (idTutor != 0) {
 				Tutor tutor = eventoBean.tutorDelEvento(idTutor);
 				String nombreTutor = tutor.getUsuario().getNombre1();
-				eventosTableModel.setValueAt(nombreTutor, contador, 8);
+				eventosTableModel.setValueAt(nombreTutor, contador, 9);
 				contador++;
 			} else {
-				eventosTableModel.setValueAt("-", contador, 8);
+				eventosTableModel.setValueAt("-", contador, 9);
 				contador++;
 			}
 
@@ -375,7 +361,7 @@ public class ModifyEventPanel extends JPanel {
 
 		return true;
 	}
-	
+
 	private void limpiarCampos() {
 		textTitulo.setText(null);
 		textLocalizacion.setText(null);
@@ -383,10 +369,10 @@ public class ModifyEventPanel extends JPanel {
 		endDateChooser.setDate(null);
 		comboBoxItr.setSelectedIndex(0);
 		comboBoxModalidad.setSelectedIndex(0);
-		comboBoxStatus.setSelectedIndex(0);
+		comboBoxEstado.setSelectedIndex(0);
 		comboBoxTipoEvento.setSelectedIndex(0);
 	}
-	
+
 	private boolean validateDates() {
 		Date startDate = startDateChooser.getDate();
 		Date endDate = endDateChooser.getDate();
@@ -395,10 +381,10 @@ public class ModifyEventPanel extends JPanel {
 			showErrorMessage("La fecha de inicio debe ser anterior a la fecha de finalización.");
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	private void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}

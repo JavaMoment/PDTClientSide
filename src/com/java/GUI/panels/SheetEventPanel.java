@@ -2,17 +2,15 @@ package com.java.GUI.panels;
 
 import java.awt.Font;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import com.entities.Estado;
 import com.entities.Itr;
-import com.entities.Tutor;
-import com.enums.Modalidad;
-import com.enums.Status;
+import com.entities.Modalidad;
 import com.enums.TipoEvento;
 
 import net.miginfocom.swing.MigLayout;
@@ -29,21 +27,21 @@ public class SheetEventPanel extends JPanel {
 	private JTextField txtTutorSeleccionado;
 
 	public SheetEventPanel(String titulo, Date fechaHoraInicio, Date fechaHoraFinal, Itr itr, String localizacion,
-            TipoEvento tipoEvento, Modalidad modalidad, Status status) {
-	    setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][][]"));
-		    
-	    JLabel lblTitulo = new JLabel("Ficha Evento");
-	    lblTitulo.setFont(new Font("Verdana", Font.PLAIN, 31));
-	    lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-	    add(lblTitulo, "cell 1 0 3 1");
-	    
-	    JLabel lblTituloEvento = new JLabel("Título:");
-	    add(lblTituloEvento, "cell 1 1");
+			TipoEvento tipoEvento, Modalidad modalidad, Estado estado) {
+		setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][][]"));
 
-	    txtTitulo = new JTextField();
-	    txtTitulo.setEditable(false);
-	    add(txtTitulo, "cell 2 1");
-	    txtTitulo.setColumns(20);
+		JLabel lblTitulo = new JLabel("Ficha Evento");
+		lblTitulo.setFont(new Font("Verdana", Font.PLAIN, 31));
+		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblTitulo, "cell 1 0 3 1");
+
+		JLabel lblTituloEvento = new JLabel("Título:");
+		add(lblTituloEvento, "cell 1 1");
+
+		txtTitulo = new JTextField();
+		txtTitulo.setEditable(false);
+		add(txtTitulo, "cell 2 1");
+		txtTitulo.setColumns(20);
 		JLabel lblFechaHoraInicio = new JLabel("Fecha y Hora de Inicio:");
 		add(lblFechaHoraInicio, "cell 1 2");
 
@@ -100,7 +98,7 @@ public class SheetEventPanel extends JPanel {
 		add(txtStatus, "cell 2 8");
 		txtStatus.setColumns(20);
 
-		JLabel lblTutorSeleccionado= new JLabel("Tutor Seleccionado:");
+		JLabel lblTutorSeleccionado = new JLabel("Tutor Seleccionado:");
 		add(lblTutorSeleccionado, "cell 1 9");
 
 		txtTutorSeleccionado = new JTextField();
@@ -109,18 +107,16 @@ public class SheetEventPanel extends JPanel {
 		txtTutorSeleccionado.setColumns(20);
 
 		// Establecer los datos del evento en los componentes correspondientes
-	    txtTitulo.setText(titulo);
-	    txtFechaHoraInicio.setText(fechaHoraInicio.toString());
-	    txtFechaHoraFinal.setText(fechaHoraFinal.toString());
-	    txtItr.setText(itr.toString());
-	    txtLocalizacion.setText(localizacion);
-	    txtTipoEvento.setText(tipoEvento.toString());
-	    txtModalidad.setText(modalidad.toString());
-	    txtStatus.setText(status.toString());
+		txtTitulo.setText(titulo);
+		txtFechaHoraInicio.setText(fechaHoraInicio.toString());
+		txtFechaHoraFinal.setText(fechaHoraFinal.toString());
+		txtItr.setText(itr.toString());
+		txtLocalizacion.setText(localizacion);
+		txtTipoEvento.setText(tipoEvento.toString());
+		txtModalidad.setText(modalidad.toString());
+		txtStatus.setText(estado.toString());
 
 	}
-
-
 
 	public void setTitulo(String titulo) {
 		txtTitulo.setText(titulo);
@@ -150,12 +146,12 @@ public class SheetEventPanel extends JPanel {
 		txtModalidad.setText(modalidad.toString());
 	}
 
-	public void setStatus(Status status) {
-		txtStatus.setText(status.toString());
+	public void setEstado(Estado estado) {
+		txtStatus.setText(estado.toString());
 	}
 
 	public void setTutorSeleccionado(String tutorSeleccionado) {
-		
+
 		txtTutorSeleccionado.setText(tutorSeleccionado);
 	}
 }

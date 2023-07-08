@@ -19,6 +19,8 @@ import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
 import com.services.EventoBeanRemote;
 import com.entities.Evento;
+import com.enums.TipoEvento;
+
 
 import net.miginfocom.swing.MigLayout;
 

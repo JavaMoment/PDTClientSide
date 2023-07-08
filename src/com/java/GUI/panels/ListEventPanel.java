@@ -3,7 +3,6 @@ package com.java.GUI.panels;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,28 +23,20 @@ import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.*;
-
-import java.awt.Font;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.entities.Estado;
 import com.entities.Evento;
 import com.entities.Itr;
+import com.entities.Modalidad;
 import com.entities.Tutor;
-import com.enums.Estado;
-import com.enums.Modalidad;
-import com.enums.Status;
 import com.enums.TipoEvento;
 import com.java.GUI.utils.EntityTableModel;
+import com.services.EstadoBeanRemote;
 import com.services.EventoBeanRemote;
 import com.services.ItrBeanRemote;
+import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 
 public class ListEventPanel extends JPanel {
@@ -58,17 +49,18 @@ public class ListEventPanel extends JPanel {
 	private SheetEventPanel sheetEventPanel;
 	private EntityTableModel jtableModel;
 	private TipoEvento tipoEvento;
-	private Modalidad modalidad;
-	private Estado estado;
 	private JComboBox comboBoxTipoEvento;
 	private JComboBox comboBoxModalidad;
-	private JComboBox comboBoxStatus;
+	private JComboBox comboBoxEstado;
 	private JComboBox comboBoxItr;
 	private JTextField textFieldSearch;
 	private JTextField textField;
 	private TutorBeanRemote tutorBean;
+	private ModalidadBeanRemote modalidadBean;
+	private EstadoBeanRemote estadoBean;
 
-	public ListEventPanel(EventoBeanRemote eventoBean, ItrBeanRemote itrBean, TutorBeanRemote tutorBean) {
+	public ListEventPanel(EventoBeanRemote eventoBean, ItrBeanRemote itrBean, TutorBeanRemote tutorBean,
+			ModalidadBeanRemote modalidadBean, EstadoBeanRemote estadoBean) {
 
 		JLabel lblTitle = new JLabel("LISTA DE EVENTOS");
 		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
@@ -86,6 +78,7 @@ public class ListEventPanel extends JPanel {
 				.filter(value -> !value.equals("idEvento") && !value.equals("analistas")).toArray(String[]::new);
 
 		tableEvents = new JTable();
+		tableEvents.getTableHeader().setReorderingAllowed(false);
 		EntityTableModel<Evento> eventosTableModel = new EntityTableModel<>(eventosColNames, eventos);
 
 		int contador = 0;
@@ -103,10 +96,10 @@ public class ListEventPanel extends JPanel {
 			if (idTutor != 0) {
 				Tutor tutor = eventoBean.tutorDelEvento(idTutor);
 				String nombreTutor = tutor.getUsuario().getNombre1();
-				eventosTableModel.setValueAt(nombreTutor, contador, 8);
+				eventosTableModel.setValueAt(nombreTutor, contador, 9);
 				contador++;
 			} else {
-				eventosTableModel.setValueAt("-", contador, 8);
+				eventosTableModel.setValueAt("-", contador, 9);
 				contador++;
 			}
 
@@ -120,16 +113,14 @@ public class ListEventPanel extends JPanel {
 		JButton btnListEvents = new JButton("Filtrar");
 		btnListEvents.setFont(new Font("Arial", Font.PLAIN, 13));
 
-		comboBoxModalidad = new JComboBox();
-		comboBoxModalidad.setModel(new DefaultComboBoxModel(Modalidad.values()));
-
 		comboBoxTipoEvento = new JComboBox();
 		comboBoxTipoEvento.setModel(new DefaultComboBoxModel(TipoEvento.values()));
 
-		comboBoxStatus = new JComboBox();
-		comboBoxStatus.setModel(new DefaultComboBoxModel(Status.values()));
-
 		comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
+
+		comboBoxModalidad = new JComboBox(modalidadBean.selectAllByActive(1).toArray());
+
+		comboBoxEstado = new JComboBox(estadoBean.selectAllByActive(1).toArray());
 
 		JButton btnSearch = new JButton("Buscar");
 		btnSearch.setToolTipText("Buscar por nombre");
@@ -175,20 +166,20 @@ public class ListEventPanel extends JPanel {
 						}
 
 						// Obtener los datos específicos del evento seleccionado
-						String titulo = (String) rowData[7];
-						Date fechaHoraInicio = (Date) rowData[1];
-						Date fechaHoraFinal = (Date) rowData[0];
-						Itr itr = (Itr) rowData[2];
-						String localizacion = (String) rowData[3];
-						TipoEvento tipoEvento = (TipoEvento) rowData[6];
-						Modalidad modalidad = (Modalidad) rowData[4];
-						Status status = (Status) rowData[5];
+						String titulo = (String) rowData[8];
+						Date fechaHoraInicio = (Date) rowData[3];
+						Date fechaHoraFinal = (Date) rowData[2];
+						Itr itr = (Itr) rowData[4];
+						String localizacion = (String) rowData[5];
+						TipoEvento tipoEvento = (TipoEvento) rowData[7];
+						Modalidad modalidad = (Modalidad) rowData[6];
+						Estado estado = (Estado) rowData[1];
 
 						String tutorSeleccionado = obtenerNombreTutor(); // Obtener la lista de tutores
-																							// seleccionados
+																			// seleccionados
 
 						SheetEventPanel sheetEventPanel = new SheetEventPanel(titulo, fechaHoraInicio, fechaHoraFinal,
-								itr, localizacion, tipoEvento, modalidad, status);
+								itr, localizacion, tipoEvento, modalidad, estado);
 						sheetEventPanel.setTutorSeleccionado(tutorSeleccionado);
 
 						sheetEventPanel.setTitulo(titulo);
@@ -198,7 +189,7 @@ public class ListEventPanel extends JPanel {
 						sheetEventPanel.setLocalizacion(localizacion);
 						sheetEventPanel.setTipoEvento(tipoEvento);
 						sheetEventPanel.setModalidad(modalidad);
-						sheetEventPanel.setStatus(status);
+						sheetEventPanel.setEstado(estado);
 
 						// Abrir el nuevo JFrame con los datos de la fila seleccionada
 						JFrame sheetList = new JFrame();
@@ -211,14 +202,13 @@ public class ListEventPanel extends JPanel {
 			}
 
 			private String obtenerNombreTutor() {
-				
 
 				int selectedRows = tableEvents.getSelectedRow();
-				
-				String nombreTutor = (String) tableEvents.getValueAt (selectedRows, 8);
-				
+
+				String nombreTutor = (String) tableEvents.getValueAt(selectedRows, 9);
+
 				System.out.println(nombreTutor);
-				
+
 				return nombreTutor;
 			}
 
@@ -250,7 +240,7 @@ public class ListEventPanel extends JPanel {
 														.addComponent(comboBoxItr, GroupLayout.PREFERRED_SIZE, 86,
 																GroupLayout.PREFERRED_SIZE)
 														.addPreferredGap(ComponentPlacement.RELATED)
-														.addComponent(comboBoxStatus, GroupLayout.PREFERRED_SIZE, 76,
+														.addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE, 76,
 																GroupLayout.PREFERRED_SIZE)
 														.addPreferredGap(ComponentPlacement.RELATED)
 														.addComponent(btnListEvents)))
@@ -260,7 +250,7 @@ public class ListEventPanel extends JPanel {
 						.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE).addGap(26)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(btnListEvents, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
-								.addComponent(comboBoxStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								.addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
 								.addComponent(comboBoxItr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)

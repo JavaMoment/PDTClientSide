@@ -51,12 +51,12 @@ public class EntityTableModel<E> extends AbstractTableModel {
 	}
 
 	public EntityTableModel(String[] colsNames, List<E> dbObjects, String[] transientColumns) {
+		
 		this.columnNames = Stream
 				.concat(Arrays.stream(colsNames).map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1)),
 						Arrays.stream(transientColumns).map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1)))
 				.toArray(String[]::new);
 		this.columnCount = columnNames.length;
-
 		for (E t : dbObjects) {
 			Object[] row = new Object[columnCount];
 			for (int i = 0; i < columnCount; i++) {
