@@ -62,7 +62,7 @@ public class EventsPanel extends JTabbedPane{
 			addTab("Alta evento", createEvent_1);
 			
 			modifyEvent = new ModifyEventPanel();
-			tabbedPane.addTab("Modificar evento", modifyEvent);
+			//tabbedPane.addTab("Modificar evento", modifyEvent);
 			
 			removeEvent = new RemoveEventPanel();
 			addTab("Borrar evento", removeEvent);
