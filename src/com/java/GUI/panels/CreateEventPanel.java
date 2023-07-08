@@ -92,10 +92,7 @@ public class CreateEventPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (validateData() && validateDates()) {
 
-					// where in y popular con arraylist
-
 					registerEvent(eventoBeanRemote, tutorBean, estadoBean, modalidadBean);
-
 				}
 			}
 		});
