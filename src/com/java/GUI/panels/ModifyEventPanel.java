@@ -38,8 +38,8 @@ import com.toedter.calendar.JDateChooser;
 
 import net.miginfocom.swing.MigLayout;
 
-public class ModifyEventPanel extends JPanel {
-
+public class ModifyEventPanel extends ContentPanel {
+	
 	private JTable tableEvents;
 	private SheetModifyPanel sheetModifyPanel;
 	private JTextField titleField;

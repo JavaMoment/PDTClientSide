@@ -24,7 +24,7 @@ import com.enums.TipoEvento;
 
 import net.miginfocom.swing.MigLayout;
 
-public class RemoveEventPanel extends JPanel {
+public class RemoveEventPanel extends ContentPanel {
 
 	private JTable eventoTable;
 	private SheetEventPanel sheetEventPanel;

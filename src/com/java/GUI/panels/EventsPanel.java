@@ -2,17 +2,14 @@
 package com.java.GUI.panels;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.Cursor;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.*;
+
+import com.java.GUI.Main;
 
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
@@ -22,69 +19,80 @@ import com.services.ItrBeanRemote;
 import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 
-public class EventsPanel extends JPanel {
+public class EventsPanel extends JTabbedPane{
+	
 
-	private CreateEventPanel createEvent;
-	private ListEventPanel listEvent;
-	private ModifyEventPanel modifyEvent;
-	private RemoveEventPanel removeEvent = new RemoveEventPanel();
-	private ModifyCallsEventPanel modifyCallsEvent = new ModifyCallsEventPanel();
-	private RegisterCallsEventPanel registerCallsEvent = new RegisterCallsEventPanel();
-	private RegisterAssistsEventPanel registerAsissistsEvent = new RegisterAssistsEventPanel();
-	private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
-	private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
+		private CreateEventPanel createEvent; 
+		private ListEventPanel listEvent;
+		private ModifyEventPanel modifyEvent;
+		private RemoveEventPanel removeEvent;
+		private ModifyCallsEventPanel modifyCallsEvent;
+		private RegisterCallsEventPanel registerCallsEvent;
+		private RegisterAssistsEventPanel registerAsissistsEvent;
+		private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel;
+		private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel;
+		private CreateEventPanel createEvent_1;
+		private JButton logout;
 
 
 
-	public EventsPanel() {
+		 public EventsPanel() {
+			 
+			super(JTabbedPane.TOP);
 
+			logout = new JButton ();
+			logout.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/icons8-go-back-16.png")));
+			logout.setBackground(new Color(125, 229, 251));
+			logout.setForeground(new Color(40, 40, 40));
+			logout.setContentAreaFilled(false);
+			logout.setBorder(null);
+			logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			logout.setToolTipText("Click aquí para volver hacia el menú de Home");
+		    logout.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					Main main = (Main) SwingUtilities.getWindowAncestor(EventsPanel.this);
+			        main.initHome();
+					main.revalidate();
+					revalidate();
+				}
+			});
 
-		CreateEventPanel createEvent = new CreateEventPanel();
-		ListEventPanel listEvent = new ListEventPanel();
-		ModifyEventPanel modifyEvent = new ModifyEventPanel();
+		    addTab("", null, new JPanel(), null);
+		    
+		    setTabComponentAt(getTabCount() - 1, logout);
 
-		setBackground(new Color(255, 255, 255));
+			listEvent = new ListEventPanel();
+			addTab("Listar eventos", listEvent);
+			
+			createEvent_1 = new CreateEventPanel();
+			addTab("Alta evento", createEvent_1);
+			
+			modifyEvent = new ModifyEventPanel();
+			tabbedPane.addTab("Modificar evento", modifyEvent);
+			
+			removeEvent = new RemoveEventPanel();
+			addTab("Borrar evento", removeEvent);
+			
+			modifyCallsEvent = new ModifyCallsEventPanel();
+			addTab("Modificar convocatoria a evento", modifyCallsEvent);
+			
+			registerCallsEvent = new RegisterCallsEventPanel();
+			addTab("Registrar convocatoria a evento", registerCallsEvent);
+			
+			registerAsissistsEvent = new RegisterAssistsEventPanel();
+			addTab("Registrar asistencias a evento", registerAsissistsEvent);
+			
+			eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
+			addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);
+			
+			auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
+			addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
 
-		JButton btnVolver = new JButton("Volver");
-		btnVolver.setPreferredSize(new Dimension(30, 30));
-		btnVolver.setBackground(new Color(255, 0, 0));
-
-		JLabel lblTitle = new JLabel("GESTION DE EVENTOS");
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
-
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-		tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
-		tabbedPane.addTab("Alta evento", createEvent);
-		tabbedPane.addTab("Listar eventos", listEvent);
-		tabbedPane.addTab("Modificar evento", modifyEvent);
-		tabbedPane.addTab("Borrar evento", removeEvent);
-		tabbedPane.addTab("Modificar convocatoria a evento", modifyCallsEvent);
-		tabbedPane.addTab("Registrar convocatoria a evento", registerCallsEvent);
-		tabbedPane.addTab("Registrar asistencias a evento", registerAsissistsEvent);
-		tabbedPane.addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);
-		tabbedPane.addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
-
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
-				.createSequentialGroup()
-				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(tabbedPane,
-								GroupLayout.PREFERRED_SIZE, 570, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)))
-				.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-								.addGroup(groupLayout.createSequentialGroup().addGap(11).addComponent(lblTitle,
-										GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 413, Short.MAX_VALUE).addContainerGap()));
-		setLayout(groupLayout);
+			setSelectedIndex(1);
+			
+			}
+}
 
 	}
 }

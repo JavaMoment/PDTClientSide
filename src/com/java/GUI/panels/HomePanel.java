@@ -55,7 +55,7 @@ public class HomePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Main main = (Main) SwingUtilities.getWindowAncestor(HomePanel.this);
-		        main.initHome();
+		        main.initUserMngmnt();
 				main.revalidate();
 			}
 			
@@ -71,6 +71,16 @@ public class HomePanel extends JPanel {
 		btnEventsMngmnt.setBackground(new Color(125, 229, 251));
 		btnEventsMngmnt.setForeground(new Color(40, 40, 40));   
 		btnEventsMngmnt.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/calendar.png")));
+		btnEventsMngmnt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Main main = (Main) SwingUtilities.getWindowAncestor(HomePanel.this);
+		        main.initEventMngmnt();
+				main.revalidate();
+			}
+			
+		});
 		gbc_btnEventsMngmnt = new GridBagConstraints();
 		gbc_btnEventsMngmnt.fill = GridBagConstraints.BOTH;
 		gbc_btnEventsMngmnt.insets = new Insets(0, 0, 5, 5);

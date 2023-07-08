@@ -17,6 +17,7 @@ import com.entities.Usuario;
 import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.ContentPanel;
+import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.HomePanel;
 import com.java.GUI.panels.LoginPanel;
 import com.java.GUI.panels.SignUpPanel;
@@ -136,7 +137,15 @@ public class Main extends JFrame {
 		
 		UserManagementPanel tabs = userPanelFactory.createUserManagement(user);
 		getContentPane().add(tabs, "userManagement");
+	}
+	
+	public void initEventMngmnt() {
+		contentPane = new ContentPanel();
+		setContentPane(contentPane);
+		getContentPane().setLayout(new CardLayout(0, 0));
 		
+		EventsPanel tabs = userPanelFactory.createEventsPanel();
+		getContentPane().add(tabs, "eventsMngmnt");
 	}
 
 	public void setUser(Usuario user) {

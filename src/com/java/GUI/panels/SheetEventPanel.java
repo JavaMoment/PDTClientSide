@@ -15,7 +15,7 @@ import com.enums.TipoEvento;
 
 import net.miginfocom.swing.MigLayout;
 
-public class SheetEventPanel extends JPanel {
+public class SheetEventPanel extends ContentPanel {
 	private JTextField txtTitulo;
 	private JTextField txtFechaHoraInicio;
 	private JTextField txtFechaHoraFinal;

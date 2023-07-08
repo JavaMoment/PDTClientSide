@@ -41,8 +41,8 @@ import com.services.ItrBeanRemote;
 import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 
-public class ListEventPanel extends JPanel {
-
+public class ListEventPanel extends ContentPanel {
+	
 	/**
 	 * 
 	 */

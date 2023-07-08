@@ -20,7 +20,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 
-public class ListAttendanceEvents extends JPanel {
+public class ListAttendanceEvents extends ContentPanel {
 	 
 	public ListAttendanceEvents() {
 		

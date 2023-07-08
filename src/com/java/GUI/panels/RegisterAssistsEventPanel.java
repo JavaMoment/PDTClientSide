@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
-public class RegisterAssistsEventPanel extends JPanel{
+public class RegisterAssistsEventPanel extends ContentPanel {
 
 	public RegisterAssistsEventPanel() {
 		GroupLayout groupLayout = new GroupLayout(this);

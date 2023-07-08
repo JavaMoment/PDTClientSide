@@ -32,7 +32,7 @@ import com.services.EstudianteEventoBeanRemote;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class SheetRegisterCalls extends JPanel {
+public class SheetRegisterCalls extends ContentPanel {
 	
 	private JTable estudiantesTable;
 	private JTable convocadosTable;
@@ -122,7 +122,7 @@ public class SheetRegisterCalls extends JPanel {
 							relationEV.setIdEvento(idEvento);
 							EstudianteEvento relation = new EstudianteEvento();
 							relation.setId(relationEV);
-							relation.setAsistencia(Asistencia.PENDIENTE.toString());
+							//relation.setAsistencia(Asistencia.PENDIENTE.toString());
 							relation.setCalificacion(0);
 							estudianteventoBean.create(relation);
 						}
