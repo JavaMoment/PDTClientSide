@@ -19,6 +19,8 @@ import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
 import com.services.EventoBeanRemote;
 import com.entities.Evento;
+import com.enums.TipoEvento;
+
 
 import net.miginfocom.swing.MigLayout;
 
@@ -54,7 +56,51 @@ public class RemoveEventPanel extends ContentPanel {
 		
 		
 		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane, "cell 0 2 7 7,grow");
+
+		JButton btnListEvents = new JButton("Filtrar");
+		btnListEvents.setFont(new Font("Arial", Font.PLAIN, 13));
+
+
+		JLabel lblAdvice = new JLabel("Estamos trabajando con la implementacion de filtors para mejorar su experincia");
+		lblAdvice.setForeground(Color.DARK_GRAY);
+
+		tableEvents = new JTable(model);
+		scrollPane.setViewportView(tableEvents);
+
+		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+	            @Override
+	            public void valueChanged(ListSelectionEvent event) {
+	                if (!event.getValueIsAdjusting()) {
+	                    // Obtener la fila seleccionada
+	                    int selectedRow = tableEvents.getSelectedRow();
+	                    
+	                    // Verificar si hay una fila seleccionada
+	                    if (selectedRow != -1) {
+	                        // Obtener los datos de la fila seleccionada
+	                        Object[] rowData = new Object[columnNames.length];
+	                        for (int i = 0; i < columnNames.length; i++) {
+	                            rowData[i] = tableEvents.getValueAt(selectedRow, i);
+	                        }
+
+	                      
+	                    }
+	                }
+	            }
+	        });
+		
+		JComboBox cBoxTipoEvento = new JComboBox();
+		cBoxTipoEvento.addItem(tipoEvento.DEFENSA_DE_PROYECTO);
+		cBoxTipoEvento.addItem(tipoEvento.JORNADA_PRESENCIAL);
+		cBoxTipoEvento.addItem(tipoEvento.EXAMEN);
+		cBoxTipoEvento.addItem(tipoEvento.PRUEBA_FINAL);
+		
+		
+		JComboBox cBoxModalidad = new JComboBox();
+		cBoxModalidad.addItem(modalidad.PRESENCIAL);
+		cBoxModalidad.addItem(modalidad.SEMIPRESENCIAL);
+		cBoxModalidad.addItem(modalidad.VIRTUAL);
+
+		JComboBox cBoxITR = new JComboBox();
 		
 		eventos = eventoBean.selectAll();
 		

@@ -1,3 +1,4 @@
+
 package com.java.GUI.panels;
 
 import java.awt.Color;
@@ -10,7 +11,13 @@ import javax.swing.*;
 
 import com.java.GUI.Main;
 
-
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EstadoBeanRemote;
+import com.services.EventoBeanRemote;
+import com.services.ItrBeanRemote;
+import com.services.ModalidadBeanRemote;
+import com.services.TutorBeanRemote;
 
 public class EventsPanel extends JTabbedPane{
 	
@@ -62,7 +69,7 @@ public class EventsPanel extends JTabbedPane{
 			addTab("Alta evento", createEvent_1);
 			
 			modifyEvent = new ModifyEventPanel();
-			//tabbedPane.addTab("Modificar evento", modifyEvent);
+			tabbedPane.addTab("Modificar evento", modifyEvent);
 			
 			removeEvent = new RemoveEventPanel();
 			addTab("Borrar evento", removeEvent);
@@ -87,3 +94,5 @@ public class EventsPanel extends JTabbedPane{
 			}
 }
 
+	}
+}

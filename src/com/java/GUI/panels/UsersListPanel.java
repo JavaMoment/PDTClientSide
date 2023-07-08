@@ -191,6 +191,7 @@ public class UsersListPanel extends ContentPanel {
 		            		int exitCode = usuarioBean.logicalDeleteByUsername(cellValue);
 		            		if(exitCode == 0) {
 		            			fireUpdateTableContentFromDB();
+
 		            			JOptionPane.showMessageDialog(UsersListPanel.this, "¡Yep! El usuario ha sido dado de baja exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
 		            			return;
 		            		}
