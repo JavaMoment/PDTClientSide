@@ -47,7 +47,7 @@ public class RegisterCallsEventPanel extends ContentPanel {
 		eventos = eventoBean.selectAllByActive(1);
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal"))
+                .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
                 .toArray(String[]::new);
 	
 		eventoTable = new JTable();
