@@ -2,6 +2,8 @@ package com.java.GUI.panels;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -15,88 +17,87 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import com.entities.Evento;
+import com.java.GUI.utils.EntityTableModel;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EventoBeanRemote;
+
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class ModifyCallsEventPanel extends JPanel{
 	
-	private JTable tableEvents;
-	private SheetStudentsPanel sheetStudentsPanel;
+	private JTable eventoTable;
+	private SheetModifyCallsPanel SheetModifyCallsPanel;
+	private List<Evento> eventos;
 
 	public ModifyCallsEventPanel() {
 
-		JLabel lblTitle = new JLabel(" Modificación de Convocatorias a Eventos");
-		lblTitle.setFont(new Font("Arial", Font.PLAIN, 30));
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 
-		String[] columnNames = new String[] { "Titulo", "Fecha de inicio", "Fecha de fin", "Modalidad", "ITR",
-				"Estado" };
-		String[][] rowData = new String[][] {
-				{ "IT BUILDER", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
-				{ "CHARLA VME 1", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" },
-				{ "CHARLA VME 5", "01/05/2023", "01/05/2023", "Presencial", "-", "Finalizado" } };
-
-		@SuppressWarnings("serial")
-		DefaultTableModel model = new DefaultTableModel(rowData, columnNames) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// Hacer que todas las celdas sean no editables
-				return false;
-			}
-		};
-
+		
+		setLayout(new MigLayout("", "[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
+		
+		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTOS");
+		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
+		add(lblTitle, "cell 0 0 7 1");
+		
 		JScrollPane scrollPane = new JScrollPane();
-
-		tableEvents = new JTable(model);
-		scrollPane.setViewportView(tableEvents);
-
-		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent event) {
-				if (!event.getValueIsAdjusting()) {
-					// Obtener la fila seleccionada
-					int selectedRow = tableEvents.getSelectedRow();
-
-					// Verificar si hay una fila seleccionada
-					if (selectedRow != -1) {
-						// Obtener los datos de la fila seleccionada
-						Object[] rowData = new Object[columnNames.length];
-						for (int i = 0; i < columnNames.length; i++) {
-							rowData[i] = tableEvents.getValueAt(selectedRow, i);
-						}
-
-						// Abrir el nuevo JFrame con los datos de la fila seleccionada
-						JFrame sheetStudents = new JFrame();
-						sheetStudentsPanel = new SheetStudentsPanel();
-						sheetStudents.getContentPane().add(sheetStudentsPanel);
-						sheetStudents.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						sheetStudents.pack();
-						sheetStudents.setVisible(true);
-					}
-				}
-			}
+		add(scrollPane, "cell 0 2 7 9,grow");
+		
+		eventos = eventoBean.selectAllByActive(1);
+		
+		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
+                .filter(value ->  !value.equals("fechaHoraFinal"))
+                .toArray(String[]::new);
+	
+		eventoTable = new JTable();
+		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
+		eventoTable.setModel(listModel);
+		scrollPane.setViewportView(eventoTable);
+		
+	//Permitir seleccioanar una sola fila del JTable para asi actualziar los datos con los cambios en la tabla
+		
+		eventoTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    // Obtener la fila seleccionada
+                    int selectedRow = eventoTable.getSelectedRow();
+                    
+                    // Verificar si hay una fila seleccionada
+                    Object[] rowData = new Object[eventosColNames.length];
+                    if (selectedRow != -1) {
+                        // Obtener los datos de la fila seleccionada
+                        for (int i = 0; i < eventosColNames.length; i++) {
+                            rowData[i] = eventoTable.getValueAt(selectedRow, i);
+                        }
+                        
+                        Evento evento = eventos.get(selectedRow);
+                        
+                                                
+                        
+                        // Abrir el nuevo JFrame con los datos de la fila seleccionada
+                        JFrame sheetEvent = new JFrame();
+                        SheetModifyCallsPanel  estudiantesCalls = new SheetModifyCallsPanel(evento);
+                        sheetEvent.getContentPane().add(estudiantesCalls);
+                        sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        
+                        sheetEvent.pack();
+                        sheetEvent.setVisible(true);
+                    }
+                }
+            }
 		});
-
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 370, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
-		);
-
-		setLayout(groupLayout);
+		
+		
+		JLabel lblDescription = new JLabel("*Para modificar una convocatoria a evento debe presionar sobre el evento de la lista");
+		add(lblDescription, "cell 0 11 7 1");
+		
 
 	}
 
