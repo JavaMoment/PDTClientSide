@@ -20,7 +20,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JCheckBox;
 import com.toedter.calendar.JDateChooser;
 
-public class SheetStudentsPanel extends JPanel {
+public class SheetStudentsPanel extends ContentPanel {
 
     private JTextField titleField;
     private JTextField typeField;

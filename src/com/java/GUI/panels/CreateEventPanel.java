@@ -22,7 +22,7 @@ import com.services.EventoBean;
 
 
 
-public class CreateEventPanel extends JPanel {
+public class CreateEventPanel extends ContentPanel {
 	
     private JTextField titleField;
     private JTextField typeField;

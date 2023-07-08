@@ -137,7 +137,6 @@ public class Main extends JFrame {
 		
 		UserManagementPanel tabs = userPanelFactory.createUserManagement(user);
 		getContentPane().add(tabs, "userManagement");
-		
 	}
 	
 	public void initEventMngmnt() {
@@ -145,7 +144,7 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		EventsPanel tabs = new EventsPanel();
+		EventsPanel tabs = userPanelFactory.createEventsPanel();
 		getContentPane().add(tabs, "eventsMngmnt");
 	}
 

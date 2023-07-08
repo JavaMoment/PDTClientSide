@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
 
-public class ModifyEventPanel extends JPanel {
+public class ModifyEventPanel extends ContentPanel {
 	
 	private JTable tableEvents;
 	private SheetModifyPanel sheetModifyPanel;

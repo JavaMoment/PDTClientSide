@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MantenimientoPanel extends JPanel {
+public class MantenimientoPanel extends ContentPanel {
     private JTable itrTable;
     private JButton modifyButton;
     private JButton deleteButton;

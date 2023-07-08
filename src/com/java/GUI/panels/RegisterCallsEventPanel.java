@@ -24,7 +24,7 @@ import com.services.EventoBeanRemote;
 import com.entities.Evento;
 import com.entities.Modalidad;
 
-public class RegisterCallsEventPanel extends JPanel {
+public class RegisterCallsEventPanel extends ContentPanel {
 	
 	private JTable eventoTable;
 	private SheetEventPanel sheetEventPanel;

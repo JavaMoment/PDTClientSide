@@ -12,7 +12,9 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.Year;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -153,10 +155,10 @@ public class SignUpPanel extends JPanel {
         var txtFields = List.of(txtFieldMail1, txtFieldEmail, txtFieldName1, txtFieldLastname2, txtFieldCi,
         		txtFieldEmail, txtFieldLastName1);
         
-        comboBoxCity = new JComboBox(localidadBean.selectAllBy((long) 1).toArray());
         comboBoxGenre = new JComboBox<Genres>(Genres.values());
         comboBoxItr = new JComboBox(itrBean.selectAll().toArray());
         comboBoxDepas = new JComboBox(depaBean.selectAll().toArray());
+        comboBoxCity = new JComboBox(localidadBean.selectAllByObject((Departamento) comboBoxDepas.getSelectedItem()).toArray());
         String[] userTypes = {"Analista", "Tutor", "Estudiante"};
         comboBoxUserType = new JComboBox<String>(userTypes);
         comboBoxUserType.addItemListener(new ItemListener() {
@@ -231,6 +233,7 @@ public class SignUpPanel extends JPanel {
 				// TODO Auto-generated method stub
 				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
 				comboBoxCity.setModel(new DefaultComboBoxModel(localidadBean.selectAllByObject(depa).toArray()));
+				comboBoxCity.revalidate();
 			}
         });
 
@@ -358,15 +361,10 @@ public class SignUpPanel extends JPanel {
 					return;
 				}
 				
-				int exitCode = usuarioBean.create(newUser);
-				if(exitCode != 0) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "Ha ocurrido un error mientras se intentaba crear el usuario.\nPor favor, intente de nuevo.");
-				}
-				
 				switch((String) comboBoxUserType.getSelectedItem()) {
 					case "Analista":
 						Analista analista = new Analista(newUser);
-						exitCode = analiBean.create(analista);
+						newUser.setAnalistas(Set.of(analista));
 						break;
 					case "Estudiante":
 						if((Integer) spinnGen.getValue() > Year.now().getValue()) {
@@ -375,18 +373,19 @@ public class SignUpPanel extends JPanel {
 						}
 						String gen = spinnGen.getValue().toString();
 						Estudiante estud = new Estudiante(newUser, gen);
-						exitCode = estudBean.create(estud);
+						newUser.setEstudiantes(Set.of(estud));
 						break;
 					case "Tutor":
 						Roles rol = (Roles) comboBoxRol.getSelectedItem();
 						Area area = (Area) comboBoxArea.getSelectedItem();
 						Tutor tutor = new Tutor(newUser, area, rol);
-						exitCode = tutorBean.create(tutor);
+						newUser.setTutores(Set.of(tutor));
 						break;
 					default:
 						break;
 				}
 
+				int exitCode = usuarioBean.create(newUser);
 				
 				if(exitCode == 0) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "El usuario ha sido correctamente creado.\nEspere la habilitación del analista para poder ingresar.");

@@ -58,6 +58,9 @@ public class EventsPanel extends JTabbedPane{
 			listEvent = new ListEventPanel();
 			addTab("Listar eventos", listEvent);
 			
+			createEvent_1 = new CreateEventPanel();
+			addTab("Alta evento", createEvent_1);
+			
 			modifyEvent = new ModifyEventPanel();
 			//tabbedPane.addTab("Modificar evento", modifyEvent);
 			
@@ -79,6 +82,8 @@ public class EventsPanel extends JTabbedPane{
 			auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
 			addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
 
+			setSelectedIndex(1);
+			
 			}
 }
 

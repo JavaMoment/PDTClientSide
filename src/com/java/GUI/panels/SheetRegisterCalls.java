@@ -32,7 +32,7 @@ import com.services.EstudianteEventoBeanRemote;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class SheetRegisterCalls extends JPanel {
+public class SheetRegisterCalls extends ContentPanel {
 	
 	private JTable estudiantesTable;
 	private JTable convocadosTable;

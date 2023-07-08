@@ -354,6 +354,8 @@ public class UserDataModificationPanel extends ContentPanel {
 						
 						if(estudi == null) {
 							estudi = new Estudiante(user, gen);
+						} else {
+							estudi.setGeneracion(gen);
 						}
 						
 						user.addEstudiante(estudi);
@@ -372,6 +374,9 @@ public class UserDataModificationPanel extends ContentPanel {
 						
 						if(tutor3 == null) {
 							tutor3 = new Tutor(user, area, rol);
+						} else {
+							tutor3.setTipo(rol);
+							tutor3.setArea(area);
 						}
 						
 						user.addTutor(tutor3);
@@ -587,7 +592,7 @@ public class UserDataModificationPanel extends ContentPanel {
 	
 	public void populateComponents(Usuario user) {
 		this.user = user;
-
+		
 		txtFieldMail1.setText(user.getMailPersonal());
 		txtFieldEmail.setText(user.getMailInstitucional());
 		txtFieldName1.setText(user.getNombre1());
