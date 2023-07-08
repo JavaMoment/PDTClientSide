@@ -19,7 +19,7 @@ import com.java.enums.Beans;
 import com.services.EstadoBeanRemote;
 import com.services.ModalidadBeanRemote;
 
-public class CreateStateEvent extends JPanel{
+public class CreateStateEvent extends ContentPanel {
 	
 	private JTextField textField;
 	private Estado estado; 

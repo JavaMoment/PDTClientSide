@@ -28,7 +28,7 @@ import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 
-public class ListEventPanel extends JPanel {
+public class ListEventPanel extends ContentPanel {
 	
 	/**
 	 * 

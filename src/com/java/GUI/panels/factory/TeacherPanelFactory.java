@@ -5,31 +5,30 @@ import javax.swing.JPanel;
 import com.entities.Usuario;
 import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.UserManagementPanel;
-import com.java.GUI.panels.students.StudentHomePanel;
-import com.java.GUI.panels.students.StudentUserManagementPanel;
+import com.java.GUI.panels.tutores.TeacherEventManagementPanel;
+import com.java.GUI.panels.tutores.TeacherHomePanel;
+import com.java.GUI.panels.tutores.TeacherUserManagementPanel;
 
-public class StudentPanelFactory implements UserPanelFactory {
+public class TeacherPanelFactory implements UserPanelFactory {
 
 	@Override
 	public JPanel createHomePanel() {
-		return new StudentHomePanel();
+		return new TeacherHomePanel();
 	}
 
 	@Override
 	public EventsPanel createEventsPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TeacherEventManagementPanel();
 	}
 
 	@Override
 	public JPanel createReportsPanel() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public UserManagementPanel createUserManagement(Usuario user) {
-		return new StudentUserManagementPanel(user);
+		return new TeacherUserManagementPanel(user);
 	}
 
 }

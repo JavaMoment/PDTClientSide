@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
-public class SheetEventPanel extends JPanel{
+public class SheetEventPanel extends ContentPanel {
 
 	public SheetEventPanel() {
 		

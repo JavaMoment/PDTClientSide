@@ -17,7 +17,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class ModifyCallsEventPanel extends JPanel{
+public class ModifyCallsEventPanel extends ContentPanel {
 	
 	private JTable tableEvents;
 	private SheetStudentsPanel sheetStudentsPanel;

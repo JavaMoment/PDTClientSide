@@ -33,7 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
-public class AuxiliaryListofEventStatesPanel extends JPanel{
+public class AuxiliaryListofEventStatesPanel extends ContentPanel {
 	
 	private List<Estado> estados;
 	private JTable estadosList;
