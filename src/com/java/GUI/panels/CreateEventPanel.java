@@ -30,6 +30,8 @@ import com.entities.Modalidad;
 import com.entities.Tutor;
 import com.enums.TipoEvento;
 import com.java.GUI.utils.EntityTableModel;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.services.EstadoBeanRemote;
 import com.services.EventoBeanRemote;
 import com.services.ItrBeanRemote;
@@ -55,9 +57,21 @@ public class CreateEventPanel extends JPanel {
 	private DefaultTableModel tableModel;
 	private ArrayList<String> tutoresElegidos = new ArrayList<String>();
 	private List<Tutor> tutoresSeleccionados;
+	private EventoBeanRemote eventoBean;
+	private ItrBeanRemote itrBean;
+	private TutorBeanRemote tutorBean;
+	private ModalidadBeanRemote modalidadBean;
+	private EstadoBeanRemote estadoBean;
 
-	public CreateEventPanel(EventoBeanRemote eventoBeanRemote, ItrBeanRemote itrBean, TutorBeanRemote tutorBean,
-			ModalidadBeanRemote modalidadBean, EstadoBeanRemote estadoBean) {
+	public CreateEventPanel() {
+		
+		eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+		itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+		tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
+		modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
+		estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
+
+		
 		JLabel titleLabel = new JLabel("Título del evento:");
 		titleLabel.setFont(new Font("Arial", Font.PLAIN, 10));
 
@@ -92,7 +106,7 @@ public class CreateEventPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (validateData() && validateDates()) {
 
-					registerEvent(eventoBeanRemote, tutorBean, estadoBean, modalidadBean);
+					registerEvent(eventoBean, tutorBean, estadoBean, modalidadBean);
 				}
 			}
 		});

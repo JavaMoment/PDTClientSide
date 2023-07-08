@@ -27,12 +27,15 @@ import com.entities.Modalidad;
 import com.entities.Tutor;
 import com.enums.TipoEvento;
 import com.java.GUI.utils.EntityTableModel;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
 import com.services.EstadoBeanRemote;
 import com.services.EventoBeanRemote;
 import com.services.ItrBeanRemote;
 import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 import com.toedter.calendar.JDateChooser;
+
 import net.miginfocom.swing.MigLayout;
 
 public class ModifyEventPanel extends JPanel {
@@ -53,11 +56,20 @@ public class ModifyEventPanel extends JPanel {
 	private Object[] itrArray;
 	private Object[] modalidadArray;
 	private Object[] estadoArray;
+	private EventoBeanRemote eventoBean;
+	private ItrBeanRemote itrBean;
+	private TutorBeanRemote tutorBean;
+	private ModalidadBeanRemote modalidadBean;
+	private EstadoBeanRemote estadoBean;
 
 	private String tituloViejo = null;
 
-	public ModifyEventPanel(EventoBeanRemote eventoBean, ItrBeanRemote itrBean, TutorBeanRemote tutorBean,
-			ModalidadBeanRemote modalidadBean, EstadoBeanRemote estadoBean) {
+	public ModifyEventPanel() {
+		eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+		itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
+		tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
+		modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
+		estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 		itrArray = itrBean.selectAll().toArray();
 		estadoArray = estadoBean.selectAllByActive(1).toArray();
 	//	estadoArray = estadoBean.selectAll().toArray();

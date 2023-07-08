@@ -34,26 +34,14 @@ public class EventsPanel extends JPanel {
 	private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
 	private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
 
-	private EventoBeanRemote eventoBeanRemote;
-	private ItrBeanRemote itrBeanRemote;
-	private TutorBeanRemote tutorBeanRemote;
-	private ModalidadBeanRemote modalidadBeanRemote;
-	private EstadoBeanRemote estadoBeanRemote;
+
 
 	public EventsPanel() {
 
-		eventoBeanRemote = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
-		itrBeanRemote = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
-		tutorBeanRemote = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
-		modalidadBeanRemote = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
-		estadoBeanRemote = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
-		CreateEventPanel createEvent = new CreateEventPanel(eventoBeanRemote, itrBeanRemote, tutorBeanRemote,
-				modalidadBeanRemote, estadoBeanRemote);
-		ListEventPanel listEvent = new ListEventPanel(eventoBeanRemote, itrBeanRemote, tutorBeanRemote,
-				modalidadBeanRemote, estadoBeanRemote);
-		ModifyEventPanel modifyEvent = new ModifyEventPanel(eventoBeanRemote, itrBeanRemote, tutorBeanRemote,
-				modalidadBeanRemote, estadoBeanRemote);
+		CreateEventPanel createEvent = new CreateEventPanel();
+		ListEventPanel listEvent = new ListEventPanel();
+		ModifyEventPanel modifyEvent = new ModifyEventPanel();
 
 		setBackground(new Color(255, 255, 255));
 
