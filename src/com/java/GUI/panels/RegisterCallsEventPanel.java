@@ -49,6 +49,10 @@ public class RegisterCallsEventPanel extends ContentPanel {
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
                 .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
                 .toArray(String[]::new);
+		
+		for(Evento e : eventos) {
+			System.out.println(e.getTitulo());
+		}
 	
 		eventoTable = new JTable();
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
