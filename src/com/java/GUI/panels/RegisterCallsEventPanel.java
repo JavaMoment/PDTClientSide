@@ -24,7 +24,7 @@ import com.services.EventoBeanRemote;
 import com.entities.Evento;
 import com.entities.Modalidad;
 
-public class RegisterCallsEventPanel extends JPanel {
+public class RegisterCallsEventPanel extends ContentPanel {
 	
 	private JTable eventoTable;
 	private SheetEventPanel sheetEventPanel;
@@ -47,8 +47,12 @@ public class RegisterCallsEventPanel extends JPanel {
 		eventos = eventoBean.selectAllByActive(1);
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal"))
+                .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
                 .toArray(String[]::new);
+		
+		for(Evento e : eventos) {
+			System.out.println(e.getTitulo());
+		}
 	
 		eventoTable = new JTable();
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);

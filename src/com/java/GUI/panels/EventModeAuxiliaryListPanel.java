@@ -34,7 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
-public class EventModeAuxiliaryListPanel extends JPanel{
+public class EventModeAuxiliaryListPanel extends ContentPanel {
 
 	private List<Modalidad> modalidades;
 	private JTable modalidadList;

@@ -18,4 +18,5 @@ public enum Beans {
 	EstudianteEventoPK,
 	EstudianteEvento
 
+
 }

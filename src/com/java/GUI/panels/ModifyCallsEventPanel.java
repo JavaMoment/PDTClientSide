@@ -29,13 +29,14 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class ModifyCallsEventPanel extends JPanel{
+public class ModifyCallsEventPanel extends ContentPanel {
 	
 	private JTable eventoTable;
 	private SheetModifyCallsPanel SheetModifyCallsPanel;
 	private List<Evento> eventos;
 
 	public ModifyCallsEventPanel() {
+
 
 EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 
@@ -98,6 +99,7 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
 		JLabel lblDescription = new JLabel("*Para modificar una convocatoria a evento debe presionar sobre el evento de la lista");
 		add(lblDescription, "cell 0 11 7 1");
 		
+
 
 	}
 

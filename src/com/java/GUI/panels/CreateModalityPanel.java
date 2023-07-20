@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class CreateModalityPanel extends JPanel {
+public class CreateModalityPanel extends ContentPanel {
 	private JTextField textField;
 	private Modalidad modalidad; 
 	public CreateModalityPanel() {

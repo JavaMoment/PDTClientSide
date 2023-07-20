@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class SheetModifyModalities extends JPanel {
+public class SheetModifyModalities extends ContentPanel {
 	private JTextField txtFieldName;
 	public SheetModifyModalities(Modalidad modalidad) {
 		

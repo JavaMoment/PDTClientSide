@@ -1,18 +1,25 @@
+
 package com.java.GUI.panels;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Cursor;
 
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.*;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
+import com.java.GUI.Main;
 
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EstadoBeanRemote;
+import com.services.EventoBeanRemote;
+import com.services.ItrBeanRemote;
+import com.services.ModalidadBeanRemote;
+import com.services.TutorBeanRemote;
 
-public class EventsPanel extends JPanel{
+public class EventsPanel extends JTabbedPane{
 	
 
 		private CreateEventPanel createEvent; 
@@ -25,85 +32,64 @@ public class EventsPanel extends JPanel{
 		private EventModeAuxiliaryListPanel eventModeAuxiliaryListPanel;
 		private AuxiliaryListofEventStatesPanel auxiliaryListofEventStatesPanel;
 		private CreateEventPanel createEvent_1;
+		private JButton logout;
 
 
 
 		 public EventsPanel() {
 			 
-			setBackground(new Color(255, 255, 255));
+			super(JTabbedPane.TOP);
 
-			JButton btnVolver = new JButton("Volver");
-			btnVolver.setPreferredSize(new Dimension(30, 30));
-			btnVolver.setBackground(new Color(255, 0, 0));
+			logout = new JButton ();
+			logout.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/icons8-go-back-16.png")));
+			logout.setBackground(new Color(125, 229, 251));
+			logout.setForeground(new Color(40, 40, 40));
+			logout.setContentAreaFilled(false);
+			logout.setBorder(null);
+			logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			logout.setToolTipText("Click aquí para volver hacia el menú de Home");
+		    logout.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					Main main = (Main) SwingUtilities.getWindowAncestor(EventsPanel.this);
+			        main.initHome();
+					main.revalidate();
+					revalidate();
+				}
+			});
 
-			
-			JLabel lblTitle = new JLabel("GESTION DE EVENTOS");
-			lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-			lblTitle.setFont(new Font("Arial", Font.BOLD, 21));
-			
-			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-			tabbedPane.setFont(new Font("Arial", Font.BOLD, 12));
-			
+		    addTab("", null, new JPanel(), null);
+		    
+		    setTabComponentAt(getTabCount() - 1, logout);
+
 			listEvent = new ListEventPanel();
-			tabbedPane.addTab("Listar eventos", listEvent);
-			
-			modifyEvent = new ModifyEventPanel();
-			//tabbedPane.addTab("Modificar evento", modifyEvent);
-			
-			removeEvent = new RemoveEventPanel();
-			tabbedPane.addTab("Borrar evento", removeEvent);
-			
-			modifyCallsEvent = new ModifyCallsEventPanel();
-			tabbedPane.addTab("Modificar convocatoria a evento", modifyCallsEvent);
-			
-			registerCallsEvent = new RegisterCallsEventPanel();
-			tabbedPane.addTab("Registrar convocatoria a evento", registerCallsEvent);
-			
-			registerAsissistsEvent = new RegisterAssistsEventPanel();
-			tabbedPane.addTab("Registrar asistencias a evento", registerAsissistsEvent);
-			
-			eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
-			tabbedPane.addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);
-			
-			auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
-			tabbedPane.addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
-
-
-					                    
-			
-			GroupLayout groupLayout = new GroupLayout(this);
-			groupLayout.setHorizontalGroup(
-				groupLayout.createParallelGroup(Alignment.TRAILING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE))
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGap(10)
-								.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)))
-						.addContainerGap())
-			);
-			groupLayout.setVerticalGroup(
-				groupLayout.createParallelGroup(Alignment.LEADING)
-					.addGroup(groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addComponent(btnVolver, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGap(11)
-								.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 511, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(18, Short.MAX_VALUE))
-			);
+			addTab("Listar eventos", listEvent);
 			
 			createEvent_1 = new CreateEventPanel();
-			tabbedPane.addTab("Alta evento", createEvent_1);
-
-			setLayout(groupLayout);
+			addTab("Alta evento", createEvent_1);
 			
-		
+			modifyEvent = new ModifyEventPanel();
+			addTab("Modificar evento", modifyEvent);
+			
+			removeEvent = new RemoveEventPanel();
+			addTab("Borrar evento", removeEvent);
+			
+			modifyCallsEvent = new ModifyCallsEventPanel();
+			addTab("Modificar convocatoria a evento", modifyCallsEvent);
+			
+			registerCallsEvent = new RegisterCallsEventPanel();
+			addTab("Registrar convocatoria a evento", registerCallsEvent);
+			
+			registerAsissistsEvent = new RegisterAssistsEventPanel();
+			addTab("Registrar asistencias a evento", registerAsissistsEvent);
+			
+			eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
+			addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);
+			
+			auxiliaryListofEventStatesPanel = new AuxiliaryListofEventStatesPanel();
+			addTab("Lista auxiliar estados de evento", auxiliaryListofEventStatesPanel);
+
+			setSelectedIndex(1);
+			
 			}
 }
-

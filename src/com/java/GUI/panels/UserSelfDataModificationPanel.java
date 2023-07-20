@@ -589,6 +589,14 @@ public class UserSelfDataModificationPanel extends ContentPanel {
         );
 	}
 	
+	public JButton getBtnCancel() {
+		return btnCancel;
+	}
+
+	public void setBtnCancel(JButton btnCancel) {
+		this.btnCancel = btnCancel;
+	}
+
 	/**
 	 * Checks if a given CI (Cédula de Identidad) number is valid according to the requirements of a Uruguayan CI.
 	 * 

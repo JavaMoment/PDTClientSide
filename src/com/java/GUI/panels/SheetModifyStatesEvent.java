@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 
-public class SheetModifyStatesEvent extends JPanel {
+public class SheetModifyStatesEvent extends ContentPanel {
 	private JTextField textField;
 	
 	public SheetModifyStatesEvent(Estado estado) {
