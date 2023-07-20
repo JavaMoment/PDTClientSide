@@ -38,6 +38,7 @@ import com.services.ItrBeanRemote;
 import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 import com.toedter.calendar.JDateChooser;
+import net.miginfocom.swing.MigLayout;
 
 public class CreateEventPanel extends JPanel {
 
@@ -107,6 +108,11 @@ public class CreateEventPanel extends JPanel {
 				if (validateData() && validateDates()) {
 
 					registerEvent(eventoBean, tutorBean, estadoBean, modalidadBean);
+					showConfirmationMessage("El evento ha sido creado correctamente :)");
+					titleField.setText("");
+					startDateChooser.setDate(null);
+					endDateChooser.setDate(null);
+					locationField.setText("");
 				}
 			}
 		});
@@ -180,111 +186,30 @@ public class CreateEventPanel extends JPanel {
 
 			}
 		});
-
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(182)
-					.addComponent(title, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(210, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(statusLabel_1, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(27, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(comboBoxItr, Alignment.LEADING, 0, 477, Short.MAX_VALUE)
-						.addComponent(comboBoxTipoEvento, Alignment.LEADING, 0, 477, Short.MAX_VALUE)
-						.addComponent(comboBoxModalidad, Alignment.LEADING, 0, 477, Short.MAX_VALUE)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addComponent(locationField, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(locationLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(itrLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(modalityLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(endDateChooser, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(endTimeLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(startDateChooser, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(startTimeLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(typeLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(titleField, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)
-							.addComponent(titleLabel, GroupLayout.PREFERRED_SIZE, 477, GroupLayout.PREFERRED_SIZE)))
-					.addGap(236))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(btnAgregar)
-							.addPreferredGap(ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-							.addComponent(tableDestino, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE))
-						.addComponent(comboBoxEstado, 0, 511, Short.MAX_VALUE)
-						.addComponent(tutorLabel, GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE))
-					.addContainerGap(202, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(115)
-					.addComponent(submitButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
-					.addGap(57)
-					.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(113, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(22)
-					.addComponent(title)
-					.addGap(10)
-					.addComponent(titleLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(titleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(typeLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(4)
-					.addComponent(startTimeLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(startDateChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(endTimeLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(endDateChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(modalityLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBoxModalidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(itrLabel)
-					.addGap(4)
-					.addComponent(comboBoxItr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(locationLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(locationField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(statusLabel_1)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(14)
-					.addComponent(tutorLabel)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
-								.addComponent(tableDestino, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(20)
-							.addComponent(btnAgregar)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(submitButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-						.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-					.addGap(24))
-		);
-		setLayout(groupLayout);
+		setLayout(new MigLayout("", "[191px][18px][14px][57px][24px][16px][191px]", "[25px][13px][19px][13px][19px][13px][19px][13px][19px][13px][21px][13px][21px][13px][19px][13px][21px][13px][63px][29px]"));
+		add(title, "cell 0 0 5 1,alignx right,aligny top");
+		add(statusLabel_1, "cell 0 15 7 1,growx,aligny top");
+		add(comboBoxItr, "cell 0 12 7 1,growx,aligny top");
+		add(comboBoxTipoEvento, "cell 0 4 7 1,growx,aligny top");
+		add(comboBoxModalidad, "cell 0 10 7 1,growx,aligny top");
+		add(locationField, "cell 0 14 7 1,growx,aligny top");
+		add(locationLabel, "cell 0 13 7 1,growx,aligny top");
+		add(itrLabel, "cell 0 11 7 1,growx,aligny top");
+		add(modalityLabel, "cell 0 9 7 1,growx,aligny top");
+		add(endDateChooser, "cell 0 8 7 1,growx,aligny top");
+		add(endTimeLabel, "cell 0 7 7 1,growx,aligny top");
+		add(startDateChooser, "cell 0 6 7 1,growx,aligny top");
+		add(startTimeLabel, "cell 0 5 7 1,growx,aligny top");
+		add(typeLabel, "cell 0 3 7 1,growx,aligny top");
+		add(titleField, "cell 0 2 7 1,growx,aligny top");
+		add(titleLabel, "cell 0 1 7 1,growx,aligny top");
+		add(scrollPane, "cell 0 18,grow");
+		add(btnAgregar, "cell 2 18 3 1,alignx left,aligny top");
+		add(tableDestino, "cell 6 18,grow");
+		add(comboBoxEstado, "cell 0 16 7 1,growx,aligny top");
+		add(tutorLabel, "cell 0 17 7 1,growx,aligny top");
+		add(submitButton, "cell 0 19 3 1,alignx right,growy");
+		add(cancelButton, "cell 4 19 3 1,alignx left,growy");
 		typeLabel = new JLabel("Tipo de evento:");
 	}
 
