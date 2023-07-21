@@ -53,7 +53,7 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
 		eventos = eventoBean.selectAllByActive(1);
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal"))
+                .filter(value ->  !value.equals("fechaHoraFinal") && !value.equals("tutorEventos"))
                 .toArray(String[]::new);
 	
 		eventoTable = new JTable();
@@ -79,8 +79,7 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
                         }
                         
                         Evento evento = eventos.get(selectedRow);
-                        
-                                                
+                              
                         
                         // Abrir el nuevo JFrame con los datos de la fila seleccionada
                         JFrame sheetEvent = new JFrame();

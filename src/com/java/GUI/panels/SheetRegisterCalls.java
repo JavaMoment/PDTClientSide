@@ -122,8 +122,8 @@ public class SheetRegisterCalls extends ContentPanel {
 							relationEV.setIdEvento(idEvento);
 							EstudianteEvento relation = new EstudianteEvento();
 							relation.setId(relationEV);
-							relation.setAsistencia(asistencia.ASISTENCIA.toString());
-							relation.setCalificacion(3);
+							relation.setAsistencia(asistencia.PENDIENTE.toString());
+							relation.setCalificacion(1);
 							estudianteventoBean.create(relation);
 						}
 						
