@@ -47,7 +47,7 @@ import com.services.TutorBeanRemote;
 import com.toedter.calendar.JCalendar;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.ZoneId;
+
 
 public class ListEventPanel extends ContentPanel {
 
@@ -173,15 +173,7 @@ public class ListEventPanel extends ContentPanel {
 		tableEvents.setCellSelectionEnabled(true);
 		scrollPane.setViewportView(tableEvents);
 
-		// Cuadro combinado para filtrar eventos por tipo.
-		comboBoxTipoEvento = new JComboBox();
-		comboBoxTipoEvento.setModel(new DefaultComboBoxModel(TipoEvento.values()));
-
-		// Cuadro combinado para filtrar eventos por modalidad.
-		comboBoxModalidad = new JComboBox(modalidadBean.selectAllByActive(1).toArray());
-
-		// Cuadro combinado para filtrar eventos por estado.
-		comboBoxEstado = new JComboBox(estadoBean.selectAllByActive(1).toArray());
+		
 
 		// Establece un escuchador de eventos para la tabla de eventos.
 		tableEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -244,15 +236,30 @@ public class ListEventPanel extends ContentPanel {
 			}
 		});
 
+
+	
+		//default combobox para que pueda seleccionar opcion nula
+		
+		List<Modalidad> modalidades = modalidadBean.selectAllByActive(1);
+		JComboBox comboBoxModalidad = new JComboBox(new DefaultComboBox(modalidades.toArray()));
+		
+		
+		List<Estado> estados = estadoBean.selectAllByActive(1);
+		JComboBox comboBoxEstado = new JComboBox(new DefaultComboBox(estados.toArray()));
+		
+		
+		
+		JComboBox comboBoxTipoEvento = new JComboBox(new DefaultComboBoxModel(TipoEvento.values()));
+
+		
 		// Etiqueta para mostrar "ITR" en la interfaz.
 		lblItr = new JLabel("ITR");
 
 		// Obtiene la lista de Itr desde el servicio remoto.
 		List<Itr> itrs = itrBean.selectAll();
-		List<Modalidad> modalidades = modalidadBean.selectAll();
-		List<Estado> estados = estadoBean.selectAll();
-
-		JLabel lblItr = new JLabel("ITR:");
+		
+		
+		JLabel lblItr = new JLabel("ITR");
 		add(lblItr, "flowy,cell 0 4");
 
 		JComboBox comboBoxItr = new JComboBox(new DefaultComboBox(itrs.toArray()));
@@ -261,7 +268,7 @@ public class ListEventPanel extends ContentPanel {
 
 		// Lista de cuadros combinados utilizados para facilitar la gestión de eventos
 		// de filtrado.
-		List<JComboBox> comboBoxes = List.of(comboBoxItr, comboBoxModalidad, comboBoxTipoEvento, comboBoxEstado, comboBoxFiltroFecha);
+		List<JComboBox> comboBoxes = List.of(comboBoxItr, comboBoxModalidad, comboBoxTipoEvento, comboBoxEstado);
 
 		// Escuchador de eventos para el cuadro combinado de Itr.
 		comboBoxItr.addItemListener(new ItemListener() {
@@ -356,6 +363,7 @@ public class ListEventPanel extends ContentPanel {
 					public boolean include(Entry entry) {
 						int modalidadColIdx = tableEvents.getColumn("Modalidad").getModelIndex();
 						Modalidad modalidad = (Modalidad) entry.getValue(modalidadColIdx);
+					//	Modalidad modalidad = (Modalidad) entry.getValue(6);
 						String modalidadName = modalidad.getNombre();
 						return modalidadName.toUpperCase().equals(selectedModalidad.getNombre().toUpperCase());
 					}
@@ -365,6 +373,9 @@ public class ListEventPanel extends ContentPanel {
 				TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(eventosTableModel);
 				sorter.setRowFilter(filter);
 				tableEvents.setRowSorter(sorter);
+			
+			
+
 			}
 		});
 
@@ -448,8 +459,9 @@ public class ListEventPanel extends ContentPanel {
 		});
 
 		// Calendarios para seleccionar fechas de inicio y fin.
-		JCalendar jCalendarInicio = new JCalendar();
-		JCalendar jCalendarFin = new JCalendar();
+		jCalendarInicio = new JCalendar();
+		jCalendarFin = new JCalendar();
+
 
 		// Etiquetas para mostrar "Fecha de Inicio" y "Fecha de Fin" en la interfaz.
 		JLabel lblFechaInicio = new JLabel("Fecha de Inicio:");
@@ -464,165 +476,178 @@ public class ListEventPanel extends ContentPanel {
 				aplicarFiltroFecha();
 			}
 		});
+		
+		JLabel lblEstado = new JLabel("Estado");
+		
+		JLabel lblTipoEvento = new JLabel("Tipo Evento");
 
 		// Configura el diseño de la GUI utilizando GroupLayout.
 		// GroupLayout es un administrador de diseño flexible definido en Java Swing
 		// para organizar componentes.
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 763, GroupLayout.PREFERRED_SIZE)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-												.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-												.addPreferredGap(ComponentPlacement.RELATED))
-										.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(comboBoxModalidad, GroupLayout.PREFERRED_SIZE, 92,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblModalidad).addComponent(lblItr)
-										.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-												.addComponent(comboBoxEstado, Alignment.LEADING, 0,
-														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(comboBoxItr, Alignment.LEADING, 0, 86, Short.MAX_VALUE)))
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jCalendarInicio, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addGroup(groupLayout.createSequentialGroup().addGap(72)
-												.addComponent(lblFechaInicio))
-										.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE, 220,
-												GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jCalendarFin, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblFechaFin).addComponent(btnAplicarFiltroFecha,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addGap(117)))
-				.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
-						.createSequentialGroup()
-						.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE).addGap(15)
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 866, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblFechaInicio))))
-						.addGroup(groupLayout.createSequentialGroup().addComponent(btnAplicarFiltroFecha)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblFechaFin)))
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jCalendarInicio, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(jCalendarFin, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup().addGap(18).addComponent(lblModalidad)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(comboBoxModalidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(lblItr).addGap(4)
-								.addComponent(comboBoxItr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(16).addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-				.addGap(26).addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(15, Short.MAX_VALUE)));
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboBoxModalidad, 0, 182, Short.MAX_VALUE)
+										.addComponent(comboBoxEstado, 0, 182, Short.MAX_VALUE)
+										.addComponent(comboBoxItr, 0, 182, Short.MAX_VALUE))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblItr)
+										.addComponent(lblEstado)
+										.addComponent(lblModalidad)
+										.addComponent(lblTipoEvento, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE))
+									.addGap(152))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.RELATED)))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jCalendarInicio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(72)
+									.addComponent(lblFechaInicio))
+								.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jCalendarFin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblFechaFin)
+								.addComponent(btnAplicarFiltroFecha, GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))))
+					.addGap(77))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblFechaInicio))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(btnAplicarFiltroFecha)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblFechaFin)))
+							.addGap(40)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(comboBoxModalidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblModalidad))
+							.addGap(22)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblItr)
+								.addComponent(comboBoxItr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(22)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblEstado))
+							.addGap(41))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap(96, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblTipoEvento))
+							.addGap(178))
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addGap(105)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jCalendarInicio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(jCalendarFin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(27)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
 
 		// Establece el diseño configurado para el panel.
 		setLayout(groupLayout);
 
 	}
 
-	// Actualizar la apariencia de los componentes de filtrado de fechas según la
-	// opción seleccionada.
 	private void actualizarFiltroFecha() {
-		String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
+	    String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
 
-		if (opcionSeleccionada.equals("Exacta")) {
-			// Configurar JCalendarInicio y JCalendarFin para seleccionar una única fecha.
-			jCalendarInicio.setDate(new Date());
-			jCalendarInicio.setSelectableDateRange(new Date(), new Date());
-			jCalendarFin.setDate(new Date());
-			jCalendarFin.setSelectableDateRange(new Date(), new Date());
-		} else if (opcionSeleccionada.equals("Desde")) {
-			// Configurar JCalendarInicio para seleccionar un rango de fechas desde la fecha
-			// actual.
-			jCalendarInicio.setDate(new Date());
-			jCalendarInicio.setSelectableDateRange(new Date(), null);
-			jCalendarFin.setDate(new Date());
-			jCalendarFin.setSelectableDateRange(new Date(), null);
-		} else if (opcionSeleccionada.equals("Hasta")) {
-			// Configurar JCalendarFin para seleccionar un rango de fechas hasta la fecha
-			// actual.
-			jCalendarInicio.setDate(new Date());
-			jCalendarInicio.setSelectableDateRange(null, new Date());
-			jCalendarFin.setDate(new Date());
-			jCalendarFin.setSelectableDateRange(null, new Date());
-		}
+	    if (opcionSeleccionada.equals("Exacta")) {
+	        // En este caso, no necesitas realizar cambios en los JCalendar,
+	        // ya que la fecha seleccionada por el usuario se utilizará directamente
+	        // en el método aplicarFiltroFecha().
+	    } else if (opcionSeleccionada.equals("Desde")) {
+	        // Configurar JCalendarInicio para permitir seleccionar cualquier fecha.
+	        jCalendarInicio.setSelectableDateRange(null, null);
+
+	        // Establecer la fecha actual en JCalendarFin.
+	        jCalendarFin.setDate(new Date());
+
+	        // Establecer el rango de fechas seleccionables en JCalendarFin.
+	        // Ahora se puede seleccionar cualquier fecha posterior o igual a la fecha actual.
+	        jCalendarFin.setSelectableDateRange(new Date(), null);
+	    } else if (opcionSeleccionada.equals("Hasta")) {
+	        // Establecer la fecha actual en JCalendarInicio.
+	        jCalendarInicio.setDate(new Date());
+
+	        // Establecer el rango de fechas seleccionables en JCalendarInicio.
+	        // Ahora se puede seleccionar cualquier fecha anterior o igual a la fecha actual.
+	        jCalendarInicio.setSelectableDateRange(null, new Date());
+
+	        // Configurar JCalendarFin para permitir seleccionar cualquier fecha.
+	        jCalendarFin.setSelectableDateRange(null, null);
+	    }
 	}
+
+
 
 	// Método para aplicar el filtro de fechas
 	private void aplicarFiltroFecha() {
-		Date fechaInicio = jCalendarInicio.getDate();
-	//	Date fechaPrueba = (Date.valueOf(jCalendarInicio.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+	    Date fechaInicio = jCalendarInicio.getDate();
+	    Date fechaFin = jCalendarFin.getDate();
+	    System.out.println(fechaFin);
+	    System.out.println(fechaInicio);
 
-		Date fechaFin = jCalendarFin.getDate();
-		String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
+	    String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
 
-		// Obtener el modelo de la tabla de eventos
-		EntityTableModel<Evento> eventosTableModel = (EntityTableModel<Evento>) tableEvents.getModel();
+	    // Obtener el modelo de la tabla de eventos
+	    EntityTableModel<Evento> eventosTableModel = (EntityTableModel<Evento>) tableEvents.getModel();
 
-		// Crear un nuevo TableRowSorter utilizando el modelo de tabla
-		// "eventosTableModel".
-		TableRowSorter<TableModel> sorter = new TableRowSorter<>(eventosTableModel);
+	    // Crear un nuevo TableRowSorter utilizando el modelo de tabla "eventosTableModel".
+	    TableRowSorter<TableModel> sorter = new TableRowSorter<>(eventosTableModel);
 
-		// Crear el filtro para las fechas seleccionadas.
-		RowFilter<Object, Object> fechaFilter = new RowFilter<Object, Object>() {
-			public boolean include(Entry entry) {
-				int fechaInicioColIdx = tableEvents.getColumn("FechaHoraInicio").getModelIndex();
-				int fechaFinColIdx = tableEvents.getColumn("FechaHoraFinal").getModelIndex();
-				Date fechaInicioEvento = (Date) entry.getValue(fechaInicioColIdx);
-				Date fechaFinEvento = (Date) entry.getValue(fechaFinColIdx);
-				System.out.println(fechaInicio.getClass());
-				System.out.println(fechaInicioEvento.getClass());
-				System.out.println(fechaInicio);
-				System.out.println(fechaFin);
-				
-				//El problema es q me trae la fecha es diferentes formatos, compara algo pero no lo hace bien
+	    // Crear el filtro para las fechas seleccionadas.
+	    RowFilter<Object, Object> fechaFilter = new RowFilter<Object, Object>() {
+	        public boolean include(Entry entry) {
+	            int fechaInicioColIdx = tableEvents.getColumn("FechaHoraInicio").getModelIndex();
+	            int fechaFinColIdx = tableEvents.getColumn("FechaHoraFinal").getModelIndex();
+	            Date fechaInicioEvento = (Date) entry.getValue(fechaInicioColIdx);
+	            Date fechaFinEvento = (Date) entry.getValue(fechaFinColIdx);
 
+	            // Lógica para aplicar el filtro según la opción seleccionada.
+	            if (opcionSeleccionada.equals("Exacta")) {
+	                return fechaInicioEvento.equals(fechaInicio) && fechaFinEvento.equals(fechaFin);
+	            } else if (opcionSeleccionada.equals("Desde")) {
+	                return fechaInicioEvento.compareTo(fechaInicio) >= 0;
+	            } else if (opcionSeleccionada.equals("Hasta")) {
+	                return fechaFinEvento.compareTo(fechaFin) <= 0;
+	            }
 
-				// Lógica para aplicar el filtro según la opción seleccionada.
-				if (opcionSeleccionada.equals("Exacta")) {
-					return fechaInicioEvento.equals(fechaInicio) && fechaFinEvento.equals(fechaFin);
-				} else if (opcionSeleccionada.equals("Desde")) {
-					System.out.println(fechaInicioEvento.compareTo(fechaInicio));
-					return fechaInicioEvento.compareTo(fechaInicio) >= 0;
-					
-				} else if (opcionSeleccionada.equals("Hasta")) {
-					System.out.println(opcionSeleccionada.equals("Hasta"));
-					return fechaFinEvento.compareTo(fechaFin) <= 0;// si la opción de filtro seleccionada es "Hasta," el
-																	// filtro comprueba si fechaFinEvento
-																	// es menor o igual a fechaFin. Si es verdadero, se
-																	// incluye la fila, de lo contrario, se excluye.
-				}
+	            return true; // Si no se selecciona ninguna opción, mostrar todos los eventos.
+	        }
+	    };
 
-				return true; // Si no se selecciona ninguna opción, mostrar todos los eventos.
-			}
-		};
+	    // Establecer el filtro en el TableRowSorter.
+	    sorter.setRowFilter(fechaFilter);
 
-		// Establecer el filtro en el TableRowSorter.
-		sorter.setRowFilter(fechaFilter);
-
-		// Asignar el TableRowSorter a la tabla "tableEvents" para que se aplique el
-		// filtro de fechas.
-		tableEvents.setRowSorter(sorter);
+	    // Asignar el TableRowSorter a la tabla "tableEvents" para que se aplique el filtro de fechas.
+	    tableEvents.setRowSorter(sorter);
 	}
+
 
 }
