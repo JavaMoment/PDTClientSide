@@ -48,6 +48,7 @@ import com.services.TutorBeanRemote;
 import com.toedter.calendar.JCalendar;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import net.miginfocom.swing.MigLayout;
 
 public class ListEventPanel extends ContentPanel {
 
@@ -492,104 +493,27 @@ public class ListEventPanel extends ContentPanel {
 		JLabel lblEstado = new JLabel("Estado");
 
 		JLabel lblTipoEvento = new JLabel("Tipo Evento");
-
-		// Configura el diseño de la GUI utilizando GroupLayout.
-		// GroupLayout es un administrador de diseño flexible definido en Java Swing
-		// para organizar componentes.
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup().addContainerGap()
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-										.createSequentialGroup().addGroup(groupLayout
-												.createParallelGroup(Alignment.LEADING)
-												.addGroup(groupLayout.createSequentialGroup().addGroup(groupLayout
-														.createParallelGroup(Alignment.LEADING)
-														.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(comboBoxModalidad, 0, 182, Short.MAX_VALUE)
-														.addComponent(comboBoxEstado, 0, 182, Short.MAX_VALUE)
-														.addComponent(comboBoxItr, 0, 182, Short.MAX_VALUE))
-														.addPreferredGap(ComponentPlacement.RELATED)
-														.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-																.addComponent(lblItr).addComponent(lblEstado)
-																.addComponent(lblModalidad).addComponent(lblTipoEvento,
-																		GroupLayout.PREFERRED_SIZE, 79,
-																		GroupLayout.PREFERRED_SIZE))
-														.addGap(152))
-												.addGroup(groupLayout.createSequentialGroup()
-														.addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 413,
-																Short.MAX_VALUE)
-														.addPreferredGap(ComponentPlacement.RELATED)))
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(jCalendarInicio_1, GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-												.addGroup(groupLayout.createSequentialGroup().addGap(72)
-														.addComponent(lblFechaInicio))
-												.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE, 220,
-														GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(jCalendarFin_1, GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblFechaFin).addComponent(btnAplicarFiltroFecha,
-														GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))
-										.addGap(77)).addGroup(
-												Alignment.TRAILING,
-												groupLayout.createSequentialGroup().addComponent(scrollPane,
-														GroupLayout.PREFERRED_SIZE, 731, GroupLayout.PREFERRED_SIZE)
-														.addGap(161)))));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
-				.createSequentialGroup()
-				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
-						.createSequentialGroup().addContainerGap()
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(groupLayout
-								.createSequentialGroup()
-								.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(comboBoxFiltroFecha, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblFechaInicio))
-								.addGroup(groupLayout.createSequentialGroup().addComponent(btnAplicarFiltroFecha)
-										.addPreferredGap(ComponentPlacement.RELATED).addComponent(lblFechaFin)))
-						.addGap(40)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(comboBoxModalidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblModalidad))
-						.addGap(22)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblItr).addComponent(
-								comboBoxItr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-						.addGap(22)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(comboBoxEstado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblEstado))
-						.addGap(41))
-						.addGroup(groupLayout.createSequentialGroup().addContainerGap(112, Short.MAX_VALUE)
-								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(comboBoxTipoEvento, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblTipoEvento))
-								.addGap(178))
-						.addGroup(groupLayout.createSequentialGroup().addGap(105)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(jCalendarInicio_1, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(jCalendarFin_1, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addGap(27)))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap()));
-
-		// Establece el diseño configurado para el panel.
-		setLayout(groupLayout);
+		setLayout(new MigLayout("", "[182px][12px][219px][12px][222px][12px][222px]", "[50px][26px][16px][1px][21px][18px][25px][22px][25px][22px][39px][208px]"));
+		add(scrollPane, "cell 0 11 7 1,grow");
+		add(lblItr, "cell 2 8,alignx left,aligny center");
+		add(comboBoxItr, "cell 0 8,growx,aligny top");
+		add(comboBoxTipoEvento, "cell 0 2 1 3,alignx left,aligny bottom");
+		add(comboBoxModalidad, "cell 0 6,growx,aligny top");
+		add(comboBoxEstado, "cell 0 10,growx,aligny top");
+		add(lblEstado, "cell 2 10,alignx left,aligny top");
+		add(lblModalidad, "cell 2 6,alignx left,aligny center");
+		add(lblTipoEvento, "cell 2 4,alignx left,aligny top");
+		add(lblTitle, "cell 0 0 3 1,grow");
+		add(jCalendarInicio_1, "cell 4 4 1 7,alignx left,aligny bottom");
+		add(lblFechaInicio, "cell 4 2,alignx center,aligny top");
+		add(comboBoxFiltroFecha, "cell 4 1,growx,aligny bottom");
+		add(jCalendarFin_1, "cell 6 4 1 7,alignx left,aligny bottom");
+		add(lblFechaFin, "cell 6 2,alignx left,aligny top");
+		add(btnAplicarFiltroFecha, "cell 6 1,growx,aligny top");
 
 	}
 
+		
 	private void actualizarFiltroFecha() {
 		String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
 
