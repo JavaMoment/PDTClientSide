@@ -143,7 +143,7 @@ public class ListAttendanceEvents extends ContentPanel {
         				.withTable(table)
         				.setTableSectionName("Listado de Eventos asistidos")
         				.setPdfTitle("Informe de " + lblTitle.getText().substring(0, lblTitle.getText().length()-1))
-        				.setPdfAuthor(student.getUsuario().getNombre1())
+        				.setPdfAuthor(student.getUsuario().getNombre1() + " " + student.getUsuario().getApellido1())
         				.generatePDF(path);
         		
         		if(pdfExitCode == 0) {
