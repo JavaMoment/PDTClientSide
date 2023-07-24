@@ -38,7 +38,7 @@ public class ModifyCallsEventPanel extends ContentPanel {
 	public ModifyCallsEventPanel() {
 
 
-EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+		EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 
 		
 		setLayout(new MigLayout("", "[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
