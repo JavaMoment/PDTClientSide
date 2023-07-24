@@ -63,16 +63,16 @@ public class CreateEventPanel extends JPanel {
 	private TutorBeanRemote tutorBean;
 	private ModalidadBeanRemote modalidadBean;
 	private EstadoBeanRemote estadoBean;
+	
 
 	public CreateEventPanel() {
-		
+
 		eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 		itrBean = BeansFactory.getBean(Beans.Itr, ItrBeanRemote.class);
 		tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 		modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
 		estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
-		
 		JLabel titleLabel = new JLabel("Título del evento:");
 		titleLabel.setFont(new Font("Arial", Font.PLAIN, 10));
 
@@ -135,14 +135,67 @@ public class CreateEventPanel extends JPanel {
 
 		comboBoxEstado = new JComboBox(estadoBean.selectAllByActive(1).toArray());
 
-		// codigo para pasar de una tabla de tutores a otra
+//		// codigo para pasar de una tabla de tutores a otra
+//
+//		tableOrigen = new JTable();
+//
+//		List<Tutor> tutores = tutorBean.selectAll();
+//		String[] tutoresColNames = Arrays.stream(tutorBean.getColsNames()).filter(value -> value.equals("usuario"))
+//				.toArray(String[]::new);
+//
+//		TableModel tutoresTableModel = new EntityTableModel<>(tutoresColNames, tutores);
+//
+//		tableOrigen.setModel(tutoresTableModel);
+//		tableOrigen.setColumnSelectionAllowed(true);
+//		tableOrigen.setCellSelectionEnabled(true);
+//
+//		JScrollPane scrollPane = new JScrollPane();
+//		scrollPane.add(tableOrigen);
+//		scrollPane.setViewportView(tableOrigen);
+//
+//		// PASAR A TABLEDESTINO
+//
+//		tableDestino = new JTable();
+//		JButton btnAgregar = new JButton("Agregar tutor");
+//
+//		btnAgregar.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//
+//				DefaultTableModel DTM = new DefaultTableModel(tutoresColNames, 0); // 0 es el header
+//
+//				// selecciono los datos de la celda
+//				int selectedRow = tableOrigen.getSelectedRow();
+//				int selectedColumn = tableOrigen.getSelectedColumn();
+//				String cellValue = tableOrigen.getValueAt(selectedRow, selectedColumn).toString();
+//
+//				// para agregar al arraylist
+//
+//				tutoresElegidos.add(cellValue);
+//
+//				// agregar a la tabla
+//				DTM.addRow(tutoresElegidos.toArray());
+//
+//				// Obtener los nombres de usuario seleccionados en el ArrayList
+//				List<String> nombresUsuarios = new ArrayList<>(tutoresElegidos);
+//
+//				// Realizar la consulta utilizando la cláusula WHERE IN
+//				List<Tutor> tutoresSeleccionados = tutorBean.selectByUsernames(nombresUsuarios);
+//
+//				tableDestino.setModel(DTM);
+//
+//			}
+//		});
+
+		// INTENTO DE MAS DE UN TUTOR
 
 		tableOrigen = new JTable();
 
 		List<Tutor> tutores = tutorBean.selectAll();
 		String[] tutoresColNames = Arrays.stream(tutorBean.getColsNames()).filter(value -> value.equals("usuario"))
 				.toArray(String[]::new);
-
+		
+		
 		TableModel tutoresTableModel = new EntityTableModel<>(tutoresColNames, tutores);
 
 		tableOrigen.setModel(tutoresTableModel);
@@ -158,35 +211,32 @@ public class CreateEventPanel extends JPanel {
 		tableDestino = new JTable();
 		JButton btnAgregar = new JButton("Agregar tutor");
 
+
+		// Dentro del ActionListener del botón "Agregar tutor"
 		btnAgregar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        // Obtener los nombres de usuario de los tutores seleccionados
+		        int[] filasSeleccionadas = tableOrigen.getSelectedRows();
+		        for (int fila : filasSeleccionadas) {
+		            String nombreUsuario = tableOrigen.getValueAt(fila, 0).toString(); // Suponiendo que el nombre de usuario está en la primera columna
+		            tutoresElegidos.add(nombreUsuario);
+		        }
 
-				DefaultTableModel DTM = new DefaultTableModel(tutoresColNames, 0); // 0 es el header
+		        // Llenar la tabla de destino con los nombres de los tutores seleccionados
+		        DefaultTableModel DTM = new DefaultTableModel(new String[]{"Nombres de Tutor"}, 0);
+		        for (String nombreTutor : tutoresElegidos) {
+		            Object[] datosFila = new Object[]{nombreTutor};
+		            DTM.addRow(datosFila);
+		        }
 
-				// selecciono los datos de la celda
-				int selectedRow = tableOrigen.getSelectedRow();
-				int selectedColumn = tableOrigen.getSelectedColumn();
-				String cellValue = tableOrigen.getValueAt(selectedRow, selectedColumn).toString();
-
-				// para agregar al arraylist
-
-				tutoresElegidos.add(cellValue);
-
-				// agregar a la tabla
-				DTM.addRow(tutoresElegidos.toArray());
-
-				// Obtener los nombres de usuario seleccionados en el ArrayList
-				List<String> nombresUsuarios = new ArrayList<>(tutoresElegidos);
-
-				// Realizar la consulta utilizando la cláusula WHERE IN
-				List<Tutor> tutoresSeleccionados = tutorBean.selectByUsernames(nombresUsuarios);
-
-				tableDestino.setModel(DTM);
-
-			}
+		        tableDestino.setModel(DTM);
+		    }
 		});
-		setLayout(new MigLayout("", "[191px][18px][14px][57px][24px][16px][191px]", "[25px][13px][19px][13px][19px][13px][19px][13px][19px][13px][21px][13px][21px][13px][19px][13px][21px][13px][63px][29px]"));
+
+
+		setLayout(new MigLayout("", "[191px][18px][14px][57px][24px][16px][191px]",
+				"[25px][13px][19px][13px][19px][13px][19px][13px][19px][13px][21px][13px][21px][13px][19px][13px][21px][13px][63px][29px]"));
 		add(title, "cell 0 0 5 1,alignx right,aligny top");
 		add(statusLabel_1, "cell 0 15 7 1,growx,aligny top");
 		add(comboBoxItr, "cell 0 12 7 1,growx,aligny top");
@@ -249,7 +299,8 @@ public class CreateEventPanel extends JPanel {
 		return true;
 	}
 
-	private void registerEvent(EventoBeanRemote eventoBeanRemote, TutorBeanRemote tutorBean, EstadoBeanRemote estadoBean, ModalidadBeanRemote modalidadBean) {
+	private void registerEvent(EventoBeanRemote eventoBeanRemote, TutorBeanRemote tutorBean,
+			EstadoBeanRemote estadoBean, ModalidadBeanRemote modalidadBean) {
 		String titulo = titleField.getText();
 		Date fechaHoraInicio = startDateChooser.getDate();
 		Date fechaHoraFinal = endDateChooser.getDate();
@@ -257,7 +308,7 @@ public class CreateEventPanel extends JPanel {
 		String localizacion = locationField.getText();
 		TipoEvento tipoEvento = (TipoEvento) comboBoxTipoEvento.getSelectedItem();
 		Modalidad modalidad = (Modalidad) comboBoxModalidad.getSelectedItem();
-		Estado estado = (Estado) comboBoxEstado.getSelectedItem(); 
+		Estado estado = (Estado) comboBoxEstado.getSelectedItem();
 
 		tutoresSeleccionados = tutorBean.selectByUsernames(tutoresElegidos);
 
