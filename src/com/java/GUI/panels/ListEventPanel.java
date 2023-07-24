@@ -14,15 +14,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -493,7 +490,8 @@ public class ListEventPanel extends ContentPanel {
 		JLabel lblEstado = new JLabel("Estado");
 
 		JLabel lblTipoEvento = new JLabel("Tipo Evento");
-		setLayout(new MigLayout("", "[182px][12px][219px][12px][222px][12px][222px]", "[50px][26px][16px][1px][21px][18px][25px][22px][25px][22px][39px][208px]"));
+		setLayout(new MigLayout("", "[182px][12px][219px][12px][222px][12px][222px]",
+				"[50px][26px][16px][1px][21px][18px][25px][22px][25px][22px][39px][208px]"));
 		add(scrollPane, "cell 0 11 7 1,grow");
 		add(lblItr, "cell 2 8,alignx left,aligny center");
 		add(comboBoxItr, "cell 0 8,growx,aligny top");
@@ -513,7 +511,6 @@ public class ListEventPanel extends ContentPanel {
 
 	}
 
-		
 	private void actualizarFiltroFecha() {
 		String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
 
