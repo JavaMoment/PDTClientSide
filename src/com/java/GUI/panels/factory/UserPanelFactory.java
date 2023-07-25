@@ -1,11 +1,11 @@
 package com.java.GUI.panels.factory;
 
+import java.awt.Component;
+
 import javax.swing.JPanel;
 
-import com.entities.Estudiante;
 import com.entities.Usuario;
 import com.java.GUI.panels.EventsPanel;
-import com.java.GUI.panels.ReportsPanel;
 import com.java.GUI.panels.UserManagementPanel;
 
 public interface UserPanelFactory {
@@ -14,10 +14,8 @@ public interface UserPanelFactory {
 	
 	EventsPanel createEventsPanel();
 	
-	JPanel createReportsPanel();
-
 	UserManagementPanel createUserManagement(Usuario user);
 
-	ReportsPanel createReportsPanel(Estudiante e);
+	Component createReportsPanel(Usuario u);
 
 }

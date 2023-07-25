@@ -1,12 +1,13 @@
 package com.java.GUI.panels.factory;
 
+import java.awt.Component;
+
 import javax.swing.JPanel;
 
-import com.entities.Estudiante;
 import com.entities.Usuario;
 import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.HomePanel;
-import com.java.GUI.panels.ReportsPanel;
+import com.java.GUI.panels.StudentSelectionPanel;
 import com.java.GUI.panels.UserManagementPanel;
 
 public class AnalystPanelFactory implements UserPanelFactory {
@@ -27,15 +28,9 @@ public class AnalystPanelFactory implements UserPanelFactory {
 	}
 
 	@Override
-	public JPanel createReportsPanel() {
+	public Component createReportsPanel(Usuario u) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ReportsPanel createReportsPanel(Estudiante e) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StudentSelectionPanel();
 	}
 
 }

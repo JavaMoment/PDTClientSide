@@ -1,8 +1,9 @@
 package com.java.GUI.panels.factory;
 
+import java.awt.Component;
+
 import javax.swing.JPanel;
 
-import com.entities.Estudiante;
 import com.entities.Usuario;
 import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.ReportsPanel;
@@ -23,19 +24,13 @@ public class StudentPanelFactory implements UserPanelFactory {
 	}
 
 	@Override
-	public ReportsPanel createReportsPanel(Estudiante e) {
-		return new ReportsPanel(e);
+	public Component createReportsPanel(Usuario u) {
+		return new ReportsPanel(u);
 	}
 
 	@Override
 	public UserManagementPanel createUserManagement(Usuario user) {
 		return new StudentUserManagementPanel(user);
-	}
-
-	@Override
-	public JPanel createReportsPanel() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

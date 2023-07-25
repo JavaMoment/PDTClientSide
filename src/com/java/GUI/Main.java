@@ -3,6 +3,7 @@ package com.java.GUI;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,16 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-import com.entities.Estudiante;
 import com.entities.Usuario;
 import com.java.GUI.panels.ContentHomePanel;
 import com.java.GUI.panels.ContentLoginPanel;
 import com.java.GUI.panels.ContentPanel;
 import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.HomePanel;
-import com.java.GUI.panels.ListAttendanceEvents;
 import com.java.GUI.panels.LoginPanel;
-import com.java.GUI.panels.ReportsPanel;
 import com.java.GUI.panels.SignUpPanel;
 import com.java.GUI.panels.UserManagementPanel;
 import com.java.GUI.panels.factory.UserPanelFactory;
@@ -155,13 +153,8 @@ public class Main extends JFrame {
 		contentPane = new ContentPanel();
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
-		
-		// Borrar
-		Estudiante e = new Estudiante();
-		e.setIdEstudiante(34);
-		e.setUsuario(user);
-		//
-		ReportsPanel tabs = userPanelFactory.createReportsPanel(e);
+
+		Component tabs = userPanelFactory.createReportsPanel(user);
 		getContentPane().add(tabs, "reports");
 	}
 
