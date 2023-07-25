@@ -23,7 +23,7 @@ public class AnalystPanelFactory implements UserPanelFactory {
 	}
 
 	@Override
-	public EventsPanel createEventsPanel() {
+	public EventsPanel createEventsPanel(Usuario user) {
 		return new EventsPanel();
 	}
 

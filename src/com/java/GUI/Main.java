@@ -145,7 +145,7 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		EventsPanel tabs = userPanelFactory.createEventsPanel();
+		EventsPanel tabs = userPanelFactory.createEventsPanel(user);
 		getContentPane().add(tabs, "eventsMngmnt");
 	}
 	

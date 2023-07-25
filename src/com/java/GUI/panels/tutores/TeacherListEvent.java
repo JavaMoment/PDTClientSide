@@ -1,17 +1,19 @@
-package com.java.GUI.panels;
+package com.java.GUI.panels.tutores;
 
-// Importación de bibliotecas necesarias para componentes gráficos y manipulación de eventos.
-// También se importan clases personalizadas y entidades relacionadas con la aplicación.
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -32,7 +34,10 @@ import com.entities.Evento;
 import com.entities.Itr;
 import com.entities.Modalidad;
 import com.entities.Tutor;
+import com.entities.Usuario;
 import com.enums.TipoEvento;
+import com.java.GUI.panels.ContentPanel;
+import com.java.GUI.panels.SheetEventPanel;
 import com.java.GUI.utils.DefaultComboBox;
 import com.java.GUI.utils.EntityTableModel;
 import com.java.controller.BeansFactory;
@@ -43,11 +48,10 @@ import com.services.ItrBeanRemote;
 import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 import com.toedter.calendar.JCalendar;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import net.miginfocom.swing.MigLayout;
 
-public class ListEventPanel extends ContentPanel {
+public class TeacherListEvent extends ContentPanel {
 
 	// Identificador único de versión para el control de serialización (ignorar para
 	// fines de comentario).
@@ -86,7 +90,13 @@ public class ListEventPanel extends ContentPanel {
 	private JCalendar jCalendarFin_1;
 	private JButton btnAplicarFiltroFecha;
 
-	public ListEventPanel() {
+	// Atributo para almacenar el usuario actual que está utilizando la interfaz
+    private Usuario currentUser;
+	
+
+	public TeacherListEvent(Usuario user) {
+	
+
 
 		// Inicialización de los servicios remotos para acceder a los datos de las
 		// entidades relacionadas con los eventos.
@@ -95,6 +105,8 @@ public class ListEventPanel extends ContentPanel {
 		tutorBean = BeansFactory.getBean(Beans.Tutor, TutorBeanRemote.class);
 		modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
 		estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
+		
+		Tutor tutor = tutorBean.selectUserBy(user.getNombreUsuario());
 
 		// Etiqueta para mostrar el título de la lista de eventos con formato y
 		// alineación específicos.
@@ -130,47 +142,30 @@ public class ListEventPanel extends ContentPanel {
 			}
 		});
 
+		
 		// Obtiene la lista de eventos desde el servicio remoto.
-		List<Evento> eventos = eventoBean.selectAll();
+		List<Evento> eventos = eventoBean.selectEventosByTutor(tutor.getIdTutor());
+
+//		// Filtrar los eventos para mostrar solo los asignados al tutor actual (currentUser).
+//		if (currentUser.getTipoUsuario() == "Tutor"){
+//		    eventos = eventos.stream()
+//		        .filter(evento -> evento.getTutorEventos() != null && evento.getTutorEventos().contains(currentUser.getNombre1()))
+//		        .collect(Collectors.toList());
+//		}
+
+
+	
 		// Filtra las columnas de la tabla para excluir algunas como "idEvento" y
 		// "analistas".
-		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-				.filter(value -> !value.equals("idEvento") && !value.equals("analistas")).toArray(String[]::new);
+		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames()).filter(
+				value -> !value.equals("idEvento") && !value.equals("tutorEventos") && !value.equals("analistas"))
+				.toArray(String[]::new);
 
 		// Creación de la tabla de eventos con los datos obtenidos y los nombres de las
 		// columnas filtradas.
 		tableEvents = new JTable();
 		tableEvents.getTableHeader().setReorderingAllowed(false);
 		EntityTableModel<Evento> eventosTableModel = new EntityTableModel<>(eventosColNames, eventos);
-
-		int contador = 0; // Variable para llevar la cuenta de las filas de la tabla que se están
-							// procesando.
-		List<String> nombresTutores = new ArrayList<>(); // Lista para almacenar los nombres de los tutores asociados a
-															// un evento.
-
-		for (Evento evento : eventos) { // Itera sobre la lista de eventos.
-			for (var eventoTutor : evento.getTutorEventos()) { // Itera sobre los tutorEventos asociados a un evento.
-				long idTutor = eventoTutor.getId().getIdTutor(); // Obtiene el id del tutor del evento actual.
-				Tutor tutor = eventoBean.tutorDelEvento(idTutor); // Obtiene el objeto Tutor usando el id del tutor.
-				String nombreTutor = tutor.getUsuario().getNombre1(); // Obtiene el nombre del tutor a partir del objeto
-																		// Tutor.
-				nombresTutores.add(nombreTutor); // Agrega el nombre del tutor a la lista nombresTutores.
-			}
-
-			if (!nombresTutores.isEmpty()) { // Verifica si la lista de tutores no está vacía.
-				String tutoresConcatenados = String.join("\n ", nombresTutores); // Concatena los nombres de los tutores
-																					// separados por salto de línea.
-				eventosTableModel.setValueAt(tutoresConcatenados, contador, 9); // Establece los nombres de los tutores
-																				// en la columna 9 de la tabla.
-			} else {
-				eventosTableModel.setValueAt("-", contador, 9); // Si no hay tutores asociados, establece un guion en la
-																// columna 9 de la tabla.
-			}
-
-			nombresTutores.clear(); // Limpia la lista de nombres de tutores para procesar el siguiente evento.
-			contador++; // Incrementa el contador para procesar la siguiente fila de la tabla en la
-						// próxima iteración del bucle.
-		}
 
 		// Configura el modelo de datos en la tabla de eventos.
 		tableEvents.setModel(eventosTableModel);
@@ -204,13 +199,9 @@ public class ListEventPanel extends ContentPanel {
 						Modalidad modalidad = (Modalidad) rowData[6];
 						Estado estado = (Estado) rowData[1];
 
-						// Obtiene la lista de nombres de tutores seleccionados
-						List<String> tutoresSeleccionados = obtenerNombresTutores();
-
 						// Crea un nuevo panel con los datos del evento seleccionado.
 						SheetEventPanel sheetEventPanel = new SheetEventPanel(titulo, fechaHoraInicio, fechaHoraFinal,
 								itr, localizacion, tipoEvento, modalidad, estado);
-						sheetEventPanel.setTutoresSeleccionados(tutoresSeleccionados);
 
 						sheetEventPanel.setTitulo(titulo);
 						sheetEventPanel.setFechaHoraInicio(fechaHoraInicio);
@@ -229,29 +220,6 @@ public class ListEventPanel extends ContentPanel {
 						sheetList.setVisible(true);
 					}
 				}
-			}
-
-			private List<String> obtenerNombresTutores() {
-				List<String> nombresTutores = new ArrayList<>();
-
-				int selectedRow = tableEvents.getSelectedRow();
-				// Obtener el índice de la fila seleccionada en la tabla "tableEvents".
-
-				if (selectedRow >= 0) {
-					Object value = tableEvents.getValueAt(selectedRow, 9);
-					// Obtener el valor ubicado en la columna 9 de la fila seleccionada.
-
-					if (value != null && value instanceof String) {
-						String nombreTutor = (String) value;
-						nombresTutores.add(nombreTutor);
-						// Si el valor no es nulo y es una instancia de String, agregar el nombre del
-						// tutor a la lista "nombresTutores".
-					}
-				}
-
-				return nombresTutores;
-				// Devolver la lista que contiene el nombre del tutor relacionado con el evento
-				// seleccionado.
 			}
 
 		});
@@ -511,6 +479,9 @@ public class ListEventPanel extends ContentPanel {
 
 	}
 
+
+
+
 	private void actualizarFiltroFecha() {
 		String opcionSeleccionada = (String) comboBoxFiltroFecha.getSelectedItem();
 
@@ -587,5 +558,8 @@ public class ListEventPanel extends ContentPanel {
 		// filtro de fechas.
 		tableEvents.setRowSorter(sorter);
 	}
+
+	
+	
 
 }

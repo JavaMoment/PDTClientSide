@@ -19,7 +19,7 @@ public class StudentPanelFactory implements UserPanelFactory {
 	}
 
 	@Override
-	public EventsPanel createEventsPanel() {
+	public EventsPanel createEventsPanel(Usuario user) {
 		return null;
 	}
 

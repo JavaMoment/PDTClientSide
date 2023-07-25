@@ -12,8 +12,8 @@ public interface UserPanelFactory {
 	
 	JPanel createHomePanel();
 	
-	EventsPanel createEventsPanel();
-	
+	EventsPanel createEventsPanel(Usuario user);
+  
 	UserManagementPanel createUserManagement(Usuario user);
 
 	Component createReportsPanel(Usuario u);
