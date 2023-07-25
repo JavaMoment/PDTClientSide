@@ -92,7 +92,7 @@ public class RegisterCallsEventPanel extends ContentPanel {
 				.filter(value -> !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
 				.toArray(String[]::new);
     
-		eventoTable = new JTable();
+		tableEvents = new JTable();
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
 		tableEvents.setModel(listModel);
 		scrollPane.setViewportView(tableEvents);
