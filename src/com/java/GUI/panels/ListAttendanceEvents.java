@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,6 +24,7 @@ import org.jfree.data.statistics.HistogramDataset;
 import com.entities.Estudiante;
 import com.entities.EstudianteEvento;
 import com.entities.Evento;
+import com.enums.Asistencia;
 import com.java.GUI.entities.CombinedEntities;
 import com.java.GUI.utils.EntitiesTableModel;
 import com.java.GUI.utils.PDFBuilder;
@@ -87,15 +89,26 @@ public class ListAttendanceEvents extends ContentPanel {
 		
 		
 		double pctAttendance = (double) estudianteEventos.stream()
-                .filter(ee -> ee.getAsistencia().startsWith("S"))
+				.filter(ee -> Asistencia.ASISTENCIA.equals(Asistencia.valueOf(ee.getAsistencia())))
                 .count() / estudianteEventos.size() * 100;
-		double pctNoAttendance = pctAttendance * estudianteEventos.size() / 100;
+		double pctHalfAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.MEDIA_ASISTENCIA_MATUTINA.equals(Asistencia.valueOf(ee.getAsistencia()))
+						|| Asistencia.MEDIA_ASISTENCIA_VESPERTINA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100;
+		double pctJustifyNoAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.AUSENCIA_JUSTIFICADA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100; 
+		double pctNoAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.AUSENCIA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100;
 		
 		DefaultPieDataset<String> attendanceDataset = new DefaultPieDataset<String>();
 		attendanceDataset.setValue("Asistidos", pctAttendance);
 		attendanceDataset.setValue("NO asistidos", pctNoAttendance);
+		attendanceDataset.setValue("Media asistencia", pctHalfAttendance);
+		attendanceDataset.setValue("Ausencia justificada", pctJustifyNoAttendance);
 		
-		JFreeChart attendancePieChart = ChartFactory.createPieChart("Porcentajes de asistencia a eventos", attendanceDataset, true, false, false);
+		JFreeChart attendancePieChart = ChartFactory.createPieChart("Porcentajes de asistencias a eventos", attendanceDataset, true, false, false);
 		attendanceChart = new ChartPanel(attendancePieChart);
 		add(attendanceChart, "cell 1 1,alignx right");
 		
