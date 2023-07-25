@@ -135,10 +135,6 @@ public class ModifyCallsEventPanel extends ContentPanel {
 			}
 		});
 
-    JLabel lblDescription = new JLabel(
-				"*Para modificar una convocatoria a evento debe presionar sobre el evento de la lista");
-		add(lblDescription, "cell 0 11 7 1");
-
 		// default combobox para que pueda seleccionar opcion nula
 
 		List<Modalidad> modalidades = modalidadBean.selectAllByActive(1);

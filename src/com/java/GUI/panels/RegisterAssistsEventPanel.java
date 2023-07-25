@@ -35,7 +35,7 @@ public class RegisterAssistsEventPanel extends ContentPanel {
 		
 		setLayout(new MigLayout("", "[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 		
-		JLabel lblTitle = new JLabel("MODIFICACION DE CONVOCATORIAS Y ASISTENCIAS A EVENTOS");
+		JLabel lblTitle = new JLabel("REGISTRAR ASISTENCIAS A EVENTOS");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
 		add(lblTitle, "cell 0 0 7 1");
 		
