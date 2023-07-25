@@ -32,12 +32,12 @@ public class RegisterCallsEventPanel extends ContentPanel {
 	
 	public RegisterCallsEventPanel() {
 		
-		EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 
 		
 		setLayout(new MigLayout("", "[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 		
-		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTOS");
+		JLabel lblTitle = new JLabel("MODIFICACION DE CONVOCATORIAS Y ASISTENCIAS A EVENTOS");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
 		add(lblTitle, "cell 0 0 7 1");
 		
@@ -47,12 +47,8 @@ public class RegisterCallsEventPanel extends ContentPanel {
 		eventos = eventoBean.selectAllByActive(1);
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
+                .filter(value ->  !value.equals("fechaHoraFinal") && !value.equals("tutorEventos"))
                 .toArray(String[]::new);
-		
-		for(Evento e : eventos) {
-			System.out.println(e.getTitulo());
-		}
 	
 		eventoTable = new JTable();
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
@@ -77,13 +73,12 @@ public class RegisterCallsEventPanel extends ContentPanel {
                         }
                         
                         Evento evento = eventos.get(selectedRow);
-                        
-                                                
+                              
                         
                         // Abrir el nuevo JFrame con los datos de la fila seleccionada
                         JFrame sheetEvent = new JFrame();
-                        SheetRegisterCalls  eventoCalls = new SheetRegisterCalls(evento);
-                        sheetEvent.getContentPane().add(eventoCalls);
+                        SheetModifyCallsPanel  estudiantesCalls = new SheetModifyCallsPanel(evento);
+                        sheetEvent.getContentPane().add(estudiantesCalls);
                         sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
                         sheetEvent.pack();
@@ -92,10 +87,6 @@ public class RegisterCallsEventPanel extends ContentPanel {
                 }
             }
 		});
-		
-		
-		JLabel lblDescription = new JLabel("*Para registrar una convocatoria a evento debe presionar sobre el evento de la lista");
-		add(lblDescription, "cell 0 11 7 1");
 		
 	}
 }

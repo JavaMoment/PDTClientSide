@@ -13,9 +13,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
-import com.entities.Evento;
 
 public class EntityTableModel<E> extends AbstractTableModel {
 
