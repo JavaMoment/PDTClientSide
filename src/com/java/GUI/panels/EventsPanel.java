@@ -47,6 +47,7 @@ public class EventsPanel extends JTabbedPane {
 				main.initHome();
 				main.revalidate();
 				revalidate();
+
 			}
 		});
 
@@ -73,7 +74,7 @@ public class EventsPanel extends JTabbedPane {
 		addTab("Registrar convocatoria a evento", registerCallsEvent);
 		
 		registerAsissistsEvent = new RegisterAssistsEventPanel();
-        addTab("Registrar asistencias a evento", registerAsissistsEvent);
+    addTab("Registrar asistencias a evento", registerAsissistsEvent);
 
 		eventModeAuxiliaryListPanel = new EventModeAuxiliaryListPanel();
 		addTab("Lista auxiliar modalidades de evento", eventModeAuxiliaryListPanel);

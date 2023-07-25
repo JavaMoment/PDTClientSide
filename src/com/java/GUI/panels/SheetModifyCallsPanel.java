@@ -38,6 +38,7 @@ public class SheetModifyCallsPanel extends JPanel {
 	private SheetEventPanel sheetEventPanel;
 	private List<EstudianteEvento> estudianteEvento;
 	private List<EstudianteEvento> estudiantesDelEvento;
+	private List<Estudiante> estudiantes;
 	private Asistencia asistencia;
 
 	
@@ -48,115 +49,89 @@ public class SheetModifyCallsPanel extends JPanel {
 
 		setLayout(new MigLayout("", "[125,center][158.00,center][128.00,center][130,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 		
-		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTO AL " + evento.getTitulo());
-		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
+		JLabel lblTitle = new JLabel("MODIFICACION DE CONVOCATORIA AL EVENTO " + evento.getTitulo());
+		lblTitle.setFont(new Font("Arial", Font.BOLD, 20));
 		add(lblTitle, "cell 0 0 7 1");
 		
 		JScrollPane scrollPaneEstudiantes = new JScrollPane();
-		add(scrollPaneEstudiantes, "cell 0 1 7 10,grow");
+		add(scrollPaneEstudiantes, "cell 0 1 7 9,grow");
 		
 		estudianteEvento = estudianteventoBean.selectAll();
-		
+		estudiantes = estudiantesBean.selectAll();
 		estudiantesDelEvento = new ArrayList<EstudianteEvento>();
 		
 		 for (EstudianteEvento e : estudianteEvento) {
-	            if (e.getIdEvento() == evento.getIdEvento()) {
+			for(Estudiante estudiante : estudiantes) {
+				String username = estudiante.getNombreUsuario();
+					if(e.getIdEstudiante() == estudiante.getIdEstudiante()){
+						e.setNombreUsuario(username);
+					}
+			}
+			
+	        if (e.getIdEvento() == evento.getIdEvento()) {
 	            	estudiantesDelEvento.add(e);
-	            }
 	        }
+	     }
 	
+		 for(EstudianteEvento e : estudiantesDelEvento) {
+			 System.out.println(e.getNombreUsuario());
+		 }
+		 
+		 
 		String[] estudiantesColNames = Arrays.stream(estudianteventoBean.getColsNames())
 						.filter(e -> !e.equals("id"))
 						.toArray(String[]::new);
 		
-		
-		String[] transientColNames = {"IDEstudiante","NombreUsuario"};
-		
-		for(EstudianteEvento e : estudiantesDelEvento) {
-			System.out.println(e.getId());
-		}
-		
-		System.out.println(evento.getIdEvento());
+		String[] transientColNames = {"nombreUsuario"};
 		
 		estudiantesTable = new JTable();
 		TableModel listModel = new EntityTableModel<>(estudiantesColNames, estudiantesDelEvento, transientColNames);
 		estudiantesTable.setModel(listModel);
 		scrollPaneEstudiantes.setViewportView(estudiantesTable);
 		
-
-		estudiantesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    // Obtener la fila seleccionada
-                    int selectedRow = estudiantesTable.getSelectedRow();
-                    
-                    // Verificar si hay una fila seleccionada
-                    Object[] rowData = new Object[estudiantesColNames.length];
-                    if (selectedRow != -1) {
-                        // Obtener los datos de la fila seleccionada
-                        for (int i = 0; i < estudiantesColNames.length; i++) {
-                            rowData[i] = estudiantesTable.getValueAt(selectedRow, i);
-                        }
-                        
-                        EstudianteEvento estudiante = estudiantesDelEvento.get(selectedRow);
-                              
-                        String[] opciones = {asistencia.PENDIENTE.toString(),asistencia.ASISTENCIA.toString(), asistencia.AUSENCIA.toString(), 
-                        		asistencia.AUSENCIA_JUSTIFICADA.toString(),asistencia.MEDIA_ASISTENCIA_MATUTINA.toString(),
-                        		asistencia.MEDIA_ASISTENCIA_VESPERTINA.toString()};
-
-                        // Mostrar el JOptionPane con el JComboBox
-                        String seleccion = (String) JOptionPane.showInputDialog(null, "Selecciona una opción:",
-                                "Selector de opciones", JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
-                        
-                        BigDecimal min = new BigDecimal(1); // Valor mínimo permitido
-                        BigDecimal max = new BigDecimal(5); // Valor máximo permitido
-
-                        BigDecimal calificacion = obtenerNumeroEntreMinMax(min, max);                        
-                        
-                        estudiante.setAsistencia(seleccion);
-                        estudiante.setCalificacion(calificacion);
-                        estudianteventoBean.update(estudiante);                     
-                        
-                    }
-                }
-            }
-           
-		});
-		
-		estudianteEvento = estudianteventoBean.selectAll();
-		estudiantesDelEvento.clear();
- 		estudiantesDelEvento = new ArrayList<EstudianteEvento>();
- 		 for (EstudianteEvento e : estudianteEvento) {
- 	            if (e.getIdEvento() == evento.getIdEvento()) {
- 	            	estudiantesDelEvento.add(e);
- 	            }
- 	        }                      
- 		 TableModel listModel2 = new EntityTableModel<>(estudiantesColNames, estudiantesDelEvento, transientColNames);
- 			estudiantesTable.setModel(listModel2);
- 			scrollPaneEstudiantes.setViewportView(estudiantesTable);
-		
-	}
-
-	public static BigDecimal obtenerNumeroEntreMinMax(BigDecimal min, BigDecimal max) {
-		  BigDecimal valor;
-	        do {
-	            String input = JOptionPane.showInputDialog(null,
-	                    "Ingresa un número entre " + min + " y " + max + ":");
-	            try {
-	                valor = new BigDecimal(input);
-	                if (valor.compareTo(min) < 0 || valor.compareTo(max) >  5) {
-	                    JOptionPane.showMessageDialog(null, "El número debe estar entre " + min + " y " + max + ".",
-	                            "Valor inválido", JOptionPane.ERROR_MESSAGE);
-	                }
-	            } catch (NumberFormatException e) {
-	                valor = min.subtract(BigDecimal.ONE); // Valor inválido para que continúe el bucle
-	                JOptionPane.showMessageDialog(null, "Por favor, ingresa un número válido.",
-	                        "Valor inválido", JOptionPane.ERROR_MESSAGE);
+		JButton btnDelete = new JButton("Eliminar");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                int selectedRow = estudiantesTable.getSelectedRow();
+                EstudianteEvento estudiante = estudiantesDelEvento.get(selectedRow);
+                int confirmacion = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la convocatoria?", "Confirmación", JOptionPane.YES_NO_OPTION);
+	            if (confirmacion == JOptionPane.YES_OPTION) {
+	            	estudianteventoBean.delete(estudiante);
+	            	estudianteEvento = estudianteventoBean.selectAll();
+            		estudiantes = estudiantesBean.selectAll();
+            		estudiantesDelEvento = new ArrayList<EstudianteEvento>();
+            		
+            		 for (EstudianteEvento e1 : estudianteEvento) {
+            			for(Estudiante estudiante2 : estudiantes) {
+            				String username = estudiante2.getNombreUsuario();
+            					if(e1.getIdEstudiante() == estudiante2.getIdEstudiante()){
+            						e1.setNombreUsuario(username);
+            					}
+            			}
+            			
+            	        if (e1.getIdEvento() == evento.getIdEvento()) {
+            	            	estudiantesDelEvento.add(e1);
+            	        }
+            	     }
+            		 
+            		String[] estudiantesColNames = Arrays.stream(estudianteventoBean.getColsNames())
+            						.filter(e1 -> !e1.equals("id"))
+            						.toArray(String[]::new);
+            		
+            		String[] transientColNames = {"nombreUsuario"};
+            		
+            		TableModel listModel3 = new EntityTableModel<>(estudiantesColNames, estudiantesDelEvento, transientColNames);
+            		estudiantesTable.setModel(listModel3);
+            		scrollPaneEstudiantes.setViewportView(estudiantesTable);
+	            	
+	            	
 	            }
-	        } while (valor.compareTo(min) < 0 || valor.compareTo(max) > 0);
 
-	        return valor;
-	    }
-
+		    }
+			    
+		});
+		add(btnDelete, "cell 2 10 3 1");
+			
+	}
+	
 }

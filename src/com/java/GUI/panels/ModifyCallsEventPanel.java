@@ -135,7 +135,7 @@ public class ModifyCallsEventPanel extends ContentPanel {
 			}
 		});
 
-		JLabel lblDescription = new JLabel(
+    JLabel lblDescription = new JLabel(
 				"*Para modificar una convocatoria a evento debe presionar sobre el evento de la lista");
 		add(lblDescription, "cell 0 11 7 1");
 
@@ -370,8 +370,6 @@ public class ModifyCallsEventPanel extends ContentPanel {
 		add(lblModalidad, "cell 2 6,alignx left,aligny center");
 		add(lblTipoEvento, "cell 2 4,alignx left,aligny top");
 		add(lblTitle, "cell 0 0 3 1,grow");
-		
-
 	}
 
 }
