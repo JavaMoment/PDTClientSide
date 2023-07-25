@@ -10,10 +10,12 @@ public interface UserPanelFactory {
 	
 	JPanel createHomePanel();
 	
-	EventsPanel createEventsPanel();
-	
 	JPanel createReportsPanel();
 
 	UserManagementPanel createUserManagement(Usuario user);
+
+	EventsPanel createEventsPanel(Usuario user);
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.java.GUI.panels.tutores;
 
+import com.entities.Usuario;
 import com.java.GUI.panels.AuxiliaryListofEventStatesPanel;
 import com.java.GUI.panels.CreateEventPanel;
 import com.java.GUI.panels.EventModeAuxiliaryListPanel;
@@ -13,8 +14,9 @@ import com.java.GUI.panels.RemoveEventPanel;
 
 public class TeacherEventManagementPanel extends EventsPanel {
 
-	public TeacherEventManagementPanel() {
+	public TeacherEventManagementPanel(Usuario user) {
 		super();
+		super.setListEvent(new TeacherListEvent(user));
 		super.remove(2);
 		super.remove(2);
 		super.remove(2);
