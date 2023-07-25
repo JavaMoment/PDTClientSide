@@ -72,11 +72,6 @@ public class SheetRegisterPanel extends JPanel {
 	            	estudiantesDelEvento.add(e);
 	        }
 	     }
-	
-		 for(EstudianteEvento e : estudiantesDelEvento) {
-			 System.out.println(e.getNombreUsuario());
-		 }
-		 
 		 
 		String[] estudiantesColNames = Arrays.stream(estudianteventoBean.getColsNames())
 						.filter(e -> !e.equals("id"))

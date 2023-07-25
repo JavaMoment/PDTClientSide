@@ -32,12 +32,12 @@ public class RegisterCallsEventPanel extends ContentPanel {
 	
 	public RegisterCallsEventPanel() {
 		
-EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+		EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
 
 		
 		setLayout(new MigLayout("", "[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]", "[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 		
-		JLabel lblTitle = new JLabel("MODIFICACION DE CONVOCATORIAS Y ASISTENCIAS A EVENTOS");
+		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTOS");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
 		add(lblTitle, "cell 0 0 7 1");
 		
@@ -47,7 +47,7 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
 		eventos = eventoBean.selectAllByActive(1);
 		
 		String[] eventosColNames = Arrays.stream(eventoBean.getColsNames())
-                .filter(value ->  !value.equals("fechaHoraFinal") && !value.equals("tutorEventos"))
+                .filter(value ->  !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
                 .toArray(String[]::new);
 	
 		eventoTable = new JTable();
@@ -73,12 +73,13 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
                         }
                         
                         Evento evento = eventos.get(selectedRow);
-                              
+                        
+                                                
                         
                         // Abrir el nuevo JFrame con los datos de la fila seleccionada
                         JFrame sheetEvent = new JFrame();
-                        SheetModifyCallsPanel  estudiantesCalls = new SheetModifyCallsPanel(evento);
-                        sheetEvent.getContentPane().add(estudiantesCalls);
+                        SheetRegisterCalls  eventoCalls = new SheetRegisterCalls(evento);
+                        sheetEvent.getContentPane().add(eventoCalls);
                         sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
                         sheetEvent.pack();
@@ -87,6 +88,10 @@ EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemot
                 }
             }
 		});
+		
+		
+		JLabel lblDescription = new JLabel("*Para registrar una convocatoria a evento debe presionar sobre el evento de la lista");
+		add(lblDescription, "cell 0 11 7 1");
 		
 	}
 }

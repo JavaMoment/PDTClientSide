@@ -75,7 +75,7 @@ public class RegisterAssistsEventPanel extends ContentPanel {
                         
                         // Abrir el nuevo JFrame con los datos de la fila seleccionada
                         JFrame sheetEvent = new JFrame();
-                        SheetModifyCallsPanel  estudiantesCalls = new SheetModifyCallsPanel(evento);
+                        SheetRegisterPanel  estudiantesCalls = new SheetRegisterPanel(evento);
                         sheetEvent.getContentPane().add(estudiantesCalls);
                         sheetEvent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
