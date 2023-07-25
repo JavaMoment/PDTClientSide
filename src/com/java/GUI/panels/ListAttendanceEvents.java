@@ -45,6 +45,7 @@ public class ListAttendanceEvents extends ContentPanel {
 	private EntitiesTableModel<Evento, EstudianteEvento> eventoTableModel;
 	protected final List<String> colsFilter = Arrays.asList("activo", "idEvento", "id"); 
 	private JLabel lblTitle;
+	private HistogramDataset notesDataset;
 	 
 	public ListAttendanceEvents(Estudiante student) {
 		setLayout(new MigLayout("", "[275.00,grow][450.00,growprio 70,grow]", "[][grow][][][]"));
@@ -84,6 +85,7 @@ public class ListAttendanceEvents extends ContentPanel {
 		scrollPane.setOpaque(false);
 		scrollPane.getViewport().setOpaque(false);
 		
+		
 		double pctAttendance = (double) estudianteEventos.stream()
                 .filter(ee -> ee.getAsistencia().startsWith("S"))
                 .count() / estudianteEventos.size() * 100;
@@ -96,12 +98,15 @@ public class ListAttendanceEvents extends ContentPanel {
 		JFreeChart attendancePieChart = ChartFactory.createPieChart("Porcentajes de asistencia a eventos", attendanceDataset, true, false, false);
 		attendanceChart = new ChartPanel(attendancePieChart);
 		add(attendanceChart, "cell 1 1,alignx right");
-
-		HistogramDataset notesDataset = new HistogramDataset();
-        double[] califications = estudianteEventos.stream()
-                .mapToDouble(event -> event.getCalificacion().doubleValue())
-                .toArray();
-        notesDataset.addSeries("Calificaciones", califications, 10);
+		
+		if(table.getRowCount() != 0) {
+			notesDataset = new HistogramDataset();
+			double[] califications = estudianteEventos.stream()
+					.mapToDouble(event -> event.getCalificacion().doubleValue())
+					.toArray();
+			notesDataset.addSeries("Calificaciones", califications, 10);
+		}
+		
 
         JFreeChart notesHistogram = ChartFactory.createHistogram(
                 "Histograma de calificaciones por eventos",
