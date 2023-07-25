@@ -5,8 +5,6 @@ import javax.swing.JTable;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -19,17 +17,14 @@ import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.statistics.HistogramDataset;
 
 import com.entities.Estudiante;
 import com.entities.EstudianteEvento;
 import com.entities.Evento;
 import com.java.GUI.entities.CombinedEntities;
 import com.java.GUI.utils.EntitiesTableModel;
-import com.java.GUI.utils.EntityTableModel;
 import com.java.GUI.utils.PDFBuilder;
 import com.java.controller.BeansFactory;
 import com.java.enums.Beans;
@@ -102,14 +97,20 @@ public class ListAttendanceEvents extends ContentPanel {
 		attendanceChart = new ChartPanel(attendancePieChart);
 		add(attendanceChart, "cell 1 1,alignx right");
 
-		DefaultCategoryDataset notesDataset = new DefaultCategoryDataset();
-		eventosAndEstudianteEvento.stream().forEach(eventoEstud -> notesDataset.addValue(
-				(BigDecimal) eventoEstud.callMethod("getCalificacion"),
-				"Estudiante: " + student.getUsuario().getNombre1() + " " + student.getUsuario().getApellido1(),
-				(String) eventoEstud.callMethod("getTitulo")));
-		
-		JFreeChart notesBarChart = ChartFactory.createBarChart("", "", "Notas vs Eventos", notesDataset, PlotOrientation.VERTICAL,true, false, false);
-		attendanceChart = new ChartPanel(notesBarChart);
+		HistogramDataset notesDataset = new HistogramDataset();
+        double[] califications = estudianteEventos.stream()
+                .mapToDouble(event -> event.getCalificacion().doubleValue())
+                .toArray();
+        notesDataset.addSeries("Calificaciones", califications, 10);
+
+        JFreeChart notesHistogram = ChartFactory.createHistogram(
+                "Histograma de calificaciones por eventos",
+                "Calificacion",
+                "Frecuencia",
+                notesDataset
+        );
+        
+		attendanceChart = new ChartPanel(notesHistogram);
 		add(attendanceChart, "cell 1 3,alignx right");
 		
 		btnDownloadPdf = new JButton("Descargar PDF");
@@ -118,6 +119,10 @@ public class ListAttendanceEvents extends ContentPanel {
         btnDownloadPdf.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mousePressed(MouseEvent e) {
+        		if(table.getRowCount() == 0) {
+        			 JOptionPane.showMessageDialog(ListAttendanceEvents.this, "¡Hey! No existen datos suficientes para generar un reporte", "Alerta alerta", JOptionPane.WARNING_MESSAGE);
+        			 return;
+        		}
         		JFileChooser j = new JFileChooser();
         		j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         		
@@ -138,7 +143,7 @@ public class ListAttendanceEvents extends ContentPanel {
         		
         		int pdfExitCode = PDFBuilder.create()
         				.withChart(attendancePieChart)
-        				.withChart(notesBarChart)
+        				.withChart(notesHistogram)
         				.setChartSectionName("Estadisticas de asistencias a eventos y notas relacionadas")
         				.withTable(table)
         				.setTableSectionName("Listado de Eventos asistidos")
