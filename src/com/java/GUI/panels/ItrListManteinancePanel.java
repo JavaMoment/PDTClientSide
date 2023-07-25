@@ -157,6 +157,10 @@ public class ItrListManteinancePanel extends ContentPanel {
 		            		}
 		            		String newName = JOptionPane.showInputDialog(ItrListManteinancePanel.this, "Ingrese el nuevo nombre para el ITR:");
 		            		
+		            		if(newName == null) {
+		            			return;
+		            		}
+		            		
 		            		Itr itr = itrBean.selectItrBy(cellValue);
 		            		
 		            		itr.setNombre(newName);
