@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +41,7 @@ public class SheetRegisterCalls extends ContentPanel {
 	private List<Estudiante> estudiantes;
 	private List<Estudiante> convocados;
 	private Asistencia asistencia;
-
+	int idEvento;
 	
 	public SheetRegisterCalls(Evento evento) {
 		
@@ -54,7 +55,7 @@ public class SheetRegisterCalls extends ContentPanel {
 		add(lblTitle, "cell 0 0 7 1");
 		
 		JScrollPane scrollPaneEstudiantes = new JScrollPane();
-		add(scrollPaneEstudiantes, "cell 0 2 3 9,grow");
+		add(scrollPaneEstudiantes, "cell 0 2 3 9,grow"); 
 		
 		estudiantes = estudiantesBean.selectAll();
 		
@@ -62,8 +63,8 @@ public class SheetRegisterCalls extends ContentPanel {
 						.filter(e -> !e.equals("usuario"))
 						.toArray(String[]::new);
 		
-		String[] transientColNames = {"NombreUsuario"};
-				
+	    String[] transientColNames = {"NombreUsuario"};
+		
 		System.out.println(evento.getIdEvento());
 		
 		estudiantesTable = new JTable();
@@ -97,10 +98,10 @@ public class SheetRegisterCalls extends ContentPanel {
                 });
 		add(btnSelect, "cell 3 6");
 		
+		idEvento = evento.getIdEvento(); 
 		JButton btnAgregarEstudiantes = new JButton("Agregar estudiantes a evento");
 		btnAgregarEstudiantes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				long idEvento = evento.getIdEvento();
 				
 				try {
 					int option = JOptionPane.showOptionDialog(
@@ -116,14 +117,14 @@ public class SheetRegisterCalls extends ContentPanel {
 					
 					if(option == JOptionPane.YES_OPTION) {
 						for(Estudiante es : convocados) {
-							long idEstudiante = es.getIdEstudiante();
+							int idEstudiante = es.getIdEstudiante();
 							EstudianteEventoPK relationEV = new EstudianteEventoPK();
 							relationEV.setIdEstudiante(idEstudiante);
 							relationEV.setIdEvento(idEvento);
 							EstudianteEvento relation = new EstudianteEvento();
 							relation.setId(relationEV);
-							//relation.setAsistencia(Asistencia.PENDIENTE.toString());
-							relation.setCalificacion(0);
+							relation.setAsistencia(asistencia.PENDIENTE.toString());
+							relation.setCalificacion(new BigDecimal (1.0));
 							estudianteventoBean.create(relation);
 						}
 						

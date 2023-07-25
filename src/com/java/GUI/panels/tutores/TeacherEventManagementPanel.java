@@ -7,7 +7,6 @@ import com.java.GUI.panels.EventsPanel;
 import com.java.GUI.panels.ListEventPanel;
 import com.java.GUI.panels.ModifyCallsEventPanel;
 import com.java.GUI.panels.ModifyEventPanel;
-import com.java.GUI.panels.RegisterAssistsEventPanel;
 import com.java.GUI.panels.RegisterCallsEventPanel;
 import com.java.GUI.panels.RemoveEventPanel;
 
