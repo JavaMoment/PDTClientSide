@@ -21,14 +21,18 @@ import java.awt.event.MouseEvent;
 
 public class ContentHomePanel extends JPanel {
 
+	private JLabel lblUtecLogo;
+	private JButton btnLogout;
+	private GroupLayout groupLayout;
+
 	/**
 	 * Create the panel.
 	 */
 	public ContentHomePanel() {
 		
-		JLabel lblUtecLogo = new JLabel("New label");
+		lblUtecLogo = new JLabel("New label");
 		lblUtecLogo.setIcon(new ImageIcon(ContentHomePanel.class.getResource("/com/java/resources/images/06-isologotipo-para-fondo-blanco.png")));
-		JButton btnLogout = new JButton("");
+		btnLogout = new JButton("");
 		btnLogout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -41,7 +45,7 @@ public class ContentHomePanel extends JPanel {
 		btnLogout.setToolTipText("Cerrar sesión");
 		btnLogout.setContentAreaFilled(false);
 		btnLogout.setBorder(null);
-		GroupLayout groupLayout = new GroupLayout(this);
+		groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			    groupLayout.createParallelGroup()
 			        .addGroup(groupLayout.createSequentialGroup()
@@ -85,4 +89,17 @@ public class ContentHomePanel extends JPanel {
         
         g2d.dispose();
     }
+
+	public JButton getBtnLogout() {
+		return btnLogout;
+	}
+
+	public void setBtnLogout(JButton btn) {
+		this.groupLayout.replace(btnLogout, btn);
+		this.btnLogout = btn;
+		this.btnLogout.revalidate();
+		this.btnLogout.repaint();
+		revalidate();
+		repaint();
+	}
 }

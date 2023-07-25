@@ -3,6 +3,7 @@ package com.java.GUI;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -144,8 +145,17 @@ public class Main extends JFrame {
 		setContentPane(contentPane);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		
-		EventsPanel tabs = userPanelFactory.createEventsPanel();
+		EventsPanel tabs = userPanelFactory.createEventsPanel(user);
 		getContentPane().add(tabs, "eventsMngmnt");
+	}
+	
+	public void initReports() {
+		contentPane = new ContentPanel();
+		setContentPane(contentPane);
+		getContentPane().setLayout(new CardLayout(0, 0));
+
+		Component tabs = userPanelFactory.createReportsPanel(user);
+		getContentPane().add(tabs, "reports");
 	}
 
 	public void setUser(Usuario user) {

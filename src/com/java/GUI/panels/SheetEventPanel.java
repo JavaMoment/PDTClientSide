@@ -2,9 +2,11 @@ package com.java.GUI.panels;
 
 import java.awt.Font;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -24,7 +26,9 @@ public class SheetEventPanel extends ContentPanel {
 	private JTextField txtTipoEvento;
 	private JTextField txtModalidad;
 	private JTextField txtStatus;
-	private JTextField txtTutorSeleccionado;
+//	private JTextField txtTutorSeleccionado;
+	private JTextArea txtTutorSeleccionado;
+
 
 	public SheetEventPanel(String titulo, Date fechaHoraInicio, Date fechaHoraFinal, Itr itr, String localizacion,
 			TipoEvento tipoEvento, Modalidad modalidad, Estado estado) {
@@ -98,11 +102,14 @@ public class SheetEventPanel extends ContentPanel {
 		add(txtStatus, "cell 2 8");
 		txtStatus.setColumns(20);
 
-		JLabel lblTutorSeleccionado = new JLabel("Tutor Seleccionado:");
+		JLabel lblTutorSeleccionado = new JLabel("Tutores Seleccionados:");
 		add(lblTutorSeleccionado, "cell 1 9");
 
-		txtTutorSeleccionado = new JTextField();
-		txtTutorSeleccionado.setEditable(false);
+//		txtTutorSeleccionado = new JTextField();
+//		txtTutorSeleccionado.setEditable(false);
+		txtTutorSeleccionado = new JTextArea(5, 20); // 5 rows, 20 columns (adjust as needed)
+		txtTutorSeleccionado.setEditable(false); // To prevent user editing
+
 		add(txtTutorSeleccionado, "cell 2 9");
 		txtTutorSeleccionado.setColumns(20);
 
@@ -150,8 +157,10 @@ public class SheetEventPanel extends ContentPanel {
 		txtStatus.setText(estado.toString());
 	}
 
-	public void setTutorSeleccionado(String tutorSeleccionado) {
-
-		txtTutorSeleccionado.setText(tutorSeleccionado);
+	public void setTutoresSeleccionados(List<String> tutoresSeleccionados) {
+	    String nombresTutores = String.join("\n", tutoresSeleccionados);
+	    txtTutorSeleccionado.setText(nombresTutores);
 	}
+
+
 }

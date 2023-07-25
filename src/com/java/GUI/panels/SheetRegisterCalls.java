@@ -41,7 +41,7 @@ public class SheetRegisterCalls extends ContentPanel {
 	private List<Estudiante> estudiantes;
 	private List<Estudiante> convocados;
 	private Asistencia asistencia;
-	long idEvento;
+	private long idEvento;
 	
 	public SheetRegisterCalls(Evento evento) {
 		

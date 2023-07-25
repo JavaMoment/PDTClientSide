@@ -126,6 +126,16 @@ public class HomePanel extends JPanel {
 		btnDashboard.setForeground(new Color(40, 40, 40));   
 		btnDashboard.setSelectedIcon(null);
 		btnDashboard.setIcon(new ImageIcon(HomePanel.class.getResource("/com/java/resources/images/administrator.png")));
+		btnDashboard.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Main main = (Main) SwingUtilities.getWindowAncestor(HomePanel.this);
+		        main.initReports();
+				main.revalidate();
+			}
+			
+		});
 		gbc_btnDashboard = new GridBagConstraints();
 		gbc_btnDashboard.fill = GridBagConstraints.BOTH;
 		gbc_btnDashboard.insets = new Insets(0, 0, 0, 5);

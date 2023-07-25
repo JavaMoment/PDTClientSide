@@ -1,98 +1,181 @@
 package com.java.GUI.panels;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
+import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.statistics.HistogramDataset;
+
+import com.entities.Estudiante;
+import com.entities.EstudianteEvento;
+import com.entities.Evento;
+import com.enums.Asistencia;
+import com.java.GUI.entities.CombinedEntities;
+import com.java.GUI.utils.EntitiesTableModel;
+import com.java.GUI.utils.PDFBuilder;
+import com.java.controller.BeansFactory;
+import com.java.enums.Beans;
+import com.services.EstudianteEventoBeanRemote;
+import com.services.EventoBeanRemote;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
-
 
 public class ListAttendanceEvents extends ContentPanel {
+	
+	private JTable table;
+	private JScrollPane scrollPane;
+	private JButton btnDownloadPdf;
+	private ChartPanel attendanceChart;
+	private static EventoBeanRemote eventoBean = BeansFactory.getBean(Beans.Evento, EventoBeanRemote.class);
+	private static EstudianteEventoBeanRemote estudianteEventoBean = BeansFactory.getBean(Beans.EstudianteEvento, EstudianteEventoBeanRemote.class);
+	private EntitiesTableModel<Evento, EstudianteEvento> eventoTableModel;
+	protected final List<String> colsFilter = Arrays.asList("activo", "idEvento", "id"); 
+	private JLabel lblTitle;
+	private HistogramDataset notesDataset;
 	 
-	public ListAttendanceEvents() {
+	public ListAttendanceEvents(Estudiante student) {
+		setLayout(new MigLayout("", "[275.00,grow][450.00,growprio 70,grow]", "[][grow][][][]"));
 		
-		JLabel lblTitle = new JLabel("LISTAR ASISTENCIAS POR ESTUDIANTES A LOS EVENTOS");
-		lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle = new JLabel("Eventos asistidos por el usuario:");
+		lblTitle.setFont(new Font("Verdana", Font.BOLD, 18));
+		//scrollPane.setColumnHeaderView(lblTitle);
+		add(lblTitle, "cell 0 0,alignx center");
+
+		scrollPane = new JScrollPane();
+		add(scrollPane, "cell 0 1 1 3,grow");
 		
-		JButton btnBack = new JButton("Volver");
+		// Rows data creation
+		List<Evento> eventosFromUser = eventoBean.getEventosBy(student.getIdEstudiante());
+		List<EstudianteEvento> estudianteEventos = estudianteEventoBean.getEstudianteEventoFrom(student.getIdEstudiante());
+		List<CombinedEntities> eventosAndEstudianteEvento = IntStream
+		  .range(0, Math.min(eventosFromUser.size(), estudianteEventos.size()))
+		  .mapToObj(i -> new CombinedEntities(eventosFromUser.get(i), estudianteEventos.get(i)))
+		  .toList();
 		
-		JButton btnPDF = new JButton("GENERAR PDF");
-		btnPDF.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               PDFCreator();
-            }
+		// Columns headers creation
+		String[] eventosColNames = eventoBean.getColsNames();
+		String[] estudianteEventoColNames = estudianteEventoBean.getColsNames();
+		String[] colsNames = Stream
+				.concat(Arrays.stream(eventosColNames),
+						Arrays.stream(estudianteEventoColNames))
+				.filter(value -> !colsFilter.contains(value))
+				.toArray(String[]::new);
+		
+		table = new JTable();
+		eventoTableModel = new EntitiesTableModel<Evento, EstudianteEvento>(colsNames, eventosAndEstudianteEvento);
+		table.setModel(eventoTableModel);
+		scrollPane.setViewportView(table);
+		table.setColumnSelectionAllowed(true);
+		table.setCellSelectionEnabled(true);
+		table.setOpaque(false);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		
+		
+		double pctAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.ASISTENCIA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100;
+		double pctHalfAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.MEDIA_ASISTENCIA_MATUTINA.equals(Asistencia.valueOf(ee.getAsistencia()))
+						|| Asistencia.MEDIA_ASISTENCIA_VESPERTINA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100;
+		double pctJustifyNoAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.AUSENCIA_JUSTIFICADA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100; 
+		double pctNoAttendance = (double) estudianteEventos.stream()
+				.filter(ee -> Asistencia.AUSENCIA.equals(Asistencia.valueOf(ee.getAsistencia())))
+                .count() / estudianteEventos.size() * 100;
+		
+		DefaultPieDataset<String> attendanceDataset = new DefaultPieDataset<String>();
+		attendanceDataset.setValue("Asistidos", pctAttendance);
+		attendanceDataset.setValue("NO asistidos", pctNoAttendance);
+		attendanceDataset.setValue("Media asistencia", pctHalfAttendance);
+		attendanceDataset.setValue("Ausencia justificada", pctJustifyNoAttendance);
+		
+		JFreeChart attendancePieChart = ChartFactory.createPieChart("Porcentajes de asistencias a eventos", attendanceDataset, true, false, false);
+		attendanceChart = new ChartPanel(attendancePieChart);
+		add(attendanceChart, "cell 1 1,alignx right");
+		
+		if(table.getRowCount() != 0) {
+			notesDataset = new HistogramDataset();
+			double[] califications = estudianteEventos.stream()
+					.mapToDouble(event -> event.getCalificacion().doubleValue())
+					.toArray();
+			notesDataset.addSeries("Calificaciones", califications, 10);
+		}
+		
+
+        JFreeChart notesHistogram = ChartFactory.createHistogram(
+                "Histograma de calificaciones por eventos",
+                "Calificacion",
+                "Frecuencia",
+                notesDataset
+        );
+        
+		attendanceChart = new ChartPanel(notesHistogram);
+		add(attendanceChart, "cell 1 3,alignx right");
+		
+		btnDownloadPdf = new JButton("Descargar PDF");
+		btnDownloadPdf.setBackground(new Color(220, 58, 50));
+        btnDownloadPdf.setForeground(new Color(40, 40, 40));
+        btnDownloadPdf.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		if(table.getRowCount() == 0) {
+        			 JOptionPane.showMessageDialog(ListAttendanceEvents.this, "¡Hey! No existen datos suficientes para generar un reporte", "Alerta alerta", JOptionPane.WARNING_MESSAGE);
+        			 return;
+        		}
+        		JFileChooser j = new JFileChooser();
+        		j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        		
+        		int x = j.showSaveDialog(ListAttendanceEvents.this);
+        		if (x != JFileChooser.APPROVE_OPTION) {
+        			return;
+        		}
+        		
+        		String path = j.getSelectedFile().getPath();
+        		String os = System.getProperty("os.name");
+        		if(!path.endsWith(".pdf")) {
+        			if(os.startsWith("Windows")) {
+        				path = path + "\\" + "UTEC_EscolaridadEventos.pdf";
+        			} else {
+        				path = path + "/" + "UTEC_EscolaridadEventos.pdf";
+        			}
+        		}
+        		
+        		int pdfExitCode = PDFBuilder.create()
+        				.withChart(attendancePieChart)
+        				.withChart(notesHistogram)
+        				.setChartSectionName("Estadisticas de asistencias a eventos y notas relacionadas")
+        				.withTable(table)
+        				.setTableSectionName("Listado de Eventos asistidos")
+        				.setPdfTitle("Informe de " + lblTitle.getText().substring(0, lblTitle.getText().length()-1))
+        				.setPdfAuthor(student.getUsuario().getNombre1() + " " + student.getUsuario().getApellido1())
+        				.generatePDF(path);
+        		
+        		if(pdfExitCode == 0) {
+        			JOptionPane.showMessageDialog(ListAttendanceEvents.this, "¡Excelentes noticias! El PDF ha sido éxitosamente generado en la ubicación: " + path);
+        		} else {
+        			JOptionPane.showMessageDialog(ListAttendanceEvents.this, "¡Rayos! El PDF no ha podido ser generado");
+        		}
+        	}
         });
-
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addComponent(btnBack, GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnPDF, GroupLayout.PREFERRED_SIZE, 426, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 525, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(btnBack, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)))
-					.addGap(391)
-					.addComponent(btnPDF)
-					.addContainerGap(38, Short.MAX_VALUE))
-		);
-		setLayout(groupLayout);
-	}
-	
-	public void PDFCreator() {
-		// Ruta del directorio de descargas
-        String downloadsPath = System.getProperty("user.home") + File.separator + "Downloads";
-        String outputPath = downloadsPath + File.separator + "pruebas.pdf";
-        
-            try {
-                Document document = new Document(PageSize.A4);
-                PdfWriter.getInstance(document, new FileOutputStream(outputPath));
-                document.open();
-             
-                document.addTitle("Escolaridad del estudiante");
-                 
-                document.add(crateParagraph("UTEC"));
-        
-
-                document.add(new Paragraph("Fecha de creación"));
-                document.close();
-                System.out.println("PDF generado exitosamente!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-       
-	}
-	
-	public Paragraph crateParagraph(String s) {
-		 Paragraph paragraph = new Paragraph(s);
-		 paragraph.setAlignment(ABORT);
-		 return paragraph;
+		add(btnDownloadPdf, "cell 0 4");
 	}
 }
