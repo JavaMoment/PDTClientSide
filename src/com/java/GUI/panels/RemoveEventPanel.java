@@ -36,21 +36,21 @@ public class RemoveEventPanel extends ContentPanel {
 		
 		setLayout(new MigLayout("", "[130,grow,center][130,center][130,center][130,grow,center][130,grow,center][130,grow,center][130,center]", "[60][60][60,grow][60][60][60][60][60][60][28.00]"));
 		
-		JLabel lblTitle = new JLabel("BORRAR EVENTO");
+		JLabel lblTitle = new JLabel("BAJA EVENTO");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
 		add(lblTitle, "cell 0 0 7 1");
 		
 		JComboBox comboBoxTypeEvent = new JComboBox();
-		add(comboBoxTypeEvent, "cell 0 1,growx");
+		//add(comboBoxTypeEvent, "cell 0 1,growx");
 		
 		JComboBox comboBoxModality = new JComboBox();
-		add(comboBoxModality, "cell 3 1,growx");
+		//add(comboBoxModality, "cell 3 1,growx");
 		
 		JComboBox comboBoxITR = new JComboBox();
-		add(comboBoxITR, "cell 4 1,growx");
+		//add(comboBoxITR, "cell 4 1,growx");
 		
 		JComboBox comboBoxEstado = new JComboBox();
-		add(comboBoxEstado, "cell 5 1,growx");
+		//add(comboBoxEstado, "cell 5 1,growx");
 		
 		
 		JScrollPane scrollPane = new JScrollPane();
