@@ -41,7 +41,7 @@ public class SheetRegisterCalls extends ContentPanel {
 	private List<Estudiante> estudiantes;
 	private List<Estudiante> convocados;
 	private Asistencia asistencia;
-	int idEvento;
+	private long idEvento;
 	
 	public SheetRegisterCalls(Evento evento) {
 		
@@ -117,7 +117,7 @@ public class SheetRegisterCalls extends ContentPanel {
 					
 					if(option == JOptionPane.YES_OPTION) {
 						for(Estudiante es : convocados) {
-							int idEstudiante = es.getIdEstudiante();
+							long idEstudiante = es.getIdEstudiante();
 							EstudianteEventoPK relationEV = new EstudianteEventoPK();
 							relationEV.setIdEstudiante(idEstudiante);
 							relationEV.setIdEvento(idEvento);

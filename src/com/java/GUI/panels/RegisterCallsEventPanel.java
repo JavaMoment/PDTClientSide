@@ -92,7 +92,7 @@ public class RegisterCallsEventPanel extends ContentPanel {
 				.filter(value -> !value.equals("fechaHoraFinal") & !value.equals("tutorEventos"))
 				.toArray(String[]::new);
     
-		eventoTable = new JTable();
+		tableEvents = new JTable();
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
 		tableEvents.setModel(listModel);
 		scrollPane.setViewportView(tableEvents);
@@ -129,10 +129,6 @@ public class RegisterCallsEventPanel extends ContentPanel {
 				}
 			}
 		});
-
-		JLabel lblDescription = new JLabel(
-				"*Para registrar una convocatoria a evento debe presionar sobre el evento de la lista");
-		add(lblDescription, "cell 0 11 7 1");
 
 		// default combobox para que pueda seleccionar opcion nula
 
