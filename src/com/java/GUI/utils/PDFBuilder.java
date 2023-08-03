@@ -32,6 +32,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.java.GUI.Main;
 
 public class PDFBuilder {
 
@@ -216,7 +217,7 @@ public class PDFBuilder {
                 header.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
 
                 // add image
-                Image logo = Image.getInstance("src/com/java/resources/images/utec-Isotipo.png");
+                Image logo = Image.getInstance(getClass().getClassLoader().getResource("com/java/resources/images/utec-Isotipo.png"));
                 header.addCell(logo);
 
                 // add text
