@@ -267,25 +267,31 @@ public class SignUpPanel extends JPanel {
         btnSignup.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				String email = txtFieldEmail.getText().trim();
+				
+				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
 				String passw = new String(txtfldPassword.getPassword());
 				String passw2 = new String(txtFldPassw2.getPassword());
 				String lastName1 = txtFieldLastName1.getText().trim();
 				String lastName2 = txtFieldLastname2.getText().trim();
 				String name1 = txtFieldName1.getText().trim();
+				String email = txtFieldEmail.getText().trim();
+				String personalMail = txtFieldMail1.getText().trim();
 				Departamento depa = (Departamento) comboBoxDepas.getSelectedItem();
 				String ci = txtFieldCi.getText();
-				Date birthdate = (Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+				Date birthdate;
 				char genre = comboBoxGenre.getSelectedItem().equals(Genres.Femenino) ? 'F' : comboBoxGenre.getSelectedItem().equals(Genres.Masculino) ? 'M' : 'O';
 				Itr itr = (Itr) comboBoxItr.getSelectedItem();
 				Localidad city = (Localidad) comboBoxCity.getSelectedItem();
-				String username = email.split("@")[0];
-				String mailDomain = email.split("@")[1];
-				String personalMail = txtFieldMail1.getText().trim();
 				
-				if(txtFields.stream().anyMatch(t -> t.getText().isEmpty())) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "Existen campos obligatorios vacíos.", "¡Error!", JOptionPane.ERROR_MESSAGE);
+				if(dcBirthdate.getDate() == null) {
+					JOptionPane.showMessageDialog(SignUpPanel.this, "El campo de fecha nacimiento no puede ser vacío.", "¡Error!", JOptionPane.ERROR_MESSAGE);
 					return;
+				} else {
+					birthdate = (Date.valueOf(dcBirthdate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
 				}
 				
 				try {
@@ -298,6 +304,9 @@ public class SignUpPanel extends JPanel {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico válida.");
 					return;
 				}
+				
+				String username = email.split("@")[0];
+				String mailDomain = email.split("@")[1];
 				
 				if(!mailDomain.endsWith(".utec.edu.uy")) {
 					JOptionPane.showMessageDialog(SignUpPanel.this, "Por favor ingrese una dirección de correo electrónico institucional con terminación: \".utec.edu.uy\".");
@@ -317,7 +326,7 @@ public class SignUpPanel extends JPanel {
 				}
 				
 				if(!passw.equals(passw2)) {
-					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas nuevas no coinciden.");
+					JOptionPane.showMessageDialog(SignUpPanel.this, "Las contraseñas no coinciden.");
 					return;
 				}
 				
