@@ -531,6 +531,8 @@ public class UsersListPanel extends ContentPanel {
 				table.setRowSorter(sorter);
 				comboBoxes.stream().forEach(box -> box.setSelectedIndex(0));
 				textFieldSearch.setText("");
+				spinnerYearGen.setVisible(false);
+				spinnerYearGen.setEnabled(false);
 			}
 		});
 		add(btnRefresh, "cell 1 0");

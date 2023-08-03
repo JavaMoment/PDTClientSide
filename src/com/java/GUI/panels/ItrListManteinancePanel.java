@@ -291,8 +291,8 @@ public class ItrListManteinancePanel extends ContentPanel {
 				int exitCode = itrBean.create(itr);
 				
 				if(exitCode == 0) {
-        			fireUpdateTableContentFromDB();
         			JOptionPane.showMessageDialog(ItrListManteinancePanel.this, "¡Yep! El ITR ha sido dado de alta exitosamente", "Operación completada", JOptionPane.PLAIN_MESSAGE);
+        			fireUpdateTableContentFromDB();
         			return;
         		}
         		JOptionPane.showMessageDialog(ItrListManteinancePanel.this, "¡Oh no :(! Ocurrió un error mientras intentabamos dar de alta al ITR: " + newItr + "\n Por favor, intente de nuevo más tarde");
