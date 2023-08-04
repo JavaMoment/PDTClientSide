@@ -38,11 +38,15 @@ public class SheetModifyModalities extends ContentPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String name = txtFieldName.getText().trim();
-					modalidad.setNombre(name);
-					modalidadBean.update(modalidad);
+					if(name.isEmpty()) {
+	                    JOptionPane.showMessageDialog(null, "Hubo un error al realizar el alta; por favor verificar de no dejar espacios en blanco al principio o final", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						modalidad.setNombre(name);
+						modalidadBean.update(modalidad);
+					}
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Hubo un error al realizar el alta; por favor verificar de no dejar espacios en blanco al principio o final", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				
 			}

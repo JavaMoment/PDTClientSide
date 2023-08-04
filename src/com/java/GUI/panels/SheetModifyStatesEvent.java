@@ -41,12 +41,14 @@ public class SheetModifyStatesEvent extends ContentPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String name = textField.getText().trim();
-					estado.setNombre(name);	
-					estadoBean.update(estado);
+					if(name.isEmpty()) {
+	                    JOptionPane.showMessageDialog(null, "Hubo un error al realizar el alta; por favor verificar de no dejar espacios en blanco al principio o final", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						estado.setNombre(name);	
+						estadoBean.update(estado);
+					} 
 				} catch (Exception e1) {
 					e1.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Hubo un error al realizar el alta; por favor verificar de no dejar espacios en blanco al principio o final", "Error", JOptionPane.ERROR_MESSAGE);
-
 				}
 				
 			}
