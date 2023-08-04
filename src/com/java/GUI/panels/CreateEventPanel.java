@@ -40,7 +40,7 @@ import com.services.TutorBeanRemote;
 import com.toedter.calendar.JDateChooser;
 import net.miginfocom.swing.MigLayout;
 
-public class CreateEventPanel extends JPanel {
+public class CreateEventPanel extends ContentPanel {
 
 	private JTextField titleField;
 	private JDateChooser startDateChooser;
