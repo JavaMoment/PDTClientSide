@@ -88,6 +88,7 @@ public class SheetRegisterPanel extends JPanel {
 		JButton btnModify= new JButton("Modificar");
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 	                    // Obtener la fila seleccionada
 	                    int selectedRow = estudiantesTable.getSelectedRow();
 	                    
@@ -147,8 +148,12 @@ public class SheetRegisterPanel extends JPanel {
 	                        
 	                    }
 	                
-	            }
-		});
+	            	}catch(Exception ex) {
+	            		ex.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, "Fue cancelada la operacion a realizar", "Error", JOptionPane.ERROR_MESSAGE);
+	               }
+				}
+			});
 		add(btnModify, "cell 2 10 3 1");
 
 		

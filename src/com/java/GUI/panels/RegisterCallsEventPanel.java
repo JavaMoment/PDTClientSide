@@ -35,6 +35,7 @@ import com.services.ModalidadBeanRemote;
 import com.services.TutorBeanRemote;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingConstants;
 
 public class RegisterCallsEventPanel extends ContentPanel {
 
@@ -75,13 +76,11 @@ public class RegisterCallsEventPanel extends ContentPanel {
 		modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
 		estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
-		setLayout(new MigLayout("",
-				"[125,grow,center][125,center][125,center][125,center][125,center][125,center][125,center]",
-				"[50.00][50.00][50.00,grow][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
+		setLayout(new MigLayout("", "[118.00][78.00][133.00][125,center][125][62.00,center][119.00]", "[50.00][50.00][50.00,grow][23.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00][50.00]"));
 
 		JLabel lblTitle = new JLabel("CONVOCATORIA A EVENTOS");
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
-		add(lblTitle, "cell 0 0 7 1");
 
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "cell 0 2 7 9,grow");
@@ -360,7 +359,7 @@ public class RegisterCallsEventPanel extends ContentPanel {
 				add(lblEstado, "cell 2 10,alignx left,aligny top");
 				add(lblModalidad, "cell 2 6,alignx left,aligny center");
 				add(lblTipoEvento, "cell 2 4,alignx left,aligny top");
-				add(lblTitle, "cell 0 0 3 1,grow");
+				add(lblTitle, "cell 0 0 7 1,grow");
 				
 
 			}
