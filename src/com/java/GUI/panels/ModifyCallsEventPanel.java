@@ -85,7 +85,6 @@ public class ModifyCallsEventPanel extends ContentPanel {
 
 		JLabel lblTitle = new JLabel("MODIFICAR CONVOCATORIA A EVENTOS");
 		lblTitle.setFont(new Font("Arial", Font.BOLD, 25));
-		add(lblTitle, "cell 0 0 7 1");
 
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "cell 0 2 7 9,grow");
@@ -365,7 +364,7 @@ public class ModifyCallsEventPanel extends ContentPanel {
 		add(lblEstado, "cell 2 10,alignx left,aligny top");
 		add(lblModalidad, "cell 2 6,alignx left,aligny center");
 		add(lblTipoEvento, "cell 2 4,alignx left,aligny top");
-		add(lblTitle, "cell 0 0 3 1,grow");
+		add(lblTitle, "cell 0 0 7 1,grow");
 	}
 
 }

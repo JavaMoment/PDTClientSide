@@ -19,6 +19,7 @@ import com.java.enums.Beans;
 import com.services.EventoBeanRemote;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.SwingConstants;
 
 public class RegisterAssistsEventPanel extends ContentPanel {
 
@@ -52,6 +53,10 @@ public class RegisterAssistsEventPanel extends ContentPanel {
 		TableModel listModel = new EntityTableModel<>(eventosColNames, eventos);
 		eventoTable.setModel(listModel);
 		scrollPane.setViewportView(eventoTable);
+		
+		JLabel lblNewLabel = new JLabel("Haga click en un evento");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblNewLabel, "cell 0 11 7 1");
 		
 	//Permitir seleccioanar una sola fila del JTable para asi actualziar los datos con los cambios en la tabla
 		

@@ -44,7 +44,7 @@ public class EventModeAuxiliaryListPanel extends ContentPanel {
 			
 		ModalidadBeanRemote modalidadBean = BeansFactory.getBean(Beans.Modalidad, ModalidadBeanRemote.class);
 
-		setLayout(new MigLayout("", "[165.00,grow][235.00,grow][165.00,grow,center][134.00,grow]", "[grow][12.00,grow][][fill][][][]"));
+		setLayout(new MigLayout("", "[165.00,grow,center][173.00,grow][165.00,grow,center][168.00,grow]", "[grow][12.00,grow][][fill][][][]"));
 		
 		JLabel lblNewLabel = new JLabel("LISTA AUXILIAR MODALIDADES DE EVENTO");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -83,7 +83,11 @@ public class EventModeAuxiliaryListPanel extends ContentPanel {
                 sheetModality.setVisible(true);
 			}
 		});
-		add(btnNewButton, "cell 0 5 2097051 1,grow");
+		add(btnNewButton, "cell 0 5 4 1,grow");
+		
+		JLabel lblNewLabel_1 = new JLabel("Haga click en la opcion a modificar");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblNewLabel_1, "cell 0 6 4 1");
 		
 		
 		

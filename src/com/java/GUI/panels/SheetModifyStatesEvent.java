@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import com.entities.Estado;
@@ -38,9 +39,15 @@ public class SheetModifyStatesEvent extends ContentPanel {
 		JButton btnChangeName = new JButton("Cambiar nombre");
 		btnChangeName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String name = textField.getText();
-				estado.setNombre(name);
-				estadoBean.update(estado);
+				try {
+					String name = textField.getText().trim();
+					estado.setNombre(name);	
+					estadoBean.update(estado);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Hubo un error al realizar el alta; por favor verificar de no dejar espacios en blanco al principio o final", "Error", JOptionPane.ERROR_MESSAGE);
+
+				}
 				
 			}
 		});

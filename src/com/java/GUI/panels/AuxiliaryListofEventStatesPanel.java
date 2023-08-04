@@ -43,7 +43,7 @@ public class AuxiliaryListofEventStatesPanel extends ContentPanel {
 		
 		EstadoBeanRemote estadoBean = BeansFactory.getBean(Beans.Estado, EstadoBeanRemote.class);
 
-		setLayout(new MigLayout("", "[185.00,grow][235.00,grow][165.00,grow,center][134.00,grow]", "[][][][27.00][][][338.00][][]"));
+		setLayout(new MigLayout("", "[159.00,grow,center][207.00,grow][165.00,grow][162.00,grow]", "[][][][27.00][][][338.00][][]"));
 		
 		JLabel lblNewLabel = new JLabel("LISTA AUXILIAR MODALIDADES DE EVENTO");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -83,7 +83,11 @@ public class AuxiliaryListofEventStatesPanel extends ContentPanel {
                 sheetStates.setVisible(true);
 			}
 		});
-		add(btnNewButton, "cell 0 7 4 1, grow, span");
+		add(btnNewButton, "cell 0 7 4 1,grow");
+		
+		JLabel lblNewLabel_1 = new JLabel("Haga click en la opcion a modificar");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		add(lblNewLabel_1, "cell 0 8 4 1");
 		
 		
 		
